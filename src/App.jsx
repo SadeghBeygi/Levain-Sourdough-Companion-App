@@ -945,10 +945,9 @@ function PizzaCalc() {
             {pizzaCount===1?"Solo!":pizzaCount===2?"Date night 🍷":pizzaCount<=4?"Pizza party 🎉":pizzaCount<=8?"Big gathering!":"Full bakery mode!"}
           </div>
         </div>
-        <div>
-          <div style={{ minWidth: 0 }}>
-           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
-            <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
+<div style={{ minWidth: 0 }}>
+  <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
+  <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
           <div style={{ fontFamily:BODY, fontSize:11, color:C.faint, marginTop:5, textAlign:"center" }}>
             {ovenType==="home" ? "250–290g for home" : "260–350g for pro"}
           </div>
@@ -1454,7 +1453,7 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight:"200vh", background:C.bg, display:"flex", justifyContent:"center", fontFamily:BODY }}>
+    <div style={{ minHeight:"100vh", background:C.bg, display:"flex", justifyContent:"center", fontFamily:BODY }}>
       <div style={{ width:"100%", maxWidth:430, display:"flex", flexDirection:"column", minHeight:"100vh" }}>
 
         {/* Header */}
