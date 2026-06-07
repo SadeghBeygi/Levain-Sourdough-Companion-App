@@ -933,7 +933,7 @@ function PizzaCalc() {
       </div>
 
       {/* Count + weight */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:25, marginBottom:20 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:25, marginBottom:20 }}>
         <div>
           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Pizzas</div>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" }}>
@@ -945,7 +945,7 @@ function PizzaCalc() {
             {pizzaCount===1?"Solo!":pizzaCount===2?"Date night 🍷":pizzaCount<=4?"Pizza party 🎉":pizzaCount<=8?"Big gathering!":"Full bakery mode!"}
           </div>
         </div>
-        <div style={{ minWidth: 1 }}>
+        <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
            <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
           <div style={{ fontFamily:BODY, fontSize:11, color:C.faint, marginTop:5, textAlign:"center" }}>
