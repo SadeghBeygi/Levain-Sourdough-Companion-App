@@ -196,6 +196,93 @@ const RECIPES = [
     ],
   },
   {
+    id:"focaccia", emoji:"🫙",
+    name:"Sourdough Focaccia", sub:"Olive oil heaven",
+    difficulty:2, diffLabel:"Easy",
+    workTime:"10 min", totalTime:"12–20 hrs", hydration:80,
+    ingredients:[
+      { amount:500, unit:"g", name:"Bread flour"                },
+      { amount:400, unit:"g", name:"Water, room temperature"    },
+      { amount:75,  unit:"g", name:"Active sourdough starter"   },
+      { amount:10,  unit:"g", name:"Fine sea salt"              },
+      { amount:60,  unit:"ml",name:"Good olive oil (plus more)" },
+    ],
+    steps:[
+      ["Mix",            "Combine flour, water, and starter. Add salt and 2 tbsp olive oil. Mix until fully incorporated — dough is very sticky, that's correct."],
+      ["Bulk ferment",   "Cover and ferment 8–12 hrs at room temp, or overnight. Dough should nearly double and look bubbly."],
+      ["Oil the pan",    "Pour 3–4 tbsp olive oil generously into a 30×20cm baking tray. Tip the dough in — no shaping needed."],
+      ["Dimple & rest",  "With oiled hands, stretch dough to fill the tray. Cover and rest 30–60 min until puffy. Add toppings now: rosemary, olives, flaked salt."],
+      ["Dimple again",   "Press your fingers deep into the dough to create the iconic dimples. Drizzle with more olive oil, making sure it pools in the holes."],
+      ["Bake",           "Bake at 220°C (430°F) for 20–25 min until deep golden. The bottom should be crisp — lift a corner to check."],
+      ["Rest & slice",   "Cool 10 min before slicing. Best eaten the day of baking. Stores well wrapped in cloth for 2 days."],
+    ],
+    tips:[
+      "Use the best olive oil you have — it's the dominant flavor",
+      "Rosemary + flaked salt is the classic; try halved cherry tomatoes or olives",
+      "Oiling your hands prevents sticking far better than flouring them",
+      "A dark, crisp bottom is a sign of success — don't pull it out too early",
+      "Leftover focaccia makes extraordinary sandwich bread the next day",
+    ],
+  },
+  {
+    id:"ciabatta", emoji:"🥖",
+    name:"Sourdough Ciabatta", sub:"The slipper bread — wild open crumb",
+    difficulty:4, diffLabel:"Advanced",
+    workTime:"30 min", totalTime:"18–28 hrs", hydration:85,
+    ingredients:[
+      { amount:500, unit:"g", name:"Strong bread flour (>12% protein)" },
+      { amount:425, unit:"g", name:"Water, 26°C (79°F)"                },
+      { amount:100, unit:"g", name:"Active sourdough starter"          },
+      { amount:10,  unit:"g", name:"Salt"                              },
+      { amount:20,  unit:"ml",name:"Olive oil"                         },
+    ],
+    steps:[
+      ["Mix & autolyse",     "Combine flour and 380g water. Mix until no dry flour remains. Rest 40 min. This is the autolyse — gluten forms without effort."],
+      ["Add starter & salt", "Dissolve starter and salt in the remaining 45g water. Pour over autolysed dough and mix thoroughly by squeezing through your fingers."],
+      ["Coil folds",         "Every 30 min for 3 hrs, perform coil folds: slide hands under the dough, lift from the center, let the ends fold under. 4–6 sets total."],
+      ["Bulk ferment",       "Leave dough undisturbed until 75–80% grown. It should be airy, jiggly, with bubbles visible throughout. Usually 5–8 hrs total."],
+      ["Divide",             "Flour your surface generously. Gently tip dough out — do NOT degas it. Flour the top and divide into 2–3 long rectangles with a scraper."],
+      ["Proof",              "Transfer loaves to a well-floured couche or baking paper. Flour the tops. Proof 1–2 hrs at room temp until puffed but not over-proofed."],
+      ["Bake with steam",    "Bake at 240°C (465°F) on a preheated stone or tray. Create steam with a tray of boiling water below. Bake 22–26 min until dark golden."],
+    ],
+    tips:[
+      "This is an extremely wet dough — wet hands and a scraper are your best tools",
+      "Do NOT add flour when shaping. The stickiness is essential to the open crumb",
+      "Coil folds are gentler than stretch & folds — preserve those gas bubbles",
+      "The darker the crust, the better it keeps and the more flavor it has",
+      "A proper ciabatta should feel hollow and nearly weightless for its size",
+    ],
+  },
+  {
+    id:"spelt", emoji:"🌿",
+    name:"Spelt Sourdough", sub:"Ancient grain, nutty & complex",
+    difficulty:3, diffLabel:"Medium",
+    workTime:"20 min", totalTime:"16–24 hrs", hydration:70,
+    ingredients:[
+      { amount:350, unit:"g", name:"Whole spelt flour"         },
+      { amount:150, unit:"g", name:"Bread flour (for strength)"},
+      { amount:350, unit:"g", name:"Water, 26°C"               },
+      { amount:100, unit:"g", name:"Active spelt starter"      },
+      { amount:10,  unit:"g", name:"Salt"                      },
+    ],
+    steps:[
+      ["Autolyse",          "Mix flours and water. No starter or salt yet. Rest 20–30 min. Spelt absorbs water quickly — don't skip this."],
+      ["Incorporate",       "Add starter and salt. Use pinch-and-fold to fully incorporate. Spelt's gluten is more fragile than wheat — be gentle."],
+      ["Gentle folds",      "Perform 3 sets of stretch & folds, 30 min apart. Spelt tears easily — go slow, handle with care."],
+      ["Bulk ferment",      "Ferment 5–7 hrs at 24°C. Spelt ferments faster than wheat. Watch for a 50% size increase and visible bubbles."],
+      ["Shape",             "Pre-shape into a round, rest 20 min. Final shape into a tight boule. Place seam-up in a floured banneton."],
+      ["Cold proof",        "Refrigerate 10–16 hrs. Cold proofing is especially important for spelt — it firms up the fragile gluten."],
+      ["Score & bake",      "Bake in a preheated Dutch oven at 230°C (445°F): 20 min covered, 18 min uncovered. The crust should be deep amber."],
+    ],
+    tips:[
+      "Spelt has weaker gluten than wheat — reducing hydration by 5–10% makes it much easier to handle",
+      "Ferments faster than wheat: watch the dough, not the clock",
+      "Mixing spelt with 20–30% bread flour significantly improves structure",
+      "The nutty, slightly sweet flavor pairs beautifully with butter and honey",
+      "Spelt is not gluten-free — but many people with wheat sensitivity tolerate it better",
+    ],
+  },
+  {
     id:"rye", emoji:"🌾",
     name:"Dark Rye Sourdough", sub:"Hearty, robust, complex",
     difficulty:3, diffLabel:"Medium",
@@ -230,6 +317,7 @@ const GUIDE = [
     body:"Your starter must be active, bubbly, and at peak before you bake. Feed it 4–12 hours before mixing. A healthy starter doubles in size, smells fruity-sour or milky, and passes the float test.",
     checks:["Starter doubled since last feeding","Bubbly, domed top — not flat or collapsed","Float test: drop a small piece in water and it floats","Smells fruity, milky, or mildly sour"],
     tip:"If your starter has been stored in the fridge, give it 2–3 consecutive feedings over 1–2 days to fully reactivate.",
+    timers:[],
   },
   {
     id:2, emoji:"🥣", phase:"Day 1 – Morning",
@@ -237,6 +325,7 @@ const GUIDE = [
     body:"Mix flour and water first, then rest 30–60 minutes (autolyse). The dough develops gluten passively during rest without kneading. Then add starter and salt and mix until fully incorporated.",
     checks:["No dry flour spots remain","Starter and salt fully incorporated","Dough is smooth and cohesive"],
     tip:"Use water at 26–28°C (79–82°F). Warmer water speeds fermentation; too cold slows it down too much.",
+    timers:[{ label:"Autolyse rest", minutes:30 }],
   },
   {
     id:3, emoji:"⏱️", phase:"Day 1 – Morning to Afternoon",
@@ -244,6 +333,7 @@ const GUIDE = [
     body:"The main fermentation takes 4–8 hours at room temperature. During the first 2 hours, perform 4–6 sets of stretch & folds every 30 minutes. Then leave undisturbed until ready.",
     checks:["Dough increased 50–75% in size","Bubbles visible on sides of container","Dough feels airy and jiggly when shaken","Passes windowpane test: stretches thin without tearing"],
     tip:"Warmer = faster. At 28°C expect ~4 hrs; at 22°C expect ~6–8 hrs. Always read your dough, not the clock.",
+    timers:[{ label:"Stretch & fold interval", minutes:30 }, { label:"Full bulk ferment (avg)", minutes:360 }],
   },
   {
     id:4, emoji:"👐", phase:"Day 1 – Afternoon",
@@ -251,6 +341,7 @@ const GUIDE = [
     body:"Tip dough out, pre-shape into a rough round, rest 20–30 minutes uncovered. Then final shape into a batard or boule using tension folds. Build surface tension by dragging the dough toward you.",
     checks:["Surface is smooth and taut","Dough holds shape without spreading flat","No tears on surface","Seam neatly sealed at the bottom"],
     tip:"Work on a lightly unfloured surface — you need friction for tension. A bench scraper is indispensable here.",
+    timers:[{ label:"Pre-shape bench rest", minutes:25 }],
   },
   {
     id:5, emoji:"🌙", phase:"Day 1 – Evening",
@@ -258,6 +349,7 @@ const GUIDE = [
     body:"Place shaped dough seam-up in a well-floured banneton. Either proof at room temperature 1–2 hrs, or cover and refrigerate overnight. Cold proofing is strongly recommended.",
     checks:["Banneton well-floured (rice flour is best)","Poke test: dough springs back slowly when poked","If cold-proofing: dough is firm and cold before baking"],
     tip:"Cold proofing 8–16 hrs gives dramatically better flavor, a more open crumb, and makes scoring much easier.",
+    timers:[{ label:"Room temp proof", minutes:90 }],
   },
   {
     id:6, emoji:"🔥", phase:"Day 2 – Baking",
@@ -265,6 +357,7 @@ const GUIDE = [
     body:"Preheat Dutch oven at 230–250°C (445–480°F) for at least 45 minutes. Score the cold dough with a lame or razor blade at a 30–45° angle. Bake covered 20 min (steam), then uncovered 20 min (crust).",
     checks:["Dutch oven preheated minimum 45 min","Razor blade held at 30–45° angle","Ear formed during baking","Hollow sound when bottom is tapped"],
     tip:"The steam in the first 20 minutes (lid on) is absolutely critical for oven spring. Never skip it.",
+    timers:[{ label:"Preheat Dutch oven", minutes:45 }, { label:"Bake covered — steam", minutes:20 }, { label:"Bake uncovered — crust", minutes:20 }],
   },
 ];
 
@@ -423,6 +516,69 @@ function CopyButton({ getText }) {
   );
 }
 
+function PageFooter() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0 6px", fontFamily:BODY, fontSize:10, color:C.faint, letterSpacing:0.5, fontStyle:"italic" }}>
+      Made by S.B and Claude did it.
+    </div>
+  );
+}
+
+function StepTimer({ label, minutes }) {
+  const total = minutes * 60;
+  const [seconds, setSeconds] = useState(total);
+  const [running, setRunning] = useState(false);
+  const [done, setDone]       = useState(false);
+
+  useEffect(() => {
+    if (!running) return;
+    if (seconds <= 0) { setRunning(false); setDone(true); return; }
+    const id = setInterval(() => setSeconds(s => s - 1), 1000);
+    return () => clearInterval(id);
+  }, [running, seconds]);
+
+  const reset = () => { setSeconds(total); setRunning(false); setDone(false); };
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  const pct = ((total - seconds) / total) * 100;
+
+  return (
+    <div style={{ background:C.card2, border:`1px solid ${done ? C.green : C.border}`, borderRadius:12, padding:"12px 14px", marginBottom:8, transition:"border-color 0.3s" }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8 }}>
+        <div>
+          <div style={{ fontFamily:BODY, fontSize:11, color:C.sub, marginBottom:3 }}>⏱ {label}</div>
+          <div style={{ fontFamily:SERIF, fontSize:24, color:done ? C.green : C.accent, fontWeight:700 }}>
+            {done ? "✓ Done!" : `${mm}:${ss}`}
+          </div>
+        </div>
+        <div style={{ display:"flex", gap:6 }}>
+          {!done && (
+            <button onClick={() => setRunning(r => !r)} style={{
+              padding:"9px 16px", borderRadius:8, cursor:"pointer",
+              border:`1px solid ${C.accent}`,
+              background: running ? `${C.accent}22` : C.accent,
+              color: running ? C.accent : "#fff",
+              fontFamily:BODY, fontSize:13, fontWeight:600,
+            }}>
+              {running ? "⏸ Pause" : "▶ Start"}
+            </button>
+          )}
+          <button onClick={reset} style={{
+            padding:"9px 13px", borderRadius:8, cursor:"pointer",
+            border:`1px solid ${C.border}`, background:"transparent",
+            color:C.sub, fontFamily:BODY, fontSize:15,
+          }}>↺</button>
+        </div>
+      </div>
+      {!done && (
+        <div style={{ marginTop:10, height:3, background:C.border, borderRadius:2, overflow:"hidden" }}>
+          <div style={{ height:"100%", borderRadius:2, background:C.accent, width:`${pct}%`, transition:"width 1s linear" }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── HOME ──────────────────────────────────────────────────────────────────
 function HomeTab({ setTab }) {
   const cards = [
@@ -485,6 +641,7 @@ function HomeTab({ setTab }) {
         </p>
         <p style={{ fontFamily:BODY, fontSize:12, color:C.faint, marginTop:8 }}>— The Sourdough Framework</p>
       </div>
+      <PageFooter />
     </div>
   );
 }
@@ -546,19 +703,6 @@ function BreadCalc() {
 
   return (
     <div>
-      {/* Presets */}
-      <div style={{ fontFamily:BODY, fontSize:11, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:10 }}>Bread Type</div>
-      <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:6, marginBottom:20 }}>
-        {PRESETS.map(p => (
-          <button key={p.id} onClick={() => applyPreset(p.id)} style={{
-            padding:"7px 14px", borderRadius:20, whiteSpace:"nowrap", cursor:"pointer",
-            border:`1px solid ${preset===p.id ? C.accent : C.border}`,
-            background: preset===p.id ? `${C.accent}20` : "transparent",
-            color: preset===p.id ? C.accent : C.sub, fontFamily:BODY, fontSize:13,
-          }}>{p.name}</button>
-        ))}
-      </div>
-
       {/* Input mode */}
       <div style={{ display:"flex", gap:8, marginBottom:20 }}>
         {[["flour","By Flour / Loaf"],["total","By Total Weight"]].map(([id,lbl]) => (
@@ -582,13 +726,13 @@ function BreadCalc() {
           step={50} min={50}
         />
         {inputMode==="flour" && (
-          <div style={{ display:"flex", justifyContent:"space-between", marginTop:8 }}>
+          <div style={{ display:"flex", gap:4, marginTop:8 }}>
             {["100g\nRolls","500g\nStandard","1000g\nLarge","2000g\nMega"].map(s => {
               const [val,lbl] = s.split("\n");
               const n = parseInt(val);
               return (
                 <button key={val} onClick={() => setFlourPerLoaf(n)} style={{
-                  padding:"5px 8px", borderRadius:8, border:`1px solid ${flourPerLoaf===n?C.accent:C.border}`,
+                  flex:1, padding:"6px 4px", borderRadius:8, border:`1px solid ${flourPerLoaf===n?C.accent:C.border}`,
                   background: flourPerLoaf===n ? `${C.accent}20` : "transparent",
                   color: flourPerLoaf===n ? C.accent : C.faint, fontFamily:BODY, fontSize:11, cursor:"pointer", textAlign:"center",
                 }}>{val}<br/><span style={{fontSize:10}}>{lbl}</span></button>
@@ -1014,6 +1158,7 @@ function CalcTab({ initialMode }) {
       {mode==="bread"   && <BreadCalc />}
       {mode==="pizza"   && <PizzaCalc />}
       {mode==="starter" && <StarterCalc />}
+      <PageFooter />
     </div>
   );
 }
@@ -1086,6 +1231,7 @@ function RecipesTab() {
             </div>
           ))}
         </div>
+        <PageFooter />
       </div>
     );
   }
@@ -1119,6 +1265,7 @@ function RecipesTab() {
           </div>
         </button>
       ))}
+      <PageFooter />
     </div>
   );
 }
@@ -1173,6 +1320,14 @@ function GuideTab() {
               <div style={{ marginTop:16, padding:"12px 14px", borderRadius:12, background:`${C.accent}10`, border:`1px solid ${C.accent}22` }}>
                 <span style={{ fontFamily:BODY, fontSize:14, color:C.sub, fontStyle:"italic", lineHeight:1.6 }}>💡 {step.tip}</span>
               </div>
+              {step.timers && step.timers.length > 0 && (
+                <div style={{ marginTop:16 }}>
+                  <div style={{ fontFamily:BODY, fontSize:11, color:step.color, textTransform:"uppercase", letterSpacing:1.3, marginBottom:10 }}>Step Timers</div>
+                  {step.timers.map((t, i) => (
+                    <StepTimer key={i} label={t.label} minutes={t.minutes} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1196,6 +1351,7 @@ function GuideTab() {
           </div>
         ))}
       </div>
+      <PageFooter />
     </div>
   );
 }
@@ -1254,18 +1410,18 @@ function TroubleTab() {
           </div>
         ))}
       </div>
+      <PageFooter />
     </div>
   );
 }
 
 // ─── MAIN APP ──────────────────────────────────────────────────────────────
 const TABS = [
-  { id:"home",    icon:"🏠", label:"Home"    },
-  { id:"calc",    icon:"⚖️", label:"Bread"   },
-  { id:"pizza",   icon:"🍕", label:"Pizza"   },
-  { id:"recipes", icon:"📖", label:"Recipes" },
-  { id:"guide",   icon:"🎓", label:"Guide"   },
-  { id:"trouble", icon:"🔧", label:"Fix"     },
+  { id:"home",    icon:"🏠", label:"Home"       },
+  { id:"calc",    icon:"⚖️", label:"Calculator" },
+  { id:"recipes", icon:"📖", label:"Recipes"    },
+  { id:"guide",   icon:"🎓", label:"Guide"      },
+  { id:"trouble", icon:"🔧", label:"Fix"        },
 ];
 
 // Pizza and Starter get their own tabs from home nav but are rendered inside CalcTab
@@ -1317,7 +1473,7 @@ export default function App() {
         {/* Bottom nav */}
         <div style={{ display:"flex", borderTop:`1px solid ${C.border}`, background:`${C.surf}F5`, backdropFilter:"blur(12px)", position:"sticky", bottom:0, paddingBottom:"max(env(safe-area-inset-bottom,0px),6px)" }}>
           {TABS.map(t => {
-            const active = t.id === tab || (t.id === "calc" && tab === "calc");
+            const active = t.id === tab || (t.id === "calc" && (tab === "calc" || tab === "pizza"));
             return (
               <button key={t.id} onClick={() => { setTab(t.id); if(t.id==="calc") setPizzaMode("bread"); }} style={{ flex:1, paddingTop:10, paddingBottom:6, background:"transparent", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
                 <span style={{ fontSize:18, filter: active?"none":"grayscale(80%) opacity(55%)", transition:"filter 0.18s" }}>{t.icon}</span>
