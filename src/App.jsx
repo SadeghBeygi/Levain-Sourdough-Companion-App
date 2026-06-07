@@ -933,7 +933,7 @@ function PizzaCalc() {
       </div>
 
       {/* Count + weight */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:20 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:25, marginBottom:20 }}>
         <div>
           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Pizzas</div>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" }}>
