@@ -1,6 +1,6 @@
 # 🍞 Levain — Sourdough Companion App
 
-A clean, mobile-first sourdough app built with React. Everything a home baker needs in one place.
+A clean, mobile sourdough app built with React. Everything a home baker needs in one place.
 
 **[→ Open the app](https://levain.pages.dev)**
 
