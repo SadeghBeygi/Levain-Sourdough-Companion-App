@@ -946,8 +946,9 @@ function PizzaCalc() {
           </div>
         </div>
         <div>
-          <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
-          <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
+          <div style={{ minWidth: 0 }}>
+           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
+            <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
           <div style={{ fontFamily:BODY, fontSize:11, color:C.faint, marginTop:5, textAlign:"center" }}>
             {ovenType==="home" ? "250–290g for home" : "260–350g for pro"}
           </div>
