@@ -936,7 +936,7 @@ function PizzaCalc() {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:20 }}>
         <div>
           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Pizzas</div>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" , textAlign:"center"}}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" }}>
             <button onClick={() => setPizzaCount(Math.max(1,pizzaCount-1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>−</button>
             <span style={{ fontFamily:SERIF, fontSize:26, color:C.accent, fontWeight:700 }}>{pizzaCount}</span>
             <button onClick={() => setPizzaCount(Math.min(20,pizzaCount+1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>+</button>
