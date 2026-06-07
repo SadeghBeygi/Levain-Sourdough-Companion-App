@@ -936,7 +936,7 @@ function PizzaCalc() {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:20 }}>
         <div>
           <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Pizzas</div>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 10px" }}>
             <button onClick={() => setPizzaCount(Math.max(1,pizzaCount-1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>−</button>
             <span style={{ fontFamily:SERIF, fontSize:26, color:C.accent, fontWeight:700 }}>{pizzaCount}</span>
             <button onClick={() => setPizzaCount(Math.min(20,pizzaCount+1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>+</button>
@@ -945,9 +945,9 @@ function PizzaCalc() {
             {pizzaCount===1?"Solo!":pizzaCount===2?"Date night 🍷":pizzaCount<=4?"Pizza party 🎉":pizzaCount<=8?"Big gathering!":"Full bakery mode!"}
           </div>
         </div>
-<div style={{ minWidth: 5 }}>
-  <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
-  <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
+        <div style={{ minWidth: 1 }}>
+          <div style={{ fontFamily:BODY, fontSize:13, color:C.sub, marginBottom:8 }}>Grams / pizza</div>
+           <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
           <div style={{ fontFamily:BODY, fontSize:11, color:C.faint, marginTop:5, textAlign:"center" }}>
             {ovenType==="home" ? "250–290g for home" : "260–350g for pro"}
           </div>
