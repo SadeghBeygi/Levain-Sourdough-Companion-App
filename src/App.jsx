@@ -147,7 +147,7 @@ const T = {
     starterRatioTip:"💡 Tip: A stiff starter (50–60% hydration) enhances yeast activity and is preferred by many bakers for wheat sourdough. Use half the water shown above.",
   },
   fa: {
-    appName:"لوون", appTagline:"اپ خمیرمایه",
+    appName:"لِوان", appTagline:"اپ خمیرمایه",
     taglineSub:"راهنمای کامل خمیرمایه شما — از استارتر تا برش.",
     toolsSections:"ابزارها و بخش‌ها",
     doughCalc:"ماشین‌حساب خمیر", doughCalcSub:"ریاضیات نانوایی و تقسیم غلات کامل",
