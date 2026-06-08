@@ -1839,7 +1839,6 @@ export default function App() {
                 title={lang==="en" ? "Switch to Farsi / فارسی" : "Switch to English"}
               >
                 <span>{lang==="en" ? "FA" : "EN"}</span>
-                <span style={{ fontSize:14 }}>{lang==="en" ? "🇮🇷" : "🇬🇧"}</span>
               </button>
               <button
                 onClick={() => setTheme(th => th === "dark" ? "light" : "dark")}
