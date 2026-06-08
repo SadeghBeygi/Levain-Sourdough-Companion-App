@@ -7,240 +7,591 @@ const useApp = () => useContext(AppCtx);
 // ─── FONT INJECTION ────────────────────────────────────────────────────────
 (() => {
   if (typeof document === "undefined") return;
-  if (document.getElementById("levain-fonts")) return;
+  if (document.getElementById("levain-fonts-v5")) return;
   const link = document.createElement("link");
-  link.id = "levain-fonts";
+  link.id = "levain-fonts-v5";
   link.rel = "stylesheet";
-  link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Vazirmatn:wght@300;400;600;700&display=swap";
+  link.href = "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Vazirmatn:wght@300..900&display=swap";
   document.head.appendChild(link);
 })();
 
-// ─── GLOBAL STYLE UPDATER ──────────────────────────────────────────────────
+// ─── GLOBAL STYLES ─────────────────────────────────────────────────────────
 function updateGlobalStyles(C) {
-  let s = document.getElementById("levain-boot");
-  if (!s) { s = document.createElement("style"); s.id = "levain-boot"; document.head.appendChild(s); }
+  let s = document.getElementById("levain-boot-v5");
+  if (!s) { s = document.createElement("style"); s.id = "levain-boot-v5"; document.head.appendChild(s); }
   s.textContent = `
-    body { background: ${C.bg} !important; transition: background 0.3s; }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: ${C.border}; border-radius: 2px; outline: none; cursor: pointer; transition: background 0.3s; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: ${C.accent}; cursor: pointer; box-shadow: 0 0 0 4px ${C.accent}33; }
-    .ls::-webkit-scrollbar { width: 3px; }
-    .ls::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-up { animation: fadeUp 0.22s ease forwards; }
-    .tab-btn:active { transform: scale(0.96); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    html { font-size: 16px; }
+    html, body {
+      background: ${C.bg} !important;
+      color: ${C.text};
+      transition: background 0.4s ease, color 0.4s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    ::selection { background: ${C.accentSoft}; color: ${C.accent}; }
+    
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: ${C.divider};
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15), 0 0 0 1px ${C.divider}, 0 4px 12px rgba(0,0,0,0.12);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    input[type=range]::-moz-range-thumb {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #FFFFFF; border: 1px solid ${C.divider}; cursor: pointer;
+    }
+    
+    .ls::-webkit-scrollbar { width: 6px; }
+    .ls::-webkit-scrollbar-track { background: transparent; }
+    .ls::-webkit-scrollbar-thumb { background: ${C.scrollThumb}; border-radius: 999px; }
+    
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid ${C.accent};
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    
+    button { font-family: inherit; border: none; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    input, button { font-family: inherit; }
+    
+    .fade-up { animation: fadeUp 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   `;
 }
 
-// ─── COLOR THEMES ──────────────────────────────────────────────────────────
-const DARK = {
-  bg:        "#1D1308",
-  surf:      "#261A09",
-  card:      "#33200C",
-  card2:     "#3D2810",
-  border:    "#513214",
-  accent:    "#D4921E",
-  accentDim: "rgba(212,146,30,0.13)",
-  text:      "#F2E5CC",
-  sub:       "#B09278",
-  faint:     "#70543C",
-  green:     "#6AA062",
-  red:       "#B85040",
-  blue:      "#5A7AA8",
-  purple:    "#9060C0",
-  resultBg:  "linear-gradient(145deg,#281808,#201205)",
-};
+// ─── 3-COLOR PALETTE ───────────────────────────────────────────────────────
+// Light: Apple-like off-white / near-black / warm amber
+// Dark: SOURDOUGH CRUST — deep brown-black / warm cream / golden crust amber
 const LIGHT = {
-  bg:        "#FBF3E4",
-  surf:      "#F3E6CA",
-  card:      "#EDD9B8",
-  card2:     "#E8D0AA",
-  border:    "#C8A87A",
-  accent:    "#9A6210",
-  accentDim: "rgba(154,98,16,0.12)",
-  text:      "#2C1A0A",
-  sub:       "#6E4820",
-  faint:     "#9A7050",
-  green:     "#3A7832",
-  red:       "#943020",
-  blue:      "#2A5880",
-  purple:    "#6030A0",
-  resultBg:  "linear-gradient(145deg,#EDD9B8,#E8D0AA)",
+  bg:         "#F5F5F7",
+  bgAlt:      "#FFFFFF",
+  glass:      "rgba(255, 255, 255, 0.72)",
+  glass2:     "rgba(255, 255, 255, 0.56)",
+  glassBorder:"rgba(0, 0, 0, 0.06)",
+  text:       "#1D1D1F",
+  textSub:    "#48484A",
+  textFaint:  "#636366",
+  divider:    "rgba(0, 0, 0, 0.08)",
+  dividerSoft:"rgba(0, 0, 0, 0.04)",
+  accent:     "#C2410C",
+  accentSoft: "rgba(194, 65, 12, 0.14)",
+  accentDim:  "rgba(194, 65, 12, 0.06)",
+  success:    "#16A34A",
+  danger:     "#DC2626",
+  scrollThumb: "rgba(0, 0, 0, 0.18)",
+  shadowSm:   "0 1px 2px rgba(0, 0, 0, 0.04)",
+  shadowMd:   "0 4px 12px rgba(0, 0, 0, 0.06)",
+  shadowLg:   "0 8px 32px rgba(0, 0, 0, 0.08)",
 };
 
-const SERIF = "'Playfair Display', Georgia, serif";
-const BODY  = "'Lora', Georgia, serif";
-const FARSI = "'Vazirmatn', 'Tahoma', sans-serif";
+const DARK = {
+  // Sourdough crust palette — deep mahogany brown, warm cream text, golden crust accent
+  bg:         "#1A110A",
+  bgAlt:      "#2B1B10",
+  glass:      "rgba(43, 27, 16, 0.72)",
+  glass2:     "rgba(43, 27, 16, 0.56)",
+  glassBorder:"rgba(232, 166, 74, 0.12)",
+  text:       "#F5EBD4",
+  textSub:    "#C9B08A",
+  textFaint:  "#8B7355",
+  divider:    "rgba(232, 166, 74, 0.14)",
+  dividerSoft:"rgba(232, 166, 74, 0.07)",
+  accent:     "#E8A64A",      // Golden crust amber
+  accentSoft: "rgba(232, 166, 74, 0.2)",
+  accentDim:  "rgba(232, 166, 74, 0.08)",
+  success:    "#8FB85A",
+  danger:     "#D96B4A",
+  scrollThumb: "rgba(232, 166, 74, 0.25)",
+  shadowSm:   "0 1px 2px rgba(0, 0, 0, 0.4)",
+  shadowMd:   "0 4px 12px rgba(0, 0, 0, 0.5)",
+  shadowLg:   "0 8px 32px rgba(0, 0, 0, 0.6)",
+};
 
-// ─── FARSI NUMERAL UTILITY ─────────────────────────────────────────────────
+const DISPLAY = "'Fraunces', Georgia, serif";
+const BODY    = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif";
+const FARSI   = "'Vazirmatn', sans-serif";
+
+// ─── EMOJI-STYLE ICON SYSTEM (filled, cartoonish, stylized) ────────────────
+const Icon = ({ name, size = 20, color = "currentColor", style = {} }) => {
+  const s = { width: size, height: size, display: "inline-block", flexShrink: 0, ...style };
+  const fill = "currentColor";
+  
+  // Emoji-like filled cartoonish icons with personality
+  const paths = {
+    // Home: solid house with visible door and window, cute proportions
+    home: (
+      <>
+        <path d="M3 11.5L12 3l9 8.5V20a1 1 0 01-1 1h-5v-6a1 1 0 00-1-1h-2a1 1 0 00-1 1v6H5a1 1 0 01-1-1v-8.5z" fill={fill}/>
+        <rect x="15" y="9" width="2.5" height="2.5" rx="0.5" fill={fill} opacity="0.35"/>
+      </>
+    ),
+    // Scale: cute balance scale with pans and beam
+    scale: (
+      <>
+        <rect x="11" y="3" width="2" height="16" rx="1" fill={fill}/>
+        <rect x="7" y="19" width="10" height="2" rx="1" fill={fill}/>
+        <rect x="4" y="5" width="16" height="2" rx="1" fill={fill}/>
+        <path d="M4 7l-2 6a4 4 0 008 0l-2-6H4z" fill={fill}/>
+        <path d="M14 7l-2 6a4 4 0 008 0l-2-6h-4z" fill={fill}/>
+      </>
+    ),
+    // Book: open book with visible pages and spine
+    book: (
+      <>
+        <path d="M3 5c0-1 .8-2 2-2h4c1.7 0 3 1 3 2v14c0-.8-1-1.5-2.5-1.5H5c-1.1 0-2-.5-2-1.5V5z" fill={fill}/>
+        <path d="M21 5c0-1-.8-2-2-2h-4c-1.7 0-3 1-3 2v14c0-.8 1-1.5 2.5-1.5H19c1.1 0 2-.5 2-1.5V5z" fill={fill} opacity="0.75"/>
+        <line x1="12" y1="5" x2="12" y2="19" stroke={fill} strokeWidth="0.5" opacity="0.4"/>
+      </>
+    ),
+    // Compass: compass with needle pointing N
+    compass: (
+      <>
+        <circle cx="12" cy="12" r="10" fill={fill}/>
+        <circle cx="12" cy="12" r="7.5" fill={fill} opacity="0.25"/>
+        <path d="M12 5l2.5 7-7 2.5 7 2.5L12 24" fill={fill} opacity="0.9"/>
+        <circle cx="12" cy="12" r="1.8" fill={fill}/>
+      </>
+    ),
+    // Wrench: cartoon wrench/tool
+    wrench: (
+      <>
+        <path d="M14.7 3.3a5 5 0 00-6.4 6.4L3 15l3 3 5.3-5.3a5 5 0 006.4-6.4l-3 3-2.8-2.8 3-3z" fill={fill}/>
+      </>
+    ),
+    // Bread loaf: cute rounded bread with scoring lines
+    bread: (
+      <>
+        <path d="M3 14c0-4 4-7 9-7s9 3 9 7v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2z" fill={fill}/>
+        <path d="M7 10c1-1 2-1 3 0M11 9.5c1-1 2-1 3 0M15 10c1-1 2-1 3 0" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4"/>
+      </>
+    ),
+    // Pizza slice: cute triangle with pepperoni dots
+    pizza: (
+      <>
+        <path d="M12 2L3 21h18L12 2z" fill={fill}/>
+        <circle cx="10" cy="12" r="1.4" fill={fill} opacity="0.35"/>
+        <circle cx="14" cy="14" r="1.4" fill={fill} opacity="0.35"/>
+        <circle cx="11" cy="17" r="1.4" fill={fill} opacity="0.35"/>
+      </>
+    ),
+    // Flask/beaker: sourdough starter jar
+    flask: (
+      <>
+        <path d="M8 3h8v5l4 9a2 2 0 01-2 3H6a2 2 0 01-2-3l4-9V3z" fill={fill}/>
+        <rect x="7" y="14" width="10" height="1.5" fill={fill} opacity="0.3"/>
+        <circle cx="10" cy="17" r="0.8" fill={fill} opacity="0.5"/>
+        <circle cx="13" cy="16" r="0.6" fill={fill} opacity="0.5"/>
+      </>
+    ),
+    // Wheat stalk
+    wheat: (
+      <>
+        <path d="M12 3v18" stroke={fill} strokeWidth="2" strokeLinecap="round"/>
+        <ellipse cx="9" cy="6" rx="2.5" ry="1.5" fill={fill} transform="rotate(-30 9 6)"/>
+        <ellipse cx="15" cy="8" rx="2.5" ry="1.5" fill={fill} transform="rotate(30 15 8)"/>
+        <ellipse cx="9" cy="11" rx="2.5" ry="1.5" fill={fill} transform="rotate(-30 9 11)"/>
+        <ellipse cx="15" cy="13" rx="2.5" ry="1.5" fill={fill} transform="rotate(30 15 13)"/>
+        <ellipse cx="12" cy="4" rx="1.5" ry="2.5" fill={fill}/>
+      </>
+    ),
+    // Water droplet
+    droplet: (
+      <path d="M12 2c-4 5-7 9-7 13a7 7 0 0014 0c0-4-3-8-7-13z" fill={fill}/>
+    ),
+    // Salt shaker
+    salt: (
+      <>
+        <path d="M8 3h8l1 4H7l1-4z" fill={fill}/>
+        <path d="M6 7h12l-1 14H7L6 7z" fill={fill}/>
+        <circle cx="10" cy="12" r="0.6" fill={fill} opacity="0.35"/>
+        <circle cx="14" cy="12" r="0.6" fill={fill} opacity="0.35"/>
+        <circle cx="12" cy="15" r="0.6" fill={fill} opacity="0.35"/>
+      </>
+    ),
+    // Timer with bell top
+    timer: (
+      <>
+        <circle cx="12" cy="13" r="8" fill={fill}/>
+        <rect x="11" y="2" width="2" height="3" fill={fill}/>
+        <path d="M12 9v4l3 2" stroke={fill} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.4"/>
+      </>
+    ),
+    // Sparkles/stars
+    sparkles: (
+      <>
+        <path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill={fill}/>
+        <path d="M19 13l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5z" fill={fill} opacity="0.7"/>
+      </>
+    ),
+    // Sun
+    sun: (
+      <>
+        <circle cx="12" cy="12" r="4.5" fill={fill}/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2" stroke={fill} strokeWidth="2" strokeLinecap="round"/>
+      </>
+    ),
+    // Moon
+    moon: <path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" fill={fill}/>,
+    // Globe
+    globe: (
+      <>
+        <circle cx="12" cy="12" r="9" fill={fill}/>
+        <path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" stroke={fill} strokeWidth="1.5" fill="none" opacity="0.35"/>
+      </>
+    ),
+    // Flame
+    flame: <path d="M12 2c1 4 5 6 5 11a7 7 0 11-14 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4 3-6 5-10z" fill={fill}/>,
+    // Check
+    check: <path d="M20 6L9 17l-5-5" stroke={fill} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>,
+    // X
+    x: <path d="M18 6L6 18M6 6l12 12" stroke={fill} strokeWidth="3" strokeLinecap="round" fill="none"/>,
+    // Plus
+    plus: <path d="M12 5v14M5 12h14" stroke={fill} strokeWidth="3" strokeLinecap="round" fill="none"/>,
+    // Minus
+    minus: <path d="M5 12h14" stroke={fill} strokeWidth="3" strokeLinecap="round" fill="none"/>,
+    // Chevron right
+    chevronRight: <path d="M9 18l6-6-6-6" stroke={fill} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>,
+    // Copy
+    copy: (
+      <>
+        <rect x="8" y="8" width="13" height="13" rx="2" fill={fill}/>
+        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke={fill} strokeWidth="1.5" fill="none" opacity="0.5"/>
+      </>
+    ),
+    // Oven
+    oven: (
+      <>
+        <rect x="3" y="4" width="18" height="17" rx="2" fill={fill}/>
+        <rect x="6" y="10" width="12" height="8" rx="1" fill={fill} opacity="0.3"/>
+        <circle cx="7" cy="7" r="0.9" fill={fill} opacity="0.5"/>
+        <circle cx="10" cy="7" r="0.9" fill={fill} opacity="0.5"/>
+        <circle cx="13" cy="7" r="0.9" fill={fill} opacity="0.5"/>
+      </>
+    ),
+    // Fire/woodfire
+    woodfire: (
+      <>
+        <path d="M6 21h12l-2-8H8l-2 8z" fill={fill}/>
+        <path d="M12 2c1 3 4 4 4 8a4 4 0 11-8 0c0-1.5.5-2.5 1.5-3 0 1.5.5 2 1.5 2 0-2.5 1-4 2-7z" fill={fill}/>
+      </>
+    ),
+    // Cheese
+    cheese: (
+      <>
+        <path d="M2 19l10-14 10 14H2z" fill={fill}/>
+        <circle cx="8" cy="15" r="1.2" fill={fill} opacity="0.3"/>
+        <circle cx="15" cy="16" r="1" fill={fill} opacity="0.3"/>
+      </>
+    ),
+    // Tomato
+    tomato: (
+      <>
+        <circle cx="12" cy="14" r="8" fill={fill}/>
+        <path d="M10 6c-1 0-2 1-2 2M14 6c1 0 2 1 2 2" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4"/>
+        <path d="M12 6V4" stroke={fill} strokeWidth="1.5" strokeLinecap="round"/>
+      </>
+    ),
+    // Olive oil bottle
+    olive: (
+      <>
+        <path d="M9 3h6v3h-6z" fill={fill}/>
+        <path d="M8 6h8l1 15H7L8 6z" fill={fill}/>
+        <rect x="9" y="12" width="6" height="4" fill={fill} opacity="0.3"/>
+      </>
+    ),
+    // Basil leaf
+    leaf: <path d="M11 21A8 8 0 014 14c0-6 4-10 11-10 2 0 3 1 3 3 0 7-4 14-7 14z" fill={fill}/>,
+    // Flatbread
+    flatbread: (
+      <>
+        <ellipse cx="12" cy="12" rx="10" ry="5" fill={fill}/>
+        <circle cx="8" cy="11" r="0.7" fill={fill} opacity="0.35"/>
+        <circle cx="12" cy="10" r="0.7" fill={fill} opacity="0.35"/>
+        <circle cx="16" cy="12" r="0.7" fill={fill} opacity="0.35"/>
+        <circle cx="10" cy="13" r="0.7" fill={fill} opacity="0.35"/>
+      </>
+    ),
+    // Sandwich loaf (tall rectangular bread)
+    loaf: (
+      <>
+        <path d="M5 8c0-2 2-4 7-4s7 2 7 4v11a2 2 0 01-2 2H7a2 2 0 01-2-2V8z" fill={fill}/>
+        <path d="M8 10c1-1 2-1 3 0M12 9c1-1 2-1 3 0" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4"/>
+      </>
+    ),
+    // Baguette
+    baguette: (
+      <>
+        <path d="M3 19l14-14a2.5 2.5 0 013.5 3.5l-14 14a2.5 2.5 0 01-3.5-3.5z" fill={fill}/>
+        <path d="M8 14l3-3M11 11l3-3M14 8l3-3" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
+      </>
+    ),
+    // Pretzel
+    pretzel: (
+      <>
+        <path d="M12 3a6 6 0 016 6c0 2-1 3.5-2.5 4.5L17 15c2 1.5 3 3.5 3 5a4 4 0 01-8 0 4 4 0 01-8 0c0-1.5 1-3.5 3-5l1.5-1.5C7 12.5 6 11 6 9a6 6 0 016-6zm0 3a3 3 0 00-3 3c0 1 .5 2 1.5 2.5l3-3 3 3c1-.5 1.5-1.5 1.5-2.5a3 3 0 00-3-3z" fill={fill}/>
+        <circle cx="9" cy="18" r="0.7" fill={fill} opacity="0.4"/>
+        <circle cx="15" cy="18" r="0.7" fill={fill} opacity="0.4"/>
+      </>
+    ),
+    // Bagel (ring)
+    bagel: (
+      <>
+        <circle cx="12" cy="12" r="9" fill={fill}/>
+        <circle cx="12" cy="12" r="3.5" fill={fill} opacity="0.25"/>
+        <circle cx="8" cy="8" r="0.6" fill={fill} opacity="0.45"/>
+        <circle cx="16" cy="9" r="0.6" fill={fill} opacity="0.45"/>
+        <circle cx="14" cy="16" r="0.6" fill={fill} opacity="0.45"/>
+        <circle cx="9" cy="15" r="0.6" fill={fill} opacity="0.45"/>
+      </>
+    ),
+    // Bun (round roll with cross scoring)
+    bun: (
+      <>
+        <circle cx="12" cy="13" r="9" fill={fill}/>
+        <path d="M6 11c3-2 9-2 12 0M7 15c3 2 7 2 10 0" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
+      </>
+    ),
+    // Focaccia (rectangular with dimples)
+    focaccia: (
+      <>
+        <rect x="3" y="7" width="18" height="10" rx="2" fill={fill}/>
+        <circle cx="7" cy="10" r="0.8" fill={fill} opacity="0.35"/>
+        <circle cx="11" cy="11" r="0.8" fill={fill} opacity="0.35"/>
+        <circle cx="15" cy="10" r="0.8" fill={fill} opacity="0.35"/>
+        <circle cx="9" cy="14" r="0.8" fill={fill} opacity="0.35"/>
+        <circle cx="13" cy="14" r="0.8" fill={fill} opacity="0.35"/>
+        <circle cx="17" cy="14" r="0.8" fill={fill} opacity="0.35"/>
+      </>
+    ),
+    // Ciabatta (flat oval)
+    ciabatta: (
+      <>
+        <ellipse cx="12" cy="13" rx="10" ry="5" fill={fill}/>
+        <ellipse cx="12" cy="12" rx="7" ry="2.5" fill={fill} opacity="0.3"/>
+      </>
+    ),
+    // Rye bread (dense round)
+    rye: (
+      <>
+        <circle cx="12" cy="13" r="9" fill={fill}/>
+        <path d="M7 10l10 6M17 10L7 16" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
+      </>
+    ),
+    // Artisan loaf (rustic boule with ear)
+    artisan: (
+      <>
+        <path d="M3 14c0-5 4-9 9-9s9 4 9 9v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2z" fill={fill}/>
+        <path d="M6 10c3-3 9-3 12 0" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
+        <path d="M8 8c2 2 6 2 8 0" stroke={fill} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
+      </>
+    ),
+    // Alert
+    alert: (
+      <>
+        <circle cx="12" cy="12" r="10" fill={fill}/>
+        <rect x="11" y="7" width="2" height="6" rx="1" fill={fill} opacity="0.35"/>
+        <circle cx="12" cy="16" r="1.2" fill={fill} opacity="0.35"/>
+      </>
+    ),
+  };
+  
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} style={s} fill="none" color={color} aria-hidden="true">
+      {paths[name] || null}
+    </svg>
+  );
+};
+
+// ─── FARSI NUMERALS ────────────────────────────────────────────────────────
 const FA_DIGITS = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
-function toFaNum(str) {
-  return String(str).replace(/[0-9]/g, d => FA_DIGITS[+d]);
-}
+function toFaNum(str) { return String(str).replace(/[0-9]/g, d => FA_DIGITS[+d]); }
 
 // ─── TRANSLATIONS ──────────────────────────────────────────────────────────
 const T = {
   en: {
-    appName:"Levain", appTagline:"Sourdough App",
+    appName:"Levain", appTagline:"Sourdough Companion",
     taglineSub:"Your complete sourdough companion — from starter to scoring.",
-    toolsSections:"Tools & Sections",
-    doughCalc:"Dough Calculator", doughCalcSub:"Baker's math & whole grain split",
-    pizzaCalc:"Pizza Calculator", pizzaCalcSub:"Neapolitan, NY, wood-fired",
-    recipes:"Recipes", recipesSub:"5 complete bread recipes",
-    guide:"Process Guide", guideSub:"6-step mastery checklist",
-    trouble:"Troubleshoot", troubleSub:"Diagnose any baking problem",
-    starter:"Starter Planner", starterSub:"Feeding ratio calculator",
-    diffOverview:"Difficulty Overview", bakerPrinciple:"Baker's Principle",
+    toolsSections:"Tools",
+    doughCalc:"Dough Calculator", doughCalcSub:"Baker's math",
+    pizzaCalc:"Pizza Calculator", pizzaCalcSub:"Neapolitan to wood-fired",
+    recipes:"Recipes", recipesSub:"Eleven breads, three families",
+    guide:"Process Guide", guideSub:"Six steps to mastery",
+    trouble:"Troubleshoot", troubleSub:"Diagnose any problem",
+    starter:"Starter Planner", starterSub:"Feeding ratios",
+    diffOverview:"Difficulty", bakerPrinciple:"Baker's Principle",
     home:"Home", calculator:"Calculator", fix:"Fix",
     breadCalc:"Bread Calculator",
-    byFlour:"By Flour / Loaf", byTotal:"By Total Weight",
-    flourPerLoaf:"Flour per loaf", totalDoughWeight:"Total dough weight (all loaves)",
+    byFlour:"By Flour", byTotal:"By Total Weight",
+    flourPerLoaf:"Flour per loaf", totalDoughWeight:"Total dough weight",
     leavening:"Leavening",
-    sourdoughOpt:"🧫 Sourdough", sourdoughSub:"Wild fermentation, great flavor",
-    yeastOpt:"🍺 Yeast", yeastSub:"Always works, predictable",
+    sourdoughOpt:"Sourdough", sourdoughSub:"Wild fermentation",
+    yeastOpt:"Yeast", yeastSub:"Predictable rise",
     yeastType:"Yeast Type",
-    freshYeast:"Fresh", dryYeast:"Active Dry", instantYeast:"Instant",
+    freshYeast:"Fresh", dryYeast:"Dry",
     hydration:"Hydration", starterLabel:"Starter", yeastLabel:"Yeast",
-    salt:"Salt", wholeGrain:"Whole Grain", ofTotalFlour:"% of total flour",
-    numLoaves:"Number of loaves", perLoaf:"Per Loaf", yourFormula:"Your Formula",
+    salt:"Salt", wholeGrain:"Whole Grain", ofTotalFlour:"of total flour",
+    yourFormula:"Your Formula",
     total:"Total", flour:"Flour", water:"Water",
-    breadFlour:"Bread flour", wgFlour:"Whole grain / rye",
-    hydGuide:"Hydration Guide", presets:"Presets",
-    rolls:"Rolls", standard:"Standard", large:"Large", mega:"Mega",
+    breadFlour:"Bread flour", wgFlour:"Whole grain",
+    hydGuide:"Hydration Guide",
     pizzaCalcTitle:"Pizza Calculator",
     doughType:"Dough Type",
-    yeastPizza:"🍺 Yeast", yeastPizzaSub:"Always works, beginner-friendly",
-    sourdoughPizza:"🧫 Sourdough", sourdoughPizzaSub:"Great flavor, longer process",
-    yourOven:"Your Oven", pizzas:"Pizzas", gramsPerPizza:"Grams / pizza",
-    toppingsBtn:"🍅 Margherita Toppings",
+    yeastPizza:"Yeast", yeastPizzaSub:"Beginner-friendly",
+    sourdoughPizza:"Sourdough", sourdoughPizzaSub:"Complex flavor",
+    yourOven:"Your Oven", pizzas:"Pizzas", pizzaDoughWeight:"Pizza Dough Weight",
+    toppingsBtn:"Margherita Toppings",
     freshYeastLabel:"Fresh yeast", orDryYeast:"or dry yeast",
     activeStarter:"Active starter", totalDough:"Total dough",
     homeFor:"250–290g for home", proFor:"260–350g for pro",
-    soloMode:"Solo!", dateNight:"Date night 🍷", pizzaParty:"Pizza party 🎉",
-    bigGathering:"Big gathering!", fullBakery:"Full bakery mode!",
-    starterTitle:"Starter Planner", starterSub2:"Calculate your levain feeding",
+    soloMode:"Solo", dateNight:"Date night",
+    pizzaParty:"Pizza party", bigGathering:"Big gathering",
+    fullBakery:"Full bakery mode",
+    starterTitle:"Starter Planner", starterSub2:"Calculate your feeding",
     howMuchStarter:"How much active starter do you need?",
-    feedingRatio:"Feeding Ratio (seed : flour : water)",
-    seedStarter:"🌱 Seed (existing starter)",
-    freshFlour:"🌾 Fresh flour", freshWater:"💧 Fresh water",
-    readyStarter:"✅ Ready starter",
+    feedingRatio:"Feeding Ratio",
+    seedStarter:"Seed (existing)",
+    freshFlour:"Fresh flour", freshWater:"Fresh water",
+    readyStarter:"Ready starter",
     feedingFormula:"Feeding Formula", ratioRef:"Ratio Reference",
-    recipesTitle:"Sourdough Recipes", recipesSub2:"From flatbread to freestanding loaves",
-    allRecipes:"← All Recipes", scale:"Scale:",
-    ingredients:"Ingredients", steps:"Steps", proTips:"Pro Tips",
+    recipesTitle:"Recipes", recipesSub2:"Three families of bread",
+    allRecipes:"All Recipes", loaves:"Loaves",
+    ingredients:"Ingredients", steps:"Method", proTips:"Pro Tips",
+    lowHydration:"Low Hydration", mediumHydration:"Medium Hydration", highHydration:"High Hydration",
     guideTitle:"Process Guide", guideSub2:"Master every step",
     checks:"Checklist", timerLabel:"Timers",
-    troubleTitle:"Troubleshoot", troubleSub2:"Diagnose and fix your bake",
+    troubleTitle:"Troubleshoot", troubleSub2:"Diagnose and fix",
     likelyCauses:"Likely Causes", howToFix:"How to Fix",
-    quickGlossary:"Quick Glossary",
-    bakersPercent:"Baker's Percentages", understandMath:"Understanding the math",
-    bakersMathBody:"Flour is always 100%. Every other ingredient is expressed as a % of flour weight.",
-    copyList:"📋 Copy List", copiedLabel:"✓ Copied!",
-    timerStart:"▶ Start", timerPause:"⏸ Pause", timerDone:"✓ Done!",
-    footer:"Made by S.B and Claude did it.",
-    activeDry:"Active dry", instant:"Instant",
+    quickGlossary:"Glossary",
+    bakersPercent:"Baker's Percentages",
+    bakersMathBody:"Flour is always 100%. Every other ingredient is expressed as a percentage of the flour's weight.",
+    copyList:"Copy List", copiedLabel:"Copied",
+    timerStart:"Start", timerPause:"Pause", timerDone:"Done",
+    footer:"Made by S.B and Claude",
+    activeDry:"Dry", 
     ratio111:"Daily maintenance — mild, 6–8 hr peak",
     ratio122:"Standard feeding — balanced, 8–12 hr peak",
-    ratio133:"Moderate — slightly milder, 10–14 hr peak",
+    ratio133:"Moderate — milder, 10–14 hr peak",
     ratio155:"Slower rise — complex flavor, 12–16 hr peak",
     ratio1010:"Very slow — plan ahead, 16–24 hr peak",
-    starterRatioTip:"💡 Tip: A stiff starter (50–60% hydration) enhances yeast activity and is preferred by many bakers for wheat sourdough. Use half the water shown above.",
+    starterRatioTip:"A stiff starter (50–60% hydration) enhances yeast activity. Use half the water shown.",
+    back:"Back",
   },
   fa: {
-    appName:"لِوان", appTagline:"اپ خمیرمایه",
+    appName:"لِوان", appTagline:"همراه خمیرمایه",
     taglineSub:"راهنمای کامل خمیرمایه شما — از استارتر تا برش.",
-    toolsSections:"ابزارها و بخش‌ها",
-    doughCalc:"ماشین‌حساب خمیر", doughCalcSub:"ریاضیات نانوایی و تقسیم غلات کامل",
+    toolsSections:"ابزارها",
+    doughCalc:"ماشین‌حساب خمیر", doughCalcSub:"ریاضیات نانوایی",
     pizzaCalc:"ماشین‌حساب پیتزا", pizzaCalcSub:"ناپلی، نیویورک، تنور هیزمی",
-    recipes:"دستورها", recipesSub:"۵ دستور کامل نان",
-    guide:"راهنمای مراحل", guideSub:"فهرست ۶ مرحله‌ای تسلط",
-    trouble:"رفع مشکل", troubleSub:"تشخیص هر مشکل پخت",
-    starter:"برنامه‌ریز استارتر", starterSub:"ماشین‌حساب نسبت تغذیه",
-    diffOverview:"نمای کلی دشواری", bakerPrinciple:"اصل نانوایی",
+    recipes:"دستورها", recipesSub:"یازده نان، سه خانواده",
+    guide:"راهنمای مراحل", guideSub:"شش مرحله تسلط",
+    trouble:"رفع مشکل", troubleSub:"تشخیص هر مشکل",
+    starter:"برنامه‌ریز استارتر", starterSub:"نسبت تغذیه",
+    diffOverview:"دشواری", bakerPrinciple:"اصل نانوایی",
     home:"خانه", calculator:"ماشین‌حساب", fix:"رفع اشکال",
     breadCalc:"ماشین‌حساب نان",
-    byFlour:"بر اساس آرد / قرص", byTotal:"بر اساس وزن کل",
-    flourPerLoaf:"آرد هر قرص نان", totalDoughWeight:"وزن کل خمیر (همه قرص‌ها)",
+    byFlour:"بر اساس آرد", byTotal:"بر اساس وزن کل",
+    flourPerLoaf:"آرد هر قرص", totalDoughWeight:"وزن کل خمیر",
     leavening:"خمیرمایه",
-    sourdoughOpt:"🧫 خمیر ترش", sourdoughSub:"تخمیر طبیعی، طعم عالی",
-    yeastOpt:"🍺 مخمر", yeastSub:"همیشه کار می‌کند، قابل پیش‌بینی",
+    sourdoughOpt:"خمیر ترش", sourdoughSub:"تخمیر طبیعی",
+    yeastOpt:"مخمر", yeastSub:"قابل پیش‌بینی",
     yeastType:"نوع مخمر",
-    freshYeast:"تازه", dryYeast:"خشک فعال", instantYeast:"فوری",
+    freshYeast:"تازه", dryYeast:"خشک",
     hydration:"آبیاری", starterLabel:"استارتر", yeastLabel:"مخمر",
     salt:"نمک", wholeGrain:"غلات کامل", ofTotalFlour:"درصد از کل آرد",
-    numLoaves:"تعداد قرص‌ها", perLoaf:"هر قرص", yourFormula:"فرمول شما",
+    yourFormula:"فرمول شما",
     total:"مجموع", flour:"آرد", water:"آب",
-    breadFlour:"آرد نان", wgFlour:"غلات کامل / چاودار",
-    hydGuide:"راهنمای آبیاری", presets:"پیش‌تنظیمات",
-    rolls:"نان کوچک", standard:"استاندارد", large:"بزرگ", mega:"مگا",
+    breadFlour:"آرد نان", wgFlour:"غلات کامل",
+    hydGuide:"راهنمای آبیاری",
     pizzaCalcTitle:"ماشین‌حساب پیتزا",
     doughType:"نوع خمیر",
-    yeastPizza:"🍺 مخمر", yeastPizzaSub:"همیشه کار می‌کند، مناسب مبتدی",
-    sourdoughPizza:"🧫 خمیر ترش", sourdoughPizzaSub:"طعم عالی، فرآیند طولانی‌تر",
-    yourOven:"فر شما", pizzas:"تعداد پیتزا", gramsPerPizza:"گرم / پیتزا",
-    toppingsBtn:"🍅 مواد مارگاریتا",
+    yeastPizza:"مخمر", yeastPizzaSub:"مناسب مبتدی",
+    sourdoughPizza:"خمیر ترش", sourdoughPizzaSub:"طعم پیچیده",
+    yourOven:"فر شما", pizzas:"تعداد پیتزا", pizzaDoughWeight:"وزن خمیر پیتزا",
+    toppingsBtn:"مواد مارگاریتا",
     freshYeastLabel:"مخمر تازه", orDryYeast:"یا مخمر خشک",
     activeStarter:"استارتر فعال", totalDough:"کل خمیر",
-    homeFor:"۲۵۰–۲۹۰ گرم برای فر خانگی", proFor:"۲۶۰–۳۵۰ گرم برای حرفه‌ای",
-    soloMode:"تنها!", dateNight:"شب دو نفره 🍷", pizzaParty:"پارتی پیتزا 🎉",
-    bigGathering:"جمع بزرگ!", fullBakery:"حالت نانوایی!",
-    starterTitle:"برنامه‌ریز استارتر", starterSub2:"تغذیه بعدی لوون خود را محاسبه کنید",
-    howMuchStarter:"چه مقدار استارتر فعال نیاز دارید؟",
-    feedingRatio:"نسبت تغذیه (استارتر : آرد : آب)",
-    seedStarter:"🌱 استارتر موجود",
-    freshFlour:"🌾 آرد تازه", freshWater:"💧 آب تازه",
-    readyStarter:"✅ استارتر آماده",
+    homeFor:"۲۵۰–۲۹۰ گرم خانگی", proFor:"۲۶۰–۳۵۰ گرم حرفه‌ای",
+    soloMode:"تنها", dateNight:"شب دو نفره",
+    pizzaParty:"پارتی پیتزا", bigGathering:"جمع بزرگ",
+    fullBakery:"حالت نانوایی",
+    starterTitle:"برنامه‌ریز استارتر", starterSub2:"تغذیه بعدی لوون",
+    howMuchStarter:"چه مقدار استارتر نیاز دارید؟",
+    feedingRatio:"نسبت تغذیه",
+    seedStarter:"استارتر موجود",
+    freshFlour:"آرد تازه", freshWater:"آب تازه",
+    readyStarter:"استارتر آماده",
     feedingFormula:"فرمول تغذیه", ratioRef:"مرجع نسبت‌ها",
-    recipesTitle:"دستورهای خمیرمایه", recipesSub2:"از نان تخت تا نان آزاد",
-    allRecipes:"→ همه دستورها", scale:"مقیاس:",
+    recipesTitle:"دستورها", recipesSub2:"سه خانواده نان",
+    allRecipes:"همه دستورها", loaves:"تعداد قرص",
     ingredients:"مواد", steps:"مراحل", proTips:"نکات حرفه‌ای",
+    lowHydration:"آبیاری کم", mediumHydration:"آبیاری متوسط", highHydration:"آبیاری زیاد",
     guideTitle:"راهنمای مراحل", guideSub2:"هر مرحله را تسلط بیاب",
     checks:"فهرست کنترل", timerLabel:"تایمرها",
-    troubleTitle:"رفع مشکل", troubleSub2:"مشکل پخت خود را تشخیص و رفع کنید",
+    troubleTitle:"رفع مشکل", troubleSub2:"تشخیص و رفع مشکل",
     likelyCauses:"دلایل احتمالی", howToFix:"چگونه رفع کنیم",
-    quickGlossary:"واژه‌نامه سریع",
-    bakersPercent:"درصدهای نانوایی", understandMath:"درک ریاضیات",
-    bakersMathBody:"آرد همیشه ۱۰۰٪ است. هر ماده دیگری به عنوان درصدی از وزن آرد بیان می‌شود.",
-    copyList:"📋 کپی", copiedLabel:"✓ کپی شد",
-    timerStart:"▶ شروع", timerPause:"⏸ مکث", timerDone:"✓ تمام!",
-    footer:"ساخته شده توسط S.B و Claude.",
-    activeDry:"خشک فعال", instant:"فوری",
+    quickGlossary:"واژه‌نامه",
+    bakersPercent:"درصدهای نانوایی",
+    bakersMathBody:"آرد همیشه ۱۰۰٪ است. هر ماده دیگر به عنوان درصدی از وزن آرد بیان می‌شود.",
+    copyList:"کپی", copiedLabel:"کپی شد",
+    timerStart:"شروع", timerPause:"مکث", timerDone:"تمام",
+    footer:"ساخته شده توسط S.B و Claude",
+    activeDry:"خشک",
     ratio111:"نگهداری روزانه — ملایم، اوج ۶–۸ ساعت",
     ratio122:"تغذیه استاندارد — متعادل، اوج ۸–۱۲ ساعت",
     ratio133:"متوسط — کمی ملایم‌تر، اوج ۱۰–۱۴ ساعت",
     ratio155:"بالا آمدن کند — طعم پیچیده، اوج ۱۲–۱۶ ساعت",
-    ratio1010:"خیلی کند — از قبل برنامه‌ریزی کنید، اوج ۱۶–۲۴ ساعت",
-    starterRatioTip:"💡 نکته: استارتر سفت (۵۰–۶۰٪ آبیاری) فعالیت مخمر را تقویت می‌کند و بسیاری از نانوایان آن را برای خمیرترش گندم ترجیح می‌دهند. نصف آب نشان داده شده را استفاده کنید.",
+    ratio1010:"خیلی کند — از قبل برنامه‌ریزی، اوج ۱۶–۲۴ ساعت",
+    starterRatioTip:"استارتر سفت (۵۰–۶۰٪ آبیاری) فعالیت مخمر را تقویت می‌کند. نصف آب نشان داده شده را استفاده کنید.",
+    back:"بازگشت",
   },
 };
 
 // ─── DATA ──────────────────────────────────────────────────────────────────
-const PRESETS = [
-  { id:"flatbread",    nameEn:"Flatbread",    nameFa:"نان تخت",    hydration:80,  starter:20, salt:2,   wholeGrain:0  },
-  { id:"loafpan",      nameEn:"Loaf Pan",     nameFa:"قالب کشتی",  hydration:85,  starter:15, salt:2,   wholeGrain:20 },
-  { id:"freestanding", nameEn:"Freestanding", nameFa:"آزاد",       hydration:75,  starter:10, salt:2,   wholeGrain:20 },
-  { id:"rye",          nameEn:"Rye",          nameFa:"چاودار",     hydration:90,  starter:20, salt:2.2, wholeGrain:50 },
-  { id:"custom",       nameEn:"Custom",       nameFa:"سفارشی",     hydration:75,  starter:15, salt:2,   wholeGrain:0  },
-];
-
 const HYDRATION_LEVELS = [
-  { range:[55,62],  label:"Beginner",     labelFa:"مبتدی",    color:"#6AA062", desc:"Easy to handle. Dense, chewy crumb.",         descFa:"آسان برای کار. بافت متراکم و جونده."          },
-  { range:[63,68],  label:"Intermediate", labelFa:"متوسط",    color:"#D4921E", desc:"Good balance. Nice open crumb.",               descFa:"تعادل خوب. بافت باز و زیبا."                  },
-  { range:[69,76],  label:"Advanced",     labelFa:"پیشرفته",  color:"#C86020", desc:"Sticky. Big holes. Rewarding.",               descFa:"چسبنده. حفره‌های بزرگ. ارزشمند."              },
-  { range:[77,88],  label:"Expert",       labelFa:"متخصص",    color:"#B85040", desc:"Use oiled hands. Very open crumb.",            descFa:"از دستان روغنی استفاده کنید. بافت بسیار باز." },
-  { range:[89,110], label:"Master",       labelFa:"استاد",    color:"#9060C0", desc:"Nearly batter. Loaf pan only.",               descFa:"نزدیک به خمیر رقیق. فقط با قالب."             },
+  { range:[55,62],  label:"Beginner",     labelFa:"مبتدی",    desc:"Easy to handle. Dense, chewy crumb.",         descFa:"آسان. بافت متراکم." },
+  { range:[63,68],  label:"Intermediate", labelFa:"متوسط",    desc:"Good balance. Nice open crumb.",              descFa:"تعادل خوب. بافت باز." },
+  { range:[69,76],  label:"Advanced",     labelFa:"پیشرفته",  desc:"Sticky. Big holes. Rewarding.",              descFa:"چسبنده. حفره‌های بزرگ." },
+  { range:[77,88],  label:"Expert",       labelFa:"متخصص",    desc:"Use oiled hands. Very open crumb.",           descFa:"از دستان روغنی استفاده کنید." },
+  { range:[89,110], label:"Master",       labelFa:"استاد",    desc:"Nearly batter. Loaf pan only.",               descFa:"نزدیک به خمیر رقیق." },
 ];
 
 const WEIGHT_FUN = [
-  [180,  "☕ About the weight of a large coffee",   "☕ تقریباً هم‌وزن یک قهوه بزرگ"    ],
-  [380,  "📱 About the weight of a smartphone",     "📱 تقریباً هم‌وزن یک گوشی"         ],
-  [550,  "🥫 About the weight of a can of soup",    "🥫 تقریباً هم‌وزن یک قوطی سوپ"    ],
-  [750,  "🥦 About the weight of a broccoli",       "🥦 تقریباً هم‌وزن یک بروکلی"      ],
-  [950,  "🍍 About the weight of a pineapple",      "🍍 تقریباً هم‌وزن یک آناناس"      ],
-  [1300, "🥥 About the weight of a coconut",        "🥥 تقریباً هم‌وزن یک نارگیل"      ],
-  [1700, "🧱 About the weight of a brick",          "🧱 تقریباً هم‌وزن یک آجر"         ],
-  [2800, "💪 That's a serious bake!",               "💪 این یک پخت جدی است!"            ],
-  [99999,"🏋️ Baking for an army!",                "🏋️ در حال پختن برای یک ارتش!"    ],
+  [180,  "About a large coffee",   "هم‌وزن قهوه بزرگ"    ],
+  [380,  "About a smartphone",     "هم‌وزن گوشی"         ],
+  [550,  "About a can of soup",    "هم‌وزن قوطی سوپ"    ],
+  [750,  "About a broccoli",       "هم‌وزن بروکلی"      ],
+  [950,  "About a pineapple",      "هم‌وزن آناناس"      ],
+  [1300, "About a coconut",        "هم‌وزن نارگیل"      ],
+  [1700, "About a brick",          "هم‌وزن آجر"         ],
+  [2800, "A serious bake",         "پختی جدی"            ],
+  [99999,"Baking for an army",     "پخت برای ارتش"       ],
 ];
 
 const FEED_RATIOS = [
@@ -250,374 +601,615 @@ const FEED_RATIOS = [
   { label:"1:5:5",   seed:1, flour:5,  water:5  },
   { label:"1:10:10", seed:1, flour:10, water:10 },
 ];
-
 const FEED_RATIO_DESCS = ["ratio111","ratio122","ratio133","ratio155","ratio1010"];
 
 const PIZZA_OVENS = [
-  { id:"home",  nameEn:"🏠 Home Oven",  nameFa:"🏠 فر خانگی",   temp:"250°C / 480°F", defaultWeight:270,
-    tip:"Crank heat to max. Use a pizza stone or steel on the top rack.",
-    tipFa:"حرارت را به حداکثر برسانید. از سنگ یا صفحه فولادی پیتزا روی طبقه بالایی استفاده کنید." },
-  { id:"pizza", nameEn:"🔥 Pizza Oven", nameFa:"🔥 فر پیتزا",   temp:"400°C / 750°F", defaultWeight:280,
-    tip:"Preheat 30+ min. Cook 90 seconds, turning halfway through.",
-    tipFa:"بیش از ۳۰ دقیقه گرم کنید. ۹۰ ثانیه بپزید و در نیمه بچرخانید." },
-  { id:"wood",  nameEn:"🪵 Wood-Fired", nameFa:"🪵 تنور هیزمی",  temp:"480°C / 900°F", defaultWeight:280,
-    tip:"60–90 seconds. Look for leopard spotting on the crust.",
+  { id:"home",  nameEn:"Home Oven",  nameFa:"فر خانگی",   icon:"oven",     temp:"250°C",
+    tip:"Crank heat to max. Use a pizza stone or steel on the top rack. Bake 8–12 min, rotating halfway.",
+    tipFa:"حرارت را به حداکثر برسانید. از سنگ یا صفحه فولادی استفاده کنید. ۸–۱۲ دقیقه بپزید." },
+  { id:"pizza", nameEn:"Pizza Oven", nameFa:"فر پیتزا",   icon:"flame",    temp:"400°C",
+    tip:"Preheat 30+ minutes. Cook 90 seconds, turning every 20 seconds for even char.",
+    tipFa:"بیش از ۳۰ دقیقه گرم کنید. ۹۰ ثانیه بپزید، هر ۲۰ ثانیه بچرخانید." },
+  { id:"wood",  nameEn:"Wood-Fired", nameFa:"تنور هیزمی",  icon:"woodfire", temp:"480°C",
+    tip:"60–90 seconds total. Look for leopard spotting on the crust — the sign of a great pie.",
     tipFa:"۶۰–۹۰ ثانیه. به لکه‌های پلنگی روی پوسته توجه کنید." },
 ];
 
+// ─── NEW RECIPES ───────────────────────────────────────────────────────────
 const RECIPES = [
+  // ─── LOW HYDRATION ─────────────────────────────────────────────────────
   {
-    id:"flatbread", emoji:"🫓",
+    id:"bagels", icon:"bagel", family:"low",
+    name:"Classic Bagels",            nameFa:"بیگل کلاسیک",
+    sub:"Chewy, malty, boiled",       subFa:"جونده، مالتی، آب‌پز",
+    difficulty:3, diffLabel:"Medium",  diffLabelFa:"متوسط",
+    totalTime:"12–24 hrs",            totalTimeFa:"۱۲–۲۴ ساعت",
+    hydration:57,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour",        nameFa:"آرد نان" },
+      { amount:285, unit:"g", icon:"droplet", name:"Water, lukewarm",  nameFa:"آب ولرم" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",          nameFa:"نمک ریز" },
+      { amount:20,  unit:"g", icon:"sparkles", name:"Malt syrup or honey", nameFa:"شیره مالت یا عسل" },
+      { amount:100, unit:"g", icon:"flask", name:"Active starter (or 5g instant yeast)", nameFa:"استارتر فعال (یا ۵ گرم مخمر)" },
+    ],
+    steps:[
+      ["Mix & knead", "Combine all ingredients. Knead 10 minutes until very smooth and stiff. Bagel dough is dry by design.",
+       "مخلوط و ورز", "همه را ترکیب کنید. ۱۰ دقیقه ورز دهید تا صاف و سفت شود."],
+      ["Bulk rise", "Cover and rest 1 hour at room temperature, or refrigerate overnight for more flavor.",
+       "تخمیر حجمی", "۱ ساعت بپوشانید یا شب در یخچال بگذارید."],
+      ["Divide & shape", "Divide into 8 equal pieces. Roll each into a tight ball, poke a hole with your finger, stretch into a ring.",
+       "تقسیم و شکل", "به ۸ قسمت تقسیم کنید. هر کدام را گرد کنید و حفره ایجاد کنید."],
+      ["Cold proof", "Place on floured tray, cover, refrigerate 8–16 hours for best flavor and chew.",
+       "تخمیر سرد", "روی سینی آردپاشی بگذارید، ۸–۱۶ ساعت در یخچال."],
+      ["Boil", "Bring a large pot of water with 1 tbsp malt syrup to a boil. Boil each bagel 30 sec per side.",
+       "آب‌پز", "در آب جوش با شیره مالت، هر بیگل ۳۰ ثانیه از هر طرف."],
+      ["Bake", "Bake at 220°C (430°F) for 20–22 minutes until deep golden brown.",
+       "پخت", "در ۲۲۰ درجه ۲۰–۲۲ دقیقه تا طلایی تیره."],
+    ],
+    tips:[
+      "Stiff dough = chewy bagel. Don't add extra water.",
+      "Boiling creates the signature shiny crust.",
+      "Cold proof overnight for the best flavor depth.",
+      "Top with sesame, poppy, or 'everything' seasoning before baking.",
+    ],
+    tipsFa:[
+      "خمیر سفت = بیگل جونده. آب اضافه نکنید.",
+      "آب‌پز کردن پوسته براق ایجاد می‌کند.",
+      "تخمیر شبانه سرد برای طعم بهتر.",
+      "قبل از پخت با کنجد یا خشخاش تزیین کنید.",
+    ],
+  },
+  {
+    id:"pretzels", icon:"pretzel", family:"low",
+    name:"Soft Pretzels",             nameFa:"پرتزل نرم",
+    sub:"Chewy, malty, lye-dipped",   subFa:"جونده، مالتی، قلیایی",
+    difficulty:3, diffLabel:"Medium",  diffLabelFa:"متوسط",
+    totalTime:"3–4 hrs",              totalTimeFa:"۳–۴ ساعت",
+    hydration:52,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour",          nameFa:"آرد نان" },
+      { amount:260, unit:"g", icon:"droplet", name:"Warm water",         nameFa:"آب گرم" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",            nameFa:"نمک ریز" },
+      { amount:10,  unit:"g", icon:"sparkles", name:"Brown sugar",       nameFa:"شکر قهوه‌ای" },
+      { amount:20,  unit:"g", icon:"olive", name:"Melted butter",        nameFa:"کره ذوب شده" },
+      { amount:7,   unit:"g", icon:"sparkles", name:"Instant yeast (or 80g starter)", nameFa:"مخمر فوری (یا ۸۰ گرم استارتر)" },
+      { amount:60,  unit:"g", icon:"salt",  name:"Baking soda (for bath)", nameFa:"جوش شیرین (برای حمام)" },
+    ],
+    steps:[
+      ["Mix & knead", "Combine flour, water, sugar, salt, butter, yeast. Knead 8 minutes until smooth and elastic.",
+       "مخلوط و ورز", "همه را ترکیب و ۸ دقیقه ورز دهید."],
+      ["Bulk rise", "Cover and rest 1 hour until doubled in size.",
+       "تخمیر حجمی", "۱ ساعت بپوشانید تا دو برابر شود."],
+      ["Shape", "Divide into 8 pieces. Roll each into a 50cm rope, form classic pretzel shape with twisted loop.",
+       "شکل‌دهی", "به ۸ قسمت تقسیم و به شکل پرتزل بپیچید."],
+      ["Baking soda bath", "Bring 1L water + 60g baking soda to a simmer. Dip each pretzel 30 seconds.",
+       "حمام قلیایی", "۱ لیتر آب + ۶۰ گرم جوش شیرین. هر پرتزل ۳۰ ثانیه."],
+      ["Salt & bake", "Place on tray, sprinkle coarse salt. Bake at 230°C (450°F) for 12–14 minutes.",
+       "نمک و پخت", "نمک بپاشید. در ۲۳۰ درجه ۱۲–۱۴ دقیقه بپزید."],
+    ],
+    tips:[
+      "The baking soda bath creates the signature dark crust — don't skip it.",
+      "For authentic lye pretzels, use food-grade lye (wear gloves).",
+      "Eat same day — they stale quickly.",
+      "Mustard and beer are the traditional accompaniments.",
+    ],
+    tipsFa:[
+      "حمام جوش شیرین پوسته تیره را ایجاد می‌کند.",
+      "برای پرتزل اصیل از محلول قلیایی استفاده کنید.",
+      "همان روز مصرف کنید.",
+      "با خردل و آبجو سرو کنید.",
+    ],
+  },
+  {
+    id:"buns", icon:"bun", family:"low",
+    name:"Soft Dinner Buns",          nameFa:"نان گرد نرم",
+    sub:"Pillowy, enriched, tender",  subFa:"نرم، غنی، لطیف",
+    difficulty:2, diffLabel:"Easy",    diffLabelFa:"آسان",
+    totalTime:"3–4 hrs",              totalTimeFa:"۳–۴ ساعت",
+    hydration:60,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"All-purpose flour",   nameFa:"آرد همه‌منظوره" },
+      { amount:240, unit:"g", icon:"droplet", name:"Whole milk, warm",  nameFa:"شیر گرم" },
+      { amount:1,   unit:"",  icon:"sparkles", name:"Egg",              nameFa:"تخم‌مرغ" },
+      { amount:50,  unit:"g", icon:"sparkles", name:"Sugar",            nameFa:"شکر" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",           nameFa:"نمک ریز" },
+      { amount:60,  unit:"g", icon:"olive", name:"Softened butter",     nameFa:"کره نرم شده" },
+      { amount:7,   unit:"g", icon:"sparkles", name:"Instant yeast",    nameFa:"مخمر فوری" },
+    ],
+    steps:[
+      ["Mix", "Combine flour, milk, egg, sugar, salt, yeast. Mix until shaggy dough forms.",
+       "مخلوط", "همه را ترکیب کنید."],
+      ["Knead in butter", "Knead 5 minutes, then add softened butter a piece at a time. Knead 5 more minutes.",
+       "کره را اضافه کنید", "۵ دقیقه ورز دهید، سپس کره را اضافه کنید."],
+      ["Bulk rise", "Cover and rise 1–1.5 hours until doubled.",
+       "تخمیر حجمی", "۱–۱٫۵ ساعت تا دو برابر شود."],
+      ["Divide & shape", "Divide into 12 pieces. Roll each into tight balls. Place on baking tray.",
+       "تقسیم و شکل", "به ۱۲ قسمت تقسیم و گرد کنید."],
+      ["Proof", "Cover and proof 45 minutes until puffy.",
+       "تخمیر", "۴۵ دقیقه بپوشانید."],
+      ["Egg wash & bake", "Brush with egg wash. Bake at 190°C (375°F) for 15–18 minutes until golden.",
+       "تخم‌مرغ و پخت", "تخم‌مرغ بمالید. در ۱۹۰ درجه ۱۵–۱۸ دقیقه."],
+    ],
+    tips:[
+      "Warm milk (not hot) activates yeast without killing it.",
+      "Add butter gradually — adding it all at once makes greasy dough.",
+      "Brush with melted butter right out of oven for extra softness.",
+      "Great for burgers, sandwiches, or pulled pork.",
+    ],
+    tipsFa:[
+      "شیر گرم (نه داغ) مخمر را فعال می‌کند.",
+      "کره را کم‌کم اضافه کنید.",
+      "بلافاصله بعد از پخت کره بمالید.",
+      "برای برگر و ساندویچ عالی است.",
+    ],
+  },
+  
+  // ─── MEDIUM HYDRATION ──────────────────────────────────────────────────
+  {
+    id:"sandwich", icon:"loaf", family:"medium",
+    name:"Sandwich Loaf",             nameFa:"نان ساندویچی",
+    sub:"Soft, sliceable, everyday",  subFa:"نرم، قابل برش، روزمره",
+    difficulty:2, diffLabel:"Easy",    diffLabelFa:"آسان",
+    totalTime:"6–8 hrs",              totalTimeFa:"۶–۸ ساعت",
+    hydration:68,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour",         nameFa:"آرد نان" },
+      { amount:340, unit:"g", icon:"droplet", name:"Water",             nameFa:"آب" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",           nameFa:"نمک ریز" },
+      { amount:15,  unit:"g", icon:"sparkles", name:"Honey or sugar",   nameFa:"عسل یا شکر" },
+      { amount:100, unit:"g", icon:"flask", name:"Active starter (or 4g yeast)", nameFa:"استارتر فعال (یا ۴ گرم مخمر)" },
+    ],
+    steps:[
+      ["Mix", "Combine all ingredients until no dry flour remains. Rest 30 minutes (autolyse).",
+       "مخلوط", "ترکیب کنید. ۳۰ دقیقه استراحت."],
+      ["Knead", "Knead 5–7 minutes until smooth and elastic.",
+       "ورز", "۵–۷ دقیقه ورز دهید."],
+      ["Bulk ferment", "Cover and ferment 4–6 hours at room temperature until 50% larger.",
+       "تخمیر حجمی", "۴–۶ ساعت تا ۵۰٪ بزرگ‌تر شود."],
+      ["Shape", "Roll into rectangle, roll up tightly, place seam-down in greased loaf pan.",
+       "شکل", "به مستطیل پهن کنید و در قالب بگذارید."],
+      ["Proof", "Cover and proof 1.5–2 hours until cresting the pan.",
+       "تخمیر", "۱٫۵–۲ ساعت."],
+      ["Bake", "Bake at 200°C (390°F) for 35–40 minutes. Internal temp should reach 92°C.",
+       "پخت", "در ۲۰۰ درجه ۳۵–۴۰ دقیقه."],
+    ],
+    tips:[
+      "A soft sandwich loaf needs gentle handling after shaping.",
+      "Brush with butter right after baking for a soft crust.",
+      "Wait until fully cool before slicing — hot bread crushes.",
+      "Perfect for toast, sandwiches, and French toast.",
+    ],
+    tipsFa:[
+      "با نان ساندویچی به آرامی رفتار کنید.",
+      "بعد از پخت کره بمالید.",
+      "قبل از برش کاملاً خنک شود.",
+      "برای تست و ساندویچ عالی است.",
+    ],
+  },
+  {
+    id:"flatbread", icon:"flatbread", family:"medium",
     name:"Sourdough Flatbread",       nameFa:"نان تخت خمیرمایه",
     sub:"The gateway bread",          subFa:"نان مبدأ",
     difficulty:1, diffLabel:"Very Easy", diffLabelFa:"خیلی آسان",
-    workTime:"3 min", workTimeFa:"۳ دقیقه",
-    totalTime:"8–24 hrs", totalTimeFa:"۸–۲۴ ساعت",
+    totalTime:"8–24 hrs",             totalTimeFa:"۸–۲۴ ساعت",
+    hydration:70,
+    ingredients:[
+      { amount:400, unit:"g", icon:"wheat", name:"Flour (any type)",    nameFa:"آرد (هر نوع)" },
+      { amount:280, unit:"g", icon:"droplet", name:"Water",             nameFa:"آب" },
+      { amount:80,  unit:"g", icon:"flask", name:"Active starter",      nameFa:"استارتر فعال" },
+      { amount:8,   unit:"g", icon:"salt",  name:"Salt",                nameFa:"نمک" },
+      { amount:30,  unit:"g", icon:"olive", name:"Olive oil",           nameFa:"روغن زیتون" },
+    ],
+    steps:[
+      ["Mix", "Combine flour, water, starter, salt, oil. Mix until smooth.",
+       "مخلوط", "همه را ترکیب کنید."],
+      ["Ferment", "Cover and rest 8–24 hours until puffy and slightly sour.",
+       "تخمیر", "۸–۲۴ ساعت بپوشانید."],
+      ["Divide", "Divide into 6 balls. Rest 30 minutes to relax gluten.",
+       "تقسیم", "به ۶ قسمت تقسیم. ۳۰ دقیقه استراحت."],
+      ["Roll thin", "Roll each ball into a thin disc on floured surface.",
+       "پهن کردن", "هر قسمت را نازک پهن کنید."],
+      ["Cook", "Cook in a very hot dry pan, 1–2 minutes per side until blistered.",
+       "پخت", "در تابه داغ، ۱–۲ دقیقه از هر طرف."],
+    ],
+    tips:[
+      "Works with any flour — wheat, rye, spelt, or blends.",
+      "The hotter the pan, the better the blister and char.",
+      "Stack cooked flatbreads in a towel to stay soft.",
+      "Brush with garlic butter and herbs for instant upgrade.",
+    ],
+    tipsFa:[
+      "با هر آردی کار می‌کند.",
+      "تابه داغ‌تر = تاول بهتر.",
+      "نان‌های پخته را در حوله بچینید.",
+      "با کره سیر و سبزی سرو کنید.",
+    ],
+  },
+  {
+    id:"baguette", icon:"baguette", family:"medium",
+    name:"Sourdough Baguette",        nameFa:"باگت خمیر ترش",
+    sub:"Crisp crust, open crumb",    subFa:"پوسته ترد، مغز باز",
+    difficulty:4, diffLabel:"Advanced", diffLabelFa:"پیشرفته",
+    totalTime:"18–24 hrs",            totalTimeFa:"۱۸–۲۴ ساعت",
+    hydration:72,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour (>12% protein)", nameFa:"آرد نان" },
+      { amount:360, unit:"g", icon:"droplet", name:"Water, 26°C",         nameFa:"آب ۲۶ درجه" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine sea salt",         nameFa:"نمک دریایی" },
+      { amount:100, unit:"g", icon:"flask", name:"Active levain",         nameFa:"لوون فعال" },
+    ],
+    steps:[
+      ["Autolyse", "Mix flour and water only. Rest 45 minutes.",
+       "اتولیز", "فقط آرد و آب. ۴۵ دقیقه."],
+      ["Incorporate", "Add levain and salt. Mix thoroughly with pinch-and-fold.",
+       "ترکیب", "لوون و نمک اضافه کنید."],
+      ["Bulk", "Ferment 4–5 hours. Perform stretch & folds every 30 min for first 2 hours.",
+       "تخمیر حجمی", "۴–۵ ساعت. کشش و تا هر ۳۰ دقیقه."],
+      ["Divide & pre-shape", "Divide into 3 pieces. Pre-shape into short cylinders. Rest 20 min.",
+       "تقسیم", "به ۳ قسمت. ۲۰ دقیقه استراحت."],
+      ["Final shape", "Shape into long baguettes with tight surface tension. Place on couche.",
+       "شکل نهایی", "به شکل باگت درآورید."],
+      ["Cold proof", "Refrigerate 12–16 hours on couche.",
+       "تخمیر سرد", "۱۲–۱۶ ساعت در یخچال."],
+      ["Score & bake", "Score with 3–4 diagonal slashes. Bake at 250°C with steam for 22 min.",
+       "برش و پخت", "برش مورب. در ۲۵۰ درجه با بخار ۲۲ دقیقه."],
+    ],
+    tips:[
+      "Baguettes demand strong bread flour and confident shaping.",
+      "Steam in the first 10 minutes is non-negotiable for crust.",
+      "Score at 30° angle, overlapping slashes for classic look.",
+      "Best eaten within 6 hours of baking.",
+    ],
+    tipsFa:[
+      "باگت نیاز به آرد قوی و شکل‌دهی مطمئن دارد.",
+      "بخار در ۱۰ دقیقه اول ضروری است.",
+      "زاویه ۳۰ درجه برش بزنید.",
+      "بهترین مصرف تا ۶ ساعت بعد از پخت.",
+    ],
+  },
+  
+  // ─── HIGH HYDRATION ────────────────────────────────────────────────────
+  {
+    id:"focaccia", icon:"focaccia", family:"high",
+    name:"Sourdough Focaccia",        nameFa:"فوکاچیا خمیر ترش",
+    sub:"Dimpled, oily, glorious",    subFa:"گودال‌دار، روغنی، باشکوه",
+    difficulty:2, diffLabel:"Easy",    diffLabelFa:"آسان",
+    totalTime:"12–24 hrs",            totalTimeFa:"۱۲–۲۴ ساعت",
     hydration:80,
     ingredients:[
-      { amount:400, unit:"g", name:"Flour (any type — wheat, rye, corn)", nameFa:"آرد (هر نوع — گندم، چاودار، ذرت)" },
-      { amount:320, unit:"g", name:"Water, room temperature",              nameFa:"آب، دمای محیط"                    },
-      { amount:80,  unit:"g", name:"Active sourdough starter",             nameFa:"استارتر خمیرترش فعال"             },
-      { amount:8,   unit:"g", name:"Salt",                                 nameFa:"نمک"                              },
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour",         nameFa:"آرد نان" },
+      { amount:400, unit:"g", icon:"droplet", name:"Water",             nameFa:"آب" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",           nameFa:"نمک ریز" },
+      { amount:100, unit:"g", icon:"flask", name:"Active starter",      nameFa:"استارتر فعال" },
+      { amount:60,  unit:"g", icon:"olive", name:"Extra virgin olive oil", nameFa:"روغن زیتون" },
     ],
     steps:[
-      ["Mix dough",    "Combine flour and water until no dry spots remain. Add starter and salt, mix until smooth and homogenized.",
-       "مخلوط کردن خمیر", "آرد و آب را مخلوط کنید تا هیچ نقطه خشکی باقی نماند. استارتر و نمک را اضافه کنید، تا صاف و یکنواخت مخلوط کنید."],
-      ["Ferment",      "Cover bowl and rest until dough increases 50% in size — typically 8–24 hours. It should smell fruity, milky, or mildly sour.",
-       "تخمیر",         "ظرف را بپوشانید و استراحت دهید تا خمیر ۵۰٪ بزرگ‌تر شود — معمولاً ۸–۲۴ ساعت. باید بوی میوه‌ای، شیری یا کمی ترش بدهد."],
-      ["Heat the pan", "Set stove to medium heat. Lightly oil the surface and wipe away excess.",
-       "گرم کردن تابه", "اجاق را روی حرارت متوسط تنظیم کنید. سطح را کمی روغن بمالید و اضافه را پاک کنید."],
-      ["Cook",         "Scoop dough into pan, spread to ~1cm thick. Cover with a lid. Cook 5 min per side until golden-brown.",
-       "پختن",          "خمیر را در تابه بریزید، به ضخامت حدود ۱ سانتی‌متر پهن کنید. درب بگذارید. هر طرف ۵ دقیقه تا طلایی‌قهوه‌ای بپزید."],
-      ["Wrap & serve", "Wrap baked flatbreads in a kitchen towel to retain moisture. Serve warm with dips, as wraps, or plain with olive oil.",
-       "پوشاندن و سرو", "نان‌های پخته را در یک حوله آشپزخانه بپیچید تا رطوبت حفظ شود. با دیپ، به عنوان رول، یا ساده با روغن زیتون سرو کنید."],
+      ["Mix", "Combine flour, water, starter, salt. Mix until smooth and sticky.",
+       "مخلوط", "همه را ترکیب کنید."],
+      ["Bulk ferment", "Cover and ferment 4–6 hours. Perform 4 stretch & folds in first 2 hours.",
+       "تخمیر حجمی", "۴–۶ ساعت. ۴ کشش و تا."],
+      ["Pan & oil", "Pour generous olive oil into baking pan. Transfer dough, turn to coat.",
+       "قالب و روغن", "روغن در قالب بریزید. خمیر را منتقل کنید."],
+      ["Second proof", "Let dough spread and puff in pan 2–3 hours (or overnight in fridge).",
+       "تخمیر دوم", "۲–۳ ساعت یا شب در یخچال."],
+      ["Dimple & top", "Oil fingers, poke deep dimples all over. Add rosemary, salt, olives.",
+       "گودال و تزیین", "با انگشتان روغنی گودال ایجاد کنید."],
+      ["Bake", "Bake at 220°C (430°F) for 25 minutes until deep golden and crisp.",
+       "پخت", "در ۲۲۰ درجه ۲۵ دقیقه."],
     ],
     tips:[
-      "Works with ANY flour — wheat, rye, corn, spelt, or gluten-free blends",
-      "Higher water ratio (>200%) = sourdough pancakes; lower (~70%) = thicker roti",
-      "Store unbaked dough in the fridge for days — it keeps fermenting slowly for more complex flavor",
-      "Slightly charring the bread at the end reduces excess sourness",
-      "Keep a spoonful of raw dough to start your next batch — no feeding needed",
+      "Don't skimp on olive oil — it IS the flavor.",
+      "Cherry tomatoes, grapes, or caramelized onions make amazing toppings.",
+      "Best warm from the oven, dipped in more olive oil.",
+      "Cold ferment overnight for maximum flavor complexity.",
     ],
     tipsFa:[
-      "با هر آردی کار می‌کند — گندم، چاودار، ذرت، اسپلت یا ترکیب‌های بدون گلوتن",
-      "نسبت آب بیشتر (>۲۰۰٪) = پنکیک خمیرترش؛ کمتر (~۷۰٪) = روتی ضخیم‌تر",
-      "خمیر نپخته را در یخچال نگه دارید — به آرامی به تخمیر ادامه می‌دهد برای طعم پیچیده‌تر",
-      "کمی سوزاندن نان در آخر اضافه‌ترشی را کاهش می‌دهد",
-      "یک قاشق از خمیر خام نگه دارید تا دسته بعدی را شروع کنید — نیاز به تغذیه ندارد",
+      "در روغن زیتون صرفه‌جویی نکنید.",
+      "گوجه گیلاسی و پیاز کاراملی عالی است.",
+      "گرم با روغن زیتون سرو کنید.",
+      "تخمیر شبانه سرد برای طعم عمیق‌تر.",
     ],
   },
   {
-    id:"pancakes", emoji:"🥞",
-    name:"Sourdough Pancakes",        nameFa:"پنکیک خمیرمایه",
-    sub:"Sweet or savory magic",      subFa:"جادوی شیرین یا شور",
-    difficulty:1, diffLabel:"Very Easy", diffLabelFa:"خیلی آسان",
-    workTime:"3 min", workTimeFa:"۳ دقیقه",
-    totalTime:"8–12 hrs", totalTimeFa:"۸–۱۲ ساعت",
-    hydration:300,
+    id:"ciabatta", icon:"ciabatta", family:"high",
+    name:"Ciabatta",                  nameFa:"چاباتا",
+    sub:"Slipper bread, wild crumb",  subFa:"نان دمپایی، مغز وحشی",
+    difficulty:4, diffLabel:"Advanced", diffLabelFa:"پیشرفته",
+    totalTime:"6–8 hrs",              totalTimeFa:"۶–۸ ساعت",
+    hydration:82,
     ingredients:[
-      { amount:100, unit:"g", name:"Flour (any type)",              nameFa:"آرد (هر نوع)"                          },
-      { amount:300, unit:"g", name:"Water",                         nameFa:"آب"                                    },
-      { amount:15,  unit:"g", name:"Sourdough starter",             nameFa:"استارتر خمیرترش"                      },
-      { amount:2,   unit:"g", name:"Salt",                          nameFa:"نمک"                                   },
-      { amount:1,   unit:"",  name:"Egg per 100g flour (optional)", nameFa:"یک تخم‌مرغ به ازای هر ۱۰۰ گرم آرد (اختیاری)" },
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour (>12%)",  nameFa:"آرد نان" },
+      { amount:410, unit:"g", icon:"droplet", name:"Water",             nameFa:"آب" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",           nameFa:"نمک ریز" },
+      { amount:100, unit:"g", icon:"flask", name:"Active starter (or 3g yeast)", nameFa:"استارتر فعال" },
+      { amount:20,  unit:"g", icon:"olive", name:"Olive oil",           nameFa:"روغن زیتون" },
     ],
     steps:[
-      ["Mix",            "Combine flour, water, starter, and salt. For sweet pancakes add sugar and eggs right before cooking — not before fermenting.",
-       "مخلوط کردن",     "آرد، آب، استارتر و نمک را ترکیب کنید. برای پنکیک شیرین، شکر و تخم‌مرغ را درست قبل از پختن اضافه کنید — نه قبل از تخمیر."],
-      ["Overnight rest", "Cover and ferment 8–12 hours until surface shows bubbles and smells pleasantly sour.",
-       "استراحت شبانه",  "بپوشانید و ۸–۱۲ ساعت تخمیر کنید تا سطح حباب نشان دهد و بوی خوشایند ترشی بدهد."],
-      ["Add-ins",        "Just before cooking, stir in optional egg or sugar. Adding them now preserves sweetness — microbes can't ferment it overnight.",
-       "افزودنی‌ها",     "درست قبل از پختن، تخم‌مرغ یا شکر اختیاری را هم بزنید. اضافه کردن آنها الان شیرینی را حفظ می‌کند — میکروب‌ها نمی‌توانند شبانه آن را تخمیر کنند."],
-      ["Cook thin",      "Cook in lightly oiled pan, 0.1–0.5cm thick. Flip when bubbles appear across the surface.",
-       "پختن نازک",      "در تابه کمی روغن‌کاری شده، ۰.۱–۰.۵ سانتی‌متر ضخامت بپزید. وقتی حباب‌ها روی سطح ظاهر شدند برگردانید."],
-      ["Serve",          "Enjoy immediately with your favorite toppings. Leftover batter keeps refrigerated for several days.",
-       "سرو",             "فوری با توپینگ‌های مورد علاقه‌تان میل کنید. خمیر مانده را می‌توان چند روز در یخچال نگه داشت."],
+      ["Mix", "Combine all ingredients. Dough will be very wet and slack — this is correct.",
+       "مخلوط", "همه را ترکیب کنید. خمیر بسیار مرطوب خواهد بود."],
+      ["Bulk ferment", "Ferment 4 hours. Perform stretch & folds every 30 minutes (6 total).",
+       "تخمیر حجمی", "۴ ساعت. هر ۳۰ دقیقه کشش و تا."],
+      ["Divide gently", "Turn dough onto heavily floured surface. Divide into 2 pieces with minimal handling.",
+       "تقسیم", "روی سطح آردپاشی به ۲ قسمت تقسیم."],
+      ["Proof", "Place on floured couche. Proof 1 hour until puffy and jiggly.",
+       "تخمیر", "۱ ساعت روی پارچه آردپاشی."],
+      ["Bake with steam", "Bake at 240°C (465°F) with steam for 15 min, then 220°C for 15 min more.",
+       "پخت با بخار", "در ۲۴۰ درجه با بخار ۱۵ دقیقه، سپس ۲۲۰ درجه ۱۵ دقیقه."],
     ],
     tips:[
-      "One egg per 100g flour makes them fluffier and richer",
-      "Add sugar just before baking so it isn't consumed during fermentation",
-      "Save a spoonful of batter — it becomes your starter for the next batch",
-      "Teff flour makes an authentic Ethiopian injera-style pancake",
+      "Wet hands, not floured hands, when handling ciabatta dough.",
+      "Minimal handling preserves the open crumb structure.",
+      "Strong flour (>12% protein) is essential.",
+      "Slice horizontally for the perfect sandwich bread.",
     ],
     tipsFa:[
-      "یک تخم‌مرغ به ازای هر ۱۰۰ گرم آرد آنها را پُف‌تر و غنی‌تر می‌کند",
-      "شکر را درست قبل از پختن اضافه کنید تا در طول تخمیر مصرف نشود",
-      "یک قاشق خمیر را نگه دارید — برای دسته بعدی استارتر شما می‌شود",
-      "آرد تف یک پنکیک اتیوپیایی اینجرا واقعی می‌سازد",
+      "از دستان مرطوب استفاده کنید نه آردپاشی.",
+      "دستکاری حداقل برای حفظ ساختار باز.",
+      "آرد قوی ضروری است.",
+      "برای ساندویچ افقی برش بزنید.",
     ],
   },
   {
-    id:"loafpan", emoji:"🍞",
-    name:"Loaf Pan Sourdough",        nameFa:"خمیرمایه قالبی",
-    sub:"Effortless everyday bread",  subFa:"نان روزمره بی‌دردسر",
-    difficulty:2, diffLabel:"Easy",   diffLabelFa:"آسان",
-    workTime:"5 min", workTimeFa:"۵ دقیقه",
-    totalTime:"12–24 hrs", totalTimeFa:"۱۲–۲۴ ساعت",
+    id:"pizzadough", icon:"pizza", family:"high",
+    name:"Sourdough Pizza Dough",     nameFa:"خمیر پیتزا خمیر ترش",
+    sub:"72-hour cold ferment",       subFa:"تخمیر سرد ۷۲ ساعته",
+    difficulty:2, diffLabel:"Easy",    diffLabelFa:"آسان",
+    totalTime:"24–72 hrs",            totalTimeFa:"۲۴–۷۲ ساعت",
+    hydration:68,
+    ingredients:[
+      { amount:500, unit:"g", icon:"wheat", name:"Tipo 00 or bread flour", nameFa:"آرد ۰۰ یا نان" },
+      { amount:340, unit:"g", icon:"droplet", name:"Cold water",          nameFa:"آب سرد" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine sea salt",        nameFa:"نمک دریایی" },
+      { amount:75,  unit:"g", icon:"flask", name:"Active starter (or 1g yeast)", nameFa:"استارتر فعال" },
+      { amount:15,  unit:"g", icon:"olive", name:"Olive oil",            nameFa:"روغن زیتون" },
+    ],
+    steps:[
+      ["Mix", "Combine all ingredients until smooth. Rest 30 minutes.",
+       "مخلوط", "ترکیب و ۳۰ دقیقه استراحت."],
+      ["Knead", "Knead 8–10 minutes until smooth and elastic.",
+       "ورز", "۸–۱۰ دقیقه ورز."],
+      ["Cold ferment", "Place in oiled container, cover, refrigerate 24–72 hours. Longer = better.",
+       "تخمیر سرد", "۲۴–۷۲ ساعت در یخچال."],
+      ["Ball", "Divide into 4 balls (220g each). Place in oiled tray, cover.",
+       "توپ کردن", "به ۴ توپ ۲۲۰ گرمی تقسیم."],
+      ["Warm up", "Remove from fridge 2 hours before baking to warm up.",
+       "گرم شدن", "۲ ساعت قبل از پخت از یخچال بیرون بگذارید."],
+      ["Stretch & bake", "Hand-stretch (never roll). Top and bake at maximum oven temp.",
+       "پهن و پخت", "با دست پهن کنید. در داغ‌ترین حالت فر بپزید."],
+    ],
+    tips:[
+      "72-hour cold ferment = incredible flavor and digestibility.",
+      "Never use a rolling pin — it kills the air bubbles.",
+      "Semolina flour on the peel prevents sticking.",
+      "Less is more with toppings.",
+    ],
+    tipsFa:[
+      "تخمیر سرد ۷۲ ساعته = طعم فوق‌العاده.",
+      "هرگز از وردنه استفاده نکنید.",
+      "آرد سمولینا از چسبیدن جلوگیری می‌کند.",
+      "توپینگ کمتر بهتر است.",
+    ],
+  },
+  {
+    id:"ryebread", icon:"rye", family:"high",
+    name:"Dark Rye Bread",            nameFa:"نان چاودار تیره",
+    sub:"Dense, hearty, complex",     subFa:"متراکم، قوی، پیچیده",
+    difficulty:3, diffLabel:"Medium",  diffLabelFa:"متوسط",
+    totalTime:"18–24 hrs",            totalTimeFa:"۱۸–۲۴ ساعت",
     hydration:85,
     ingredients:[
-      { amount:500, unit:"g", name:"Flour (wheat, rye, or mixed)", nameFa:"آرد (گندم، چاودار یا مخلوط)" },
-      { amount:425, unit:"g", name:"Water",                        nameFa:"آب"                            },
-      { amount:75,  unit:"g", name:"Active sourdough starter",     nameFa:"استارتر خمیرترش فعال"         },
-      { amount:10,  unit:"g", name:"Salt",                         nameFa:"نمک"                           },
+      { amount:300, unit:"g", icon:"wheat", name:"Dark rye flour",      nameFa:"آرد چاودار تیره" },
+      { amount:200, unit:"g", icon:"wheat", name:"Bread flour",         nameFa:"آرد نان" },
+      { amount:425, unit:"g", icon:"droplet", name:"Water",             nameFa:"آب" },
+      { amount:100, unit:"g", icon:"flask", name:"Active rye starter",  nameFa:"استارتر چاودار فعال" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine salt",           nameFa:"نمک ریز" },
+      { amount:15,  unit:"g", icon:"sparkles", name:"Caraway seeds (optional)", nameFa:"دانه زیره (اختیاری)" },
     ],
     steps:[
-      ["Mix",      "Combine all ingredients until fully homogenized. A very sticky, wet dough is normal and desirable — it produces a fluffier crumb.",
-       "مخلوط",    "همه مواد را تا کاملاً یکنواخت مخلوط کنید. خمیر خیلی چسبنده و مرطوب طبیعی و مطلوب است — مغز نرم‌تری ایجاد می‌کند."],
-      ["Into pan", "Generously grease loaf pan with oil. Scrape dough in — no shaping required. Smooth top with wet fingers.",
-       "داخل قالب","قالب نان را با روغن خوب چرب کنید. خمیر را داخل بریزید — نیازی به شکل‌دهی نیست. روی آن را با انگشتان مرطوب صاف کنید."],
-      ["Proof",    "Cover and wait until dough roughly doubles in size (6–12 hrs at room temp). Do not rush this step.",
-       "تخمیر",    "بپوشانید و صبر کنید تا خمیر تقریباً دو برابر شود (۶–۱۲ ساعت در دمای محیط). این مرحله را عجله نکنید."],
-      ["Bake",     "Place in cold oven, set to 200°C (390°F). Bake 30–50 min. Done when internal temperature reaches 92°C (197°F).",
-       "پخت",      "در فر سرد قرار دهید، روی ۲۰۰ درجه سانتیگراد (۳۹۰ فارنهایت) تنظیم کنید. ۳۰–۵۰ دقیقه بپزید. وقتی دمای داخلی به ۹۲ درجه رسید آماده است."],
-      ["Cool",     "Remove from pan and cool on a rack for at least 1 hour before slicing. The crumb needs to set.",
-       "خنک کردن", "از قالب بیرون آورید و حداقل ۱ ساعت قبل از برش روی توری بگذارید. مغز نیاز دارد سفت شود."],
+      ["Mix", "Combine all ingredients. Rye dough is paste-like — do not knead.",
+       "مخلوط", "همه را ترکیب کنید. ورز ندهید."],
+      ["Bulk", "Cover and ferment 3–4 hours. Rye ferments faster than wheat.",
+       "تخمیر حجمی", "۳–۴ ساعت."],
+      ["Pan", "Transfer to greased loaf pan with wet hands. Smooth the top.",
+       "داخل قالب", "با دستان مرطوب به قالب منتقل کنید."],
+      ["Proof", "Cover and proof 3–5 hours until small cracks appear on surface.",
+       "تخمیر", "۳–۵ ساعت تا ترک‌های کوچک ظاهر شود."],
+      ["Bake", "Bake at 220°C (428°F) for 50 minutes until 92°C internal.",
+       "پخت", "در ۲۲۰ درجه ۵۰ دقیقه."],
+      ["Wait 24 hrs", "Do NOT slice for 24 hours. The crumb needs to set.",
+       "۲۴ ساعت صبر", "۲۴ ساعت برش نزنید."],
     ],
     tips:[
-      "Never wash your loaf pan with soap — a seasoned patina prevents sticking with each bake",
-      "Place another identical pan on top to simulate a Dutch oven and trap steam",
-      "90–100% hydration creates a very soft, chewy crumb — especially beautiful with rye",
-      "Mix 50% wheat into a rye dough to significantly improve structure",
-      "You can bake 5 loaves at once in a home oven — perfect for batch baking",
+      "Rye's pentosans create structure — kneading actually damages the dough.",
+      "Higher hydration is normal for rye; embrace the stickiness.",
+      "Rye improves with age — a week-old loaf is better than day one.",
+      "Traditional additions: caraway, sunflower seeds, walnuts.",
     ],
     tipsFa:[
-      "قالب نان را با صابون نشویید — یک پتینه چرب‌شده از چسبیدن در هر پخت جلوگیری می‌کند",
-      "یک قالب مشابه روی آن قرار دهید تا مثل یک قابلمه هلندی عمل کند و بخار را نگه دارد",
-      "۹۰–۱۰۰٪ آبیاری مغز بسیار نرم و جونده ایجاد می‌کند — مخصوصاً با چاودار زیباست",
-      "۵۰٪ گندم به خمیر چاودار اضافه کنید تا ساختار بهتری داشته باشد",
-      "می‌توانید ۵ قرص را یکباره در فر خانگی بپزید — عالی برای پخت انبوه",
+      "پنتوزان‌های چاودار ساختار ایجاد می‌کنند — ورز ندهید.",
+      "آبیاری بالا طبیعی است.",
+      "چاودار با زمان بهتر می‌شود.",
+      "افزودنی‌های سنتی: زیره، گردو.",
     ],
   },
   {
-    id:"wheat", emoji:"🥖",
-    name:"Freestanding Wheat Sourdough",  nameFa:"خمیرمایه گندمی آزاد",
-    sub:"The supreme discipline",          subFa:"بالاترین سطح مهارت",
-    difficulty:4, diffLabel:"Advanced",   diffLabelFa:"پیشرفته",
-    workTime:"60 min", workTimeFa:"۶۰ دقیقه",
-    totalTime:"24–36 hrs", totalTimeFa:"۲۴–۳۶ ساعت",
-    hydration:75,
+    id:"artisan", icon:"artisan", family:"high",
+    name:"Sourdough Artisan Boule",   nameFa:"بول هنری خمیر ترش",
+    sub:"The holy grail",             subFa:"آرزوی نانوایان",
+    difficulty:4, diffLabel:"Advanced", diffLabelFa:"پیشرفته",
+    totalTime:"24–36 hrs",            totalTimeFa:"۲۴–۳۶ ساعت",
+    hydration:78,
     ingredients:[
-      { amount:500, unit:"g", name:"Bread flour (>12% protein)",    nameFa:"آرد نان (پروتئین >۱۲٪)"     },
-      { amount:375, unit:"g", name:"Water, 26–28°C (79–82°F)",      nameFa:"آب، ۲۶–۲۸ درجه سانتیگراد"   },
-      { amount:100, unit:"g", name:"Active levain / starter",       nameFa:"لوون فعال / استارتر"         },
-      { amount:10,  unit:"g", name:"Fine sea salt",                 nameFa:"نمک دریایی ریز"               },
+      { amount:500, unit:"g", icon:"wheat", name:"Bread flour (>12%)",  nameFa:"آرد نان" },
+      { amount:390, unit:"g", icon:"droplet", name:"Water, 26°C",       nameFa:"آب ۲۶ درجه" },
+      { amount:10,  unit:"g", icon:"salt",  name:"Fine sea salt",       nameFa:"نمک دریایی" },
+      { amount:100, unit:"g", icon:"flask", name:"Active levain",       nameFa:"لوون فعال" },
     ],
     steps:[
-      ["Prepare starter",   "Feed your starter 4–12 hrs before baking. It must be doubled, bubbly, domed at the top, and pass the float test.",
-       "آماده‌سازی استارتر","استارتر را ۴–۱۲ ساعت قبل از پخت تغذیه کنید. باید دو برابر شده، حباب‌دار، بالای گنبدی داشته باشد و در آزمایش شناوری قبول شود."],
-      ["Autolyse",          "Mix flour and water only. Cover and rest 30–60 minutes. This passively develops gluten without kneading.",
-       "اتولیز",             "فقط آرد و آب را مخلوط کنید. بپوشانید و ۳۰–۶۰ دقیقه استراحت دهید. این به صورت منفعل گلوتن را بدون ورز دادن توسعه می‌دهد."],
-      ["Incorporate",       "Add levain and salt. Mix thoroughly using pinch-and-fold until fully incorporated and uniform.",
-       "ترکیب",              "لوون و نمک را اضافه کنید. با استفاده از تا کردن فشاری کاملاً مخلوط کنید تا کاملاً یکنواخت شود."],
-      ["Bulk fermentation", "Ferment 4–8 hrs at 24–26°C. Perform stretch & folds every 30 min for the first 2 hrs. Wait for a 50–75% size increase.",
-       "تخمیر حجمی",        "۴–۸ ساعت در ۲۴–۲۶ درجه تخمیر کنید. در ۲ ساعت اول هر ۳۰ دقیقه یک‌بار کشش و تا انجام دهید. منتظر بمانید تا ۵۰–۷۵٪ بزرگ شود."],
-      ["Pre-shape",         "Tip dough onto counter. Use a bench scraper to shape into rough rounds. Rest uncovered 20–30 min.",
-       "پیش‌شکل‌دهی",       "خمیر را روی پیشخوان بریزید. با کارد خمیر شکل دایره‌های تقریبی بدهید. ۲۰–۳۰ دقیقه بدون پوشش استراحت دهید."],
-      ["Final shape",       "Shape into batard or boule using tension folds. Place seam-up in a well-floured banneton.",
-       "شکل‌دهی نهایی",     "شکل باتارد یا بول با تاهای کشش بدهید. با درز رو به بالا در یک بانتون آرد پاشیده بگذارید."],
-      ["Cold proof",        "Cover and refrigerate 8–16 hrs. Deep flavor develops here, and scoring becomes much easier.",
-       "تخمیر سرد",         "بپوشانید و ۸–۱۶ ساعت در یخچال بگذارید. طعم عمیق اینجا توسعه می‌یابد و برش زدن بسیار آسان‌تر می‌شود."],
-      ["Score & bake",      "Preheat Dutch oven at 250°C (480°F) for 45 min. Score cold dough at 30–45°. Bake covered 20 min, uncovered 20 min.",
-       "برش و پخت",         "قابلمه هلندی را در ۲۵۰ درجه (۴۸۰ فارنهایت) ۴۵ دقیقه پیش‌گرم کنید. خمیر سرد را با زاویه ۳۰–۴۵ درجه برش بزنید. ۲۰ دقیقه با درب، ۲۰ دقیقه بدون درب بپزید."],
+      ["Autolyse", "Mix flour and water. Rest 45 minutes for gluten development.",
+       "اتولیز", "آرد و آب. ۴۵ دقیقه."],
+      ["Incorporate", "Add levain and salt. Pinch and fold until fully combined.",
+       "ترکیب", "لوون و نمک اضافه کنید."],
+      ["Bulk ferment", "Ferment 4–6 hours at 24°C. Stretch & fold every 30 min for first 2 hours.",
+       "تخمیر حجمی", "۴–۶ ساعت. کشش و تا هر ۳۰ دقیقه."],
+      ["Pre-shape", "Gently shape into a round. Bench rest 25 minutes.",
+       "پیش‌شکل", "شکل دایره‌ای. ۲۵ دقیقه استراحت."],
+      ["Final shape", "Build tension with envelope folds. Place seam-up in floured banneton.",
+       "شکل نهایی", "با تاهای پاکت کشش ایجاد کنید."],
+      ["Cold proof", "Refrigerate 12–16 hours. This is where magic flavor develops.",
+       "تخمیر سرد", "۱۲–۱۶ ساعت در یخچال."],
+      ["Score & bake", "Preheat Dutch oven 45 min at 250°C. Score cold dough. Bake 20 min covered + 20 uncovered.",
+       "برش و پخت", "قابلمه را ۴۵ دقیقه گرم کنید. ۲۰+۲۰ دقیقه."],
     ],
     tips:[
-      "Bread flour with >12% protein is essential — all-purpose flour won't hold its shape",
-      "Cold overnight proofing dramatically improves flavor and gives a more open crumb",
-      "Score at 30–45° angle, 1cm deep for a proper ear to form",
-      "Over-fermentation is the #1 mistake — dough should feel airy but NOT slack",
-      "There is no recipe you can blindly follow. Learn to read your dough.",
+      "Cold overnight proofing gives the best flavor and open crumb.",
+      "Score at 30–45° angle for a proper 'ear' to form.",
+      "Steam from the covered Dutch oven is critical for oven spring.",
+      "There is no recipe to follow blindly — learn to read your dough.",
     ],
     tipsFa:[
-      "آرد نان با پروتئین >۱۲٪ ضروری است — آرد همه‌منظوره شکل خود را حفظ نمی‌کند",
-      "تخمیر شبانه سرد به طور چشمگیری طعم را بهبود می‌دهد و مغز بازتری ایجاد می‌کند",
-      "زاویه ۳۰–۴۵ درجه، عمق ۱ سانتی‌متر برای تشکیل گوش مناسب",
-      "بیش از حد تخمیر کردن اشتباه شماره ۱ است — خمیر باید سبک اما شل نباشد",
-      "هیچ دستوری نیست که بتوانی کورکورانه دنبال کنی. یاد بگیر خمیرت را بخوانی.",
-    ],
-  },
-  {
-    id:"rye", emoji:"🌾",
-    name:"Dark Rye Sourdough",         nameFa:"خمیرمایه چاودار تیره",
-    sub:"Hearty, robust, complex",     subFa:"محکم، قوی، پیچیده",
-    difficulty:3, diffLabel:"Medium",  diffLabelFa:"متوسط",
-    workTime:"10 min", workTimeFa:"۱۰ دقیقه",
-    totalTime:"18–36 hrs", totalTimeFa:"۱۸–۳۶ ساعت",
-    hydration:90,
-    ingredients:[
-      { amount:250, unit:"g", name:"Rye flour (whole or dark)",  nameFa:"آرد چاودار (کامل یا تیره)"  },
-      { amount:250, unit:"g", name:"Bread flour",                nameFa:"آرد نان"                    },
-      { amount:450, unit:"g", name:"Water",                      nameFa:"آب"                         },
-      { amount:100, unit:"g", name:"Active rye starter",         nameFa:"استارتر چاودار فعال"        },
-      { amount:10,  unit:"g", name:"Salt",                       nameFa:"نمک"                        },
-    ],
-    steps:[
-      ["Mix",         "Combine all ingredients. Rye dough does NOT need kneading — its pentosans (not gluten) create structure. The dough will be paste-like.",
-       "مخلوط",       "همه مواد را ترکیب کنید. خمیر چاودار نیاز به ورز دادن ندارد — پنتوزان‌هایش (نه گلوتن) ساختار ایجاد می‌کنند. خمیر شبیه خمیر رقیق می‌شود."],
-      ["Into pan",    "Use wet hands to transfer to a well-greased loaf pan. Smooth the top. Optionally press seeds into the surface.",
-       "داخل قالب",   "با دستان مرطوب به یک قالب نان خوب چرب‌شده منتقل کنید. روی آن را صاف کنید. اختیاری: دانه‌ها را روی سطح فشار دهید."],
-      ["Proof",       "Cover and proof 4–8 hrs until dough reaches the top of the pan. Rye ferments faster than wheat — watch the dough, not the clock.",
-       "تخمیر",       "بپوشانید و ۴–۸ ساعت تخمیر کنید تا خمیر به بالای قالب برسد. چاودار سریع‌تر از گندم تخمیر می‌کند — خمیر را نگاه کنید، نه ساعت را."],
-      ["Bake",        "Bake at 220°C (428°F) for 45–55 min. Internal temp should reach 92°C (197°F).",
-       "پخت",         "در ۲۲۰ درجه سانتیگراد (۴۲۸ فارنهایت) ۴۵–۵۵ دقیقه بپزید. دمای داخلی باید به ۹۲ درجه (۱۹۷ فارنهایت) برسد."],
-      ["Wait 24 hrs", "Do not slice for at least 24 hours. The crumb needs time to set. Cutting too soon results in a gummy, collapsing interior.",
-       "۲۴ ساعت صبر", "حداقل ۲۴ ساعت برش نزنید. مغز نیاز دارد سفت شود. برش زودهنگام منجر به داخل صمغی و فرو ریختن می‌شود."],
-    ],
-    tips:[
-      "Rye's pentosans create structure — kneading actually damages the dough",
-      "Traditional add-ins: caraway seeds, sunflower seeds, walnuts, or fennel",
-      "Higher hydration (90–100%) is normal for rye — embrace the stickiness",
-      "Rye bread improves with age — wrap in cloth and it stays excellent for a week",
-    ],
-    tipsFa:[
-      "پنتوزان‌های چاودار ساختار ایجاد می‌کنند — ورز دادن در واقع خمیر را خراب می‌کند",
-      "مواد سنتی: دانه کرفس، دانه آفتابگردان، گردو یا رازیانه",
-      "آبیاری بالاتر (۹۰–۱۰۰٪) برای چاودار طبیعی است — چسبندگی را بپذیرید",
-      "نان چاودار با گذر زمان بهتر می‌شود — در پارچه بپیچید و یک هفته عالی می‌ماند",
+      "تخمیر شبانه سرد بهترین طعم را می‌دهد.",
+      "زاویه ۳۰–۴۵ درجه برش بزنید.",
+      "بخار برای پف فر حیاتی است.",
+      "خمیر خود را بخوانید، نه ساعت را.",
     ],
   },
 ];
 
 const GUIDE = [
-  { id:1, emoji:"🧫",
-    phase:"Before You Begin",           phaseFa:"قبل از شروع",
-    title:"Ready Your Starter",         titleFa:"استارتر را آماده کنید",
-    color:"#5A8A50",
-    body:"Your starter must be active, bubbly, and at peak before you bake. Feed it 4–12 hours before mixing. A healthy starter doubles in size, smells fruity-sour or milky, and passes the float test.",
-    bodyFa:"استارتر شما باید قبل از پختن فعال، حباب‌دار و در اوج باشد. ۴–۱۲ ساعت قبل از مخلوط کردن به آن غذا دهید. یک استارتر سالم دو برابر می‌شود، بوی میوه‌ای-ترش یا شیری می‌دهد و در آزمایش شناوری قبول می‌شود.",
-    checks:["Starter doubled since last feeding","Bubbly, domed top — not flat or collapsed","Float test: drop a small piece in water and it floats","Smells fruity, milky, or mildly sour"],
-    checksFa:["استارتر از آخرین تغذیه دو برابر شده","بالای گنبدی و حباب‌دار — نه صاف یا فرو ریخته","آزمایش شناوری: یک تکه کوچک در آب بیندازید تا شناور بماند","بوی میوه‌ای، شیری یا کمی ترش می‌دهد"],
-    tip:"If your starter has been stored in the fridge, give it 2–3 consecutive feedings over 1–2 days to fully reactivate.",
-    tipFa:"اگر استارتر شما در یخچال نگه داشته شده، ۲–۳ بار متوالی در ۱–۲ روز به آن غذا دهید تا کاملاً دوباره فعال شود.",
-    timers:[],
-    timersFa:[],
+  { id:1, icon:"flask",
+    phase:"Before You Begin", phaseFa:"قبل از شروع",
+    title:"Ready Your Starter", titleFa:"استارتر را آماده کنید",
+    body:"Your starter must be active, bubbly, and at peak. Feed it 4–12 hours before mixing. A healthy starter doubles in size and passes the float test.",
+    bodyFa:"استارتر باید فعال و در اوج باشد. ۴–۱۲ ساعت قبل تغذیه کنید.",
+    checks:["Starter doubled","Bubbly, domed top","Float test passes","Smells fruity-sour"],
+    checksFa:["دو برابر شده","حباب‌دار","آزمایش شناوری","بوی میوه‌ای-ترش"],
+    tip:"If stored in fridge, give 2–3 consecutive feedings to reactivate.",
+    tipFa:"اگر در یخچال بوده، ۲–۳ بار تغذیه کنید.",
+    timers:[], timersFa:[],
   },
-  { id:2, emoji:"🥣",
-    phase:"Day 1 – Morning",            phaseFa:"روز ۱ — صبح",
-    title:"Mix & Autolyse",             titleFa:"مخلوط و اتولیز",
-    color:"#8A6830",
-    body:"Mix flour and water first, then rest 30–60 minutes (autolyse). The dough develops gluten passively during rest without kneading. Then add starter and salt and mix until fully incorporated.",
-    bodyFa:"ابتدا آرد و آب را مخلوط کنید، سپس ۳۰–۶۰ دقیقه استراحت دهید (اتولیز). خمیر در طول استراحت به صورت منفعل گلوتن توسعه می‌دهد بدون ورز دادن. سپس استارتر و نمک را اضافه کنید و تا کاملاً ترکیب شود مخلوط کنید.",
-    checks:["No dry flour spots remain","Starter and salt fully incorporated","Dough is smooth and cohesive"],
-    checksFa:["هیچ ذرات آردی باقی نمانده","استارتر و نمک کاملاً ترکیب شده","خمیر صاف و یکپارچه است"],
-    tip:"Use water at 26–28°C (79–82°F). Warmer water speeds fermentation; too cold slows it down too much.",
-    tipFa:"از آب در دمای ۲۶–۲۸ درجه سانتیگراد استفاده کنید. آب گرم‌تر تخمیر را سرعت می‌دهد؛ خیلی سرد آن را خیلی کند می‌کند.",
+  { id:2, icon:"droplet",
+    phase:"Day 1 · Morning", phaseFa:"روز ۱ — صبح",
+    title:"Mix & Autolyse", titleFa:"مخلوط و اتولیز",
+    body:"Mix flour and water first, rest 30–60 minutes. Then add starter and salt and mix until fully incorporated.",
+    bodyFa:"آرد و آب را مخلوط، ۳۰–۶۰ دقیقه استراحت. سپس استارتر و نمک.",
+    checks:["No dry flour spots","Starter and salt incorporated","Smooth dough"],
+    checksFa:["آرد خشک نمانده","ترکیب شده","خمیر صاف"],
+    tip:"Use water at 26–28°C for ideal fermentation speed.",
+    tipFa:"از آب ۲۶–۲۸ درجه استفاده کنید.",
     timers:[{ label:"Autolyse rest", minutes:30 }],
     timersFa:[{ label:"استراحت اتولیز", minutes:30 }],
   },
-  { id:3, emoji:"⏱️",
-    phase:"Day 1 – Morning to Afternoon", phaseFa:"روز ۱ — صبح تا ظهر",
-    title:"Bulk Fermentation",            titleFa:"تخمیر حجمی",
-    color:"#7A5A30",
-    body:"The main fermentation takes 4–8 hours at room temperature. During the first 2 hours, perform 4–6 sets of stretch & folds every 30 minutes. Then leave undisturbed until ready.",
-    bodyFa:"تخمیر اصلی در دمای محیط ۴–۸ ساعت طول می‌کشد. در ۲ ساعت اول، هر ۳۰ دقیقه ۴–۶ دور کشش و تا انجام دهید. سپس تا آماده شدن بدون مزاحمت بگذارید.",
-    checks:["Dough increased 50–75% in size","Bubbles visible on sides of container","Dough feels airy and jiggly when shaken","Passes windowpane test: stretches thin without tearing"],
-    checksFa:["خمیر ۵۰–۷۵٪ بزرگ‌تر شده","حباب‌ها روی بدنه ظرف قابل رویت است","خمیر هنگام تکان خوردن سبک و لرزان است","آزمایش پنجره: کشش نازک بدون پاره شدن"],
-    tip:"Warmer = faster. At 28°C expect ~4 hrs; at 22°C expect ~6–8 hrs. Always read your dough, not the clock.",
-    tipFa:"گرم‌تر = سریع‌تر. در ۲۸ درجه حدود ۴ ساعت؛ در ۲۲ درجه حدود ۶–۸ ساعت. همیشه خمیرتان را بخوانید، نه ساعت را.",
-    timers:[{ label:"Stretch & fold interval", minutes:30 }, { label:"Full bulk ferment (avg)", minutes:360 }],
-    timersFa:[{ label:"فاصله کشش و تا", minutes:30 }, { label:"تخمیر حجمی کامل (میانگین)", minutes:360 }],
+  { id:3, icon:"timer",
+    phase:"Day 1 · Morning to Afternoon", phaseFa:"روز ۱ — صبح تا ظهر",
+    title:"Bulk Fermentation", titleFa:"تخمیر حجمی",
+    body:"4–8 hours at room temperature. First 2 hours: stretch & folds every 30 minutes.",
+    bodyFa:"۴–۸ ساعت در دمای محیط. ۲ ساعت اول: کشش و تا هر ۳۰ دقیقه.",
+    checks:["Dough increased 50–75%","Bubbles on sides","Airy and jiggly","Windowpane test passes"],
+    checksFa:["۵۰–۷۵٪ بزرگ‌تر","حباب‌ها","سبک و لرزان","آزمایش پنجره"],
+    tip:"Read your dough, not the clock.",
+    tipFa:"خمیر را بخوانید، نه ساعت.",
+    timers:[{ label:"Stretch & fold", minutes:30 }, { label:"Full bulk", minutes:360 }],
+    timersFa:[{ label:"کشش و تا", minutes:30 }, { label:"تخمیر کامل", minutes:360 }],
   },
-  { id:4, emoji:"👐",
-    phase:"Day 1 – Afternoon",          phaseFa:"روز ۱ — بعد از ظهر",
-    title:"Pre-shape & Shape",          titleFa:"پیش‌شکل‌دهی و شکل‌دهی",
-    color:"#6A4A28",
-    body:"Tip dough out, pre-shape into a rough round, rest 20–30 minutes uncovered. Then final shape into a batard or boule using tension folds. Build surface tension by dragging the dough toward you.",
-    bodyFa:"خمیر را بریزید، شکل دایره‌ای تقریبی بدهید، ۲۰–۳۰ دقیقه بدون پوشش استراحت دهید. سپس شکل نهایی باتارد یا بول با تاهای کشش بدهید. با کشیدن خمیر به سمت خودتان کشش سطحی ایجاد کنید.",
-    checks:["Surface is smooth and taut","Dough holds shape without spreading flat","No tears on surface","Seam neatly sealed at the bottom"],
-    checksFa:["سطح صاف و کشیده است","خمیر شکل خود را نگه می‌دارد و پخش نمی‌شود","هیچ پارگی روی سطح نیست","درز در پایین مرتب بسته شده"],
-    tip:"Work on a lightly unfloured surface — you need friction for tension. A bench scraper is indispensable here.",
-    tipFa:"روی سطح کم‌آردی کار کنید — به اصطکاک برای کشش نیاز دارید. یک کارد خمیر اینجا ضروری است.",
-    timers:[{ label:"Pre-shape bench rest", minutes:25 }],
-    timersFa:[{ label:"استراحت بانکو پیش‌شکل‌دهی", minutes:25 }],
+  { id:4, icon:"scale",
+    phase:"Day 1 · Afternoon", phaseFa:"روز ۱ — بعد از ظهر",
+    title:"Pre-shape & Shape", titleFa:"پیش‌شکل و شکل‌دهی",
+    body:"Pre-shape into rough round, rest 20–30 minutes. Final shape into batard or boule.",
+    bodyFa:"پیش‌شکل دایره‌ای، ۲۰–۳۰ دقیقه استراحت. شکل نهایی.",
+    checks:["Surface smooth and taut","Holds shape","No tears","Seam sealed"],
+    checksFa:["سطح صاف","شکل نگه می‌دارد","پارگی نیست","درز بسته"],
+    tip:"Work on lightly unfloured surface for friction.",
+    tipFa:"روی سطح کم‌آرد کار کنید.",
+    timers:[{ label:"Pre-shape rest", minutes:25 }],
+    timersFa:[{ label:"استراحت پیش‌شکل", minutes:25 }],
   },
-  { id:5, emoji:"🌙",
-    phase:"Day 1 – Evening",            phaseFa:"روز ۱ — عصر",
-    title:"Proofing",                   titleFa:"تخمیر ثانویه",
-    color:"#3A4A68",
-    body:"Place shaped dough seam-up in a well-floured banneton. Either proof at room temperature 1–2 hrs, or cover and refrigerate overnight. Cold proofing is strongly recommended.",
-    bodyFa:"خمیر شکل داده شده را با درز رو به بالا در یک بانتون خوب آرد پاشیده شده قرار دهید. یا در دمای محیط ۱–۲ ساعت تخمیر کنید، یا بپوشانید و شبانه در یخچال بگذارید. تخمیر سرد اکیداً توصیه می‌شود.",
-    checks:["Banneton well-floured (rice flour is best)","Poke test: dough springs back slowly when poked","If cold-proofing: dough is firm and cold before baking"],
-    checksFa:["بانتون خوب آرد پاشیده شده (آرد برنج بهترین است)","آزمایش فشار: خمیر به آرامی به حالت اول برمی‌گردد","در صورت تخمیر سرد: خمیر قبل از پختن سفت و سرد است"],
-    tip:"Cold proofing 8–16 hrs gives dramatically better flavor, a more open crumb, and makes scoring much easier.",
-    tipFa:"تخمیر سرد ۸–۱۶ ساعت به طور چشمگیری طعم بهتر، مغز بازتر و برش زدن بسیار آسان‌تر می‌دهد.",
+  { id:5, icon:"moon",
+    phase:"Day 1 · Evening", phaseFa:"روز ۱ — عصر",
+    title:"Proofing", titleFa:"تخمیر ثانویه",
+    body:"Place shaped dough in floured banneton. Room temp 1–2 hrs, or refrigerate overnight.",
+    bodyFa:"خمیر را در بانتون آرد پاشیده بگذارید. ۱–۲ ساعت یا شب در یخچال.",
+    checks:["Banneton well-floured","Poke test: springs back slowly","Cold and firm"],
+    checksFa:["بانتون آرد پاشیده","آزمایش فشار","سفت و سرد"],
+    tip:"Cold proofing 8–16 hrs gives better flavor.",
+    tipFa:"تخمیر سرد ۸–۱۶ ساعت طعم بهتر می‌دهد.",
     timers:[{ label:"Room temp proof", minutes:90 }],
-    timersFa:[{ label:"تخمیر در دمای محیط", minutes:90 }],
+    timersFa:[{ label:"تخمیر دمای محیط", minutes:90 }],
   },
-  { id:6, emoji:"🔥",
-    phase:"Day 2 – Baking",             phaseFa:"روز ۲ — پخت",
-    title:"Score & Bake",               titleFa:"برش و پخت",
-    color:"#8A3A20",
-    body:"Preheat Dutch oven at 230–250°C (445–480°F) for at least 45 minutes. Score the cold dough with a lame or razor blade at a 30–45° angle. Bake covered 20 min (steam), then uncovered 20 min (crust).",
-    bodyFa:"قابلمه هلندی را در ۲۳۰–۲۵۰ درجه سانتیگراد (۴۴۵–۴۸۰ فارنهایت) حداقل ۴۵ دقیقه پیش‌گرم کنید. خمیر سرد را با یک لاموس یا تیغ با زاویه ۳۰–۴۵ درجه برش بزنید. ۲۰ دقیقه با درب (بخار) و ۲۰ دقیقه بدون درب (پوسته) بپزید.",
-    checks:["Dutch oven preheated minimum 45 min","Razor blade held at 30–45° angle","Ear formed during baking","Hollow sound when bottom is tapped"],
-    checksFa:["قابلمه هلندی حداقل ۴۵ دقیقه پیش‌گرم شده","تیغ با زاویه ۳۰–۴۵ درجه نگه داشته شده","گوش در طول پخت تشکیل شده","صدای توخالی هنگام ضربه به کف"],
-    tip:"The steam in the first 20 minutes (lid on) is absolutely critical for oven spring. Never skip it.",
-    tipFa:"بخار در ۲۰ دقیقه اول (درب روی آن) برای پف فر کاملاً حیاتی است. هرگز آن را حذف نکنید.",
-    timers:[{ label:"Preheat Dutch oven", minutes:45 }, { label:"Bake covered — steam", minutes:20 }, { label:"Bake uncovered — crust", minutes:20 }],
-    timersFa:[{ label:"پیش‌گرم کردن قابلمه", minutes:45 }, { label:"پخت با درب — بخار", minutes:20 }, { label:"پخت بدون درب — پوسته", minutes:20 }],
+  { id:6, icon:"flame",
+    phase:"Day 2 · Baking", phaseFa:"روز ۲ — پخت",
+    title:"Score & Bake", titleFa:"برش و پخت",
+    body:"Preheat Dutch oven 45 min at 230–250°C. Score at 30–45°. Bake covered 20 min, uncovered 20 min.",
+    bodyFa:"قابلمه را ۴۵ دقیقه گرم کنید. برش بزنید. ۲۰+۲۰ دقیقه بپزید.",
+    checks:["Dutch oven preheated 45 min","Blade at 30–45°","Ear forms","Hollow sound when tapped"],
+    checksFa:["قابلمه گرم شده","تیغ با زاویه","گوش تشکیل","صدای توخالی"],
+    tip:"Steam in first 20 minutes is critical for oven spring.",
+    tipFa:"بخار در ۲۰ دقیقه اول حیاتی است.",
+    timers:[{ label:"Preheat", minutes:45 }, { label:"Steam", minutes:20 }, { label:"Crust", minutes:20 }],
+    timersFa:[{ label:"پیش‌گرم", minutes:45 }, { label:"بخار", minutes:20 }, { label:"پوسته", minutes:20 }],
   },
 ];
 
 const TROUBLE = [
-  { emoji:"📉",
-    problem:"Flat bread / No oven spring",  problemFa:"نان پهن / بدون پف فر",
-    causes:["Weak or inactive starter","Over-fermented dough","Weak shaping — not enough tension","Poor scoring technique"],
-    causesFa:["استارتر ضعیف یا غیرفعال","خمیر بیش از حد تخمیر شده","شکل‌دهی ضعیف — کشش کافی نیست","تکنیک برش ضعیف"],
-    fixes:["Feed starter until it reliably doubles within 8 hrs","Reduce bulk fermentation by 30–60 min","Focus on building surface tension during shaping","Score at 30–45° angle, at least 1cm deep"],
-    fixesFa:["استارتر را تغذیه کنید تا در ۸ ساعت دو برابر شود","تخمیر حجمی را ۳۰–۶۰ دقیقه کاهش دهید","در شکل‌دهی بر ایجاد کشش سطحی تمرکز کنید","زاویه ۳۰–۴۵ درجه، حداقل ۱ سانتی‌متر عمق برش بزنید"],
+  { icon:"flat",
+    problem:"Flat bread / No oven spring", problemFa:"نان پخم / بدون پف",
+    causes:["Weak starter","Over-fermented","Weak shaping","Poor scoring"],
+    causesFa:["استارتر ضعیف","بیش‌تخمیر","شکل‌دهی ضعیف","برش ضعیف"],
+    fixes:["Feed starter reliably","Reduce bulk by 30–60 min","Build surface tension","Score 30–45° angle"],
+    fixesFa:["استارتر تغذیه","کاهش حجمی","ایجاد کشش","برش ۳۰–۴۵ درجه"],
   },
-  { emoji:"🧱",
-    problem:"Dense or gummy crumb",         problemFa:"مغز متراکم یا صمغی",
-    causes:["Under-baked — taken out too soon","Sliced while still hot","Under-fermented","Insufficient gluten development"],
-    causesFa:["کم‌پخته — خیلی زود بیرون آمده","در حالی که هنوز گرم است برش زده شده","کم‌تخمیر شده","توسعه ناکافی گلوتن"],
-    fixes:["Bake to 92–96°C (197–205°F) internal temp","Rest at least 1 hr (rye: 24 hrs) before cutting","Extend bulk fermentation by 1 hr","Increase stretch & fold sets in first 2 hrs"],
-    fixesFa:["تا دمای داخلی ۹۲–۹۶ درجه بپزید","حداقل ۱ ساعت (چاودار: ۲۴ ساعت) قبل از برش صبر کنید","تخمیر حجمی را ۱ ساعت طولانی‌تر کنید","دورهای کشش و تا را در ۲ ساعت اول افزایش دهید"],
+  { icon:"brick",
+    problem:"Dense or gummy crumb", problemFa:"مغز متراکم یا صمغی",
+    causes:["Under-baked","Sliced while hot","Under-fermented","Insufficient gluten"],
+    causesFa:["کم‌پخته","برش گرم","کم‌تخمیر","گلوتن کم"],
+    fixes:["Bake to 92–96°C","Rest 1 hr (rye 24)","Extend bulk","More stretch & folds"],
+    fixesFa:["تا ۹۲–۹۶ درجه","۱ ساعت صبر","حجمی بیشتر","کشش بیشتر"],
   },
-  { emoji:"😬",
-    problem:"Too sour / harsh acidity",     problemFa:"خیلی ترش / اسیدیته تند",
-    causes:["Over-fermented","Too high starter percentage","Long warm-temp proof","Starter not balanced"],
-    causesFa:["بیش از حد تخمیر شده","درصد استارتر خیلی زیاد","تخمیر طولانی در دمای گرم","استارتر نامتعادل"],
-    fixes:["Shorten bulk fermentation by 30–60 min","Reduce starter % to 8–10%","Cold proof instead of room temp","Feed starter 2–3× to rebalance yeast/bacteria"],
-    fixesFa:["تخمیر حجمی را ۳۰–۶۰ دقیقه کوتاه کنید","درصد استارتر را به ۸–۱۰٪ کاهش دهید","به جای دمای محیط، تخمیر سرد انجام دهید","استارتر را ۲–۳ بار تغذیه کنید تا تعادل مخمر/باکتری برقرار شود"],
+  { icon:"flame",
+    problem:"Too sour / harsh acidity", problemFa:"خیلی ترش",
+    causes:["Over-fermented","High starter %","Long warm proof","Unbalanced starter"],
+    causesFa:["بیش‌تخمیر","درصد بالا","تخمیر گرم","نامتعادل"],
+    fixes:["Shorten bulk","Reduce starter to 8–10%","Cold proof","Rebalance starter"],
+    fixesFa:["کوتاه کردن حجمی","کاهش به ۸–۱۰٪","تخمیر سرد","تعادل استارتر"],
   },
-  { emoji:"😶",
-    problem:"Not sour enough",              problemFa:"به اندازه کافی ترش نیست",
-    causes:["Under-fermented","Fermentation too fast (too warm)","Yeast-dominant starter"],
-    causesFa:["کم‌تخمیر شده","تخمیر خیلی سریع (خیلی گرم)","استارتر غالب مخمر"],
-    fixes:["Cold proof 24–48 hrs for more acid development","Reduce starter to 5–8% to slow fermentation","Use cooler water to slow yeast","Let bulk fermentation run 1–2 hrs longer"],
-    fixesFa:["۲۴–۴۸ ساعت تخمیر سرد برای توسعه اسید بیشتر","استارتر را به ۵–۸٪ کاهش دهید تا تخمیر کند شود","از آب سردتر برای کند کردن مخمر استفاده کنید","تخمیر حجمی را ۱–۲ ساعت طولانی‌تر کنید"],
+  { icon:"alert",
+    problem:"Not sour enough", problemFa:"به اندازه کافی ترش نیست",
+    causes:["Under-fermented","Too fast","Yeast-dominant starter"],
+    causesFa:["کم‌تخمیر","خیلی سریع","غالب مخمر"],
+    fixes:["Cold proof 24–48 hrs","Reduce starter to 5–8%","Cooler water","Extend bulk"],
+    fixesFa:["۲۴–۴۸ ساعت سرد","کاهش به ۵–۸٪","آب سرد","حجمی بیشتر"],
   },
-  { emoji:"🫠",
-    problem:"Dough too sticky / won't shape", problemFa:"خمیر خیلی چسبنده / شکل نمی‌گیرد",
+  { icon:"droplet",
+    problem:"Dough too sticky", problemFa:"خمیر خیلی چسبنده",
     causes:["Hydration too high","Under-developed gluten","Dough too warm"],
-    causesFa:["آبیاری خیلی زیاد","گلوتن کم‌توسعه یافته","خمیر خیلی گرم است"],
-    fixes:["Reduce hydration by 5% next bake","Do more stretch & fold sets during bulk","Refrigerate dough 30 min before shaping","Lightly wet hands instead of using flour"],
-    fixesFa:["آبیاری را در پخت بعدی ۵٪ کاهش دهید","دورهای بیشتری کشش و تا در طول حجمی انجام دهید","۳۰ دقیقه قبل از شکل‌دهی خمیر را در یخچال بگذارید","به جای آرد از دستان کمی مرطوب استفاده کنید"],
+    causesFa:["آبیاری زیاد","گلوتن کم","خمیر گرم"],
+    fixes:["Reduce hydration by 5%","More stretch & folds","Refrigerate 30 min","Wet hands"],
+    fixesFa:["کاهش ۵٪","کشش بیشتر","۳۰ دقیقه یخچال","دستان مرطوب"],
   },
-  { emoji:"🪨",
-    problem:"Crust too thick or hard",      problemFa:"پوسته خیلی ضخیم یا سخت",
-    causes:["Overbaked","Not enough steam during baking","Oven too hot"],
-    causesFa:["بیش از حد پخته شده","بخار ناکافی در طول پخت","فر خیلی داغ"],
-    fixes:["Reduce bake time by 5-min increments","Ensure Dutch oven lid seals tightly for first 20 min","Lower oven temp by 10°C (18°F)"],
-    fixesFa:["زمان پخت را ۵ دقیقه کاهش دهید","اطمینان حاصل کنید درب قابلمه هلندی در ۲۰ دقیقه اول محکم بسته است","دمای فر را ۱۰ درجه سانتیگراد کاهش دهید"],
+  { icon:"brick",
+    problem:"Crust too thick or hard", problemFa:"پوسته خیلی ضخیم",
+    causes:["Overbaked","Not enough steam","Oven too hot"],
+    causesFa:["بیش‌پخت","بخار کم","فر داغ"],
+    fixes:["Reduce time","Seal lid tight first 20 min","Lower temp 10°C"],
+    fixesFa:["کاهش زمان","درب محکم","کاهش ۱۰ درجه"],
   },
-  { emoji:"😴",
-    problem:"Starter not rising",           problemFa:"استارتر بالا نمی‌آید",
-    causes:["Environment too cold","Flour lacks nutrients","Acid buildup killing yeast","Possible contamination"],
-    causesFa:["محیط خیلی سرد است","آرد مواد مغذی کافی ندارد","تجمع اسید مخمر را می‌کشد","احتمال آلودگی"],
-    fixes:["Keep starter at 24–28°C (75–82°F)","Switch to whole grain or rye flour for more nutrients","Discard all but 1–2g and restart feedings","Start a fresh starter if persistent"],
-    fixesFa:["استارتر را در ۲۴–۲۸ درجه سانتیگراد نگه دارید","برای مواد مغذی بیشتر به آرد کامل یا چاودار تغییر دهید","همه را دور بریزید جز ۱–۲ گرم و تغذیه‌ها را دوباره شروع کنید","اگر ادامه داشت، استارتر جدید شروع کنید"],
+  { icon:"timer",
+    problem:"Starter not rising", problemFa:"استارتر بالا نمی‌آید",
+    causes:["Environment cold","Flour lacks nutrients","Acid buildup","Contamination"],
+    causesFa:["سرد","مواد مغذی کم","تجمع اسید","آلودگی"],
+    fixes:["Keep at 24–28°C","Switch to whole grain","Discard and restart","Fresh starter"],
+    fixesFa:["۲۴–۲۸ درجه","آرد کامل","دور ریختن و شروع","استارتر جدید"],
   },
-  { emoji:"🫢",
-    problem:"Big holes in crust / blowouts", problemFa:"حفره‌های بزرگ در پوسته / ترکیدگی",
-    causes:["Under-proofed","Inadequate shaping","Scored too deep or wrong angle"],
-    causesFa:["کم‌تخمیر شده","شکل‌دهی ناکافی","برش خیلی عمیق یا زاویه اشتباه"],
-    fixes:["Extend proof by 30–60 min (poke test should spring back slowly)","Work on even, consistent tension when shaping","Score at 30–45° angle — shallower and longer"],
-    fixesFa:["تخمیر را ۳۰–۶۰ دقیقه طولانی‌تر کنید (آزمایش فشار باید به آرامی برگردد)","در شکل‌دهی بر کشش یکنواخت و ثابت کار کنید","زاویه ۳۰–۴۵ درجه برش بزنید — کوتاه‌تر و عریض‌تر"],
+  { icon:"hole",
+    problem:"Big holes / blowouts", problemFa:"حفره‌های بزرگ",
+    causes:["Under-proofed","Inadequate shaping","Wrong scoring"],
+    causesFa:["کم‌تخمیر","شکل‌دهی","برش"],
+    fixes:["Extend proof","Even tension","Shallower scoring"],
+    fixesFa:["تخمیر بیشتر","کشش یکنواخت","برش کوتاه‌تر"],
   },
 ];
 
-// ─── UTILITIES ──────────────────────────────────────────────────────────────
+// ─── UTILITIES ─────────────────────────────────────────────────────────────
 const fmt  = n => Math.round(n * 10) / 10;
 const fmt2 = n => Math.round(n * 100) / 100;
 
@@ -634,16 +1226,51 @@ async function copyText(text) {
   catch { return false; }
 }
 
-// ─── SHARED UI ──────────────────────────────────────────────────────────────
+// ─── GLASS PANEL ───────────────────────────────────────────────────────────
+function GlassPanel({ children, style, onClick, hoverable, as: Tag = "div", ...rest }) {
+  const { C } = useApp();
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Tag
+      onClick={onClick}
+      onMouseEnter={hoverable ? () => setHovered(true) : undefined}
+      onMouseLeave={hoverable ? () => setHovered(false) : undefined}
+      style={{
+        background: hovered && hoverable ? C.glass2 : C.glass,
+        backdropFilter: "blur(24px) saturate(180%)",
+        WebkitBackdropFilter: "blur(24px) saturate(180%)",
+        border: `1px solid ${C.glassBorder}`,
+        borderRadius: 20,
+        boxShadow: hovered && hoverable ? C.shadowLg : C.shadowMd,
+        transition: "all 0.25s cubic-bezier(0.32, 0.72, 0, 1)",
+        cursor: onClick ? "pointer" : "default",
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+// ─── SHARED UI ─────────────────────────────────────────────────────────────
 function Pill({ children, color, small }) {
   const { C } = useApp();
   const c = color || C.accent;
   return (
     <span style={{
-      background:`${c}20`, color:c, border:`1px solid ${c}40`,
-      borderRadius:20, padding: small ? "2px 8px" : "4px 12px",
-      fontSize:14, fontFamily:BODY, fontWeight:600,
-      letterSpacing:0.3, whiteSpace:"nowrap",
+      display:"inline-flex",
+      alignItems:"center",
+      gap: 4,
+      background: `${c}20`,
+      color: c,
+      padding: small ? "4px 10px" : "6px 12px",
+      borderRadius: 999,
+      fontSize: 14,
+      fontFamily: BODY,
+      fontWeight: 600,
+      letterSpacing: "-0.005em",
+      whiteSpace:"nowrap",
     }}>{children}</span>
   );
 }
@@ -651,26 +1278,56 @@ function Pill({ children, color, small }) {
 function DiffDots({ level }) {
   const { C } = useApp();
   return (
-    <span style={{ display:"flex", gap:3, alignItems:"center" }}>
+    <span style={{ display:"flex", gap:4, alignItems:"center" }} aria-label={`Difficulty ${level} of 4`}>
       {[1,2,3,4].map(i => (
-        <span key={i} style={{ width:i<=level?7:6, height:i<=level?7:6, borderRadius:"50%", background:i<=level?C.accent:C.border }} />
+        <span key={i} style={{
+          width: 7, height: 7, borderRadius:"50%",
+          background: i<=level ? C.accent : C.divider,
+        }} />
       ))}
     </span>
   );
 }
 
-function SectionTitle({ title, sub }) {
+function SectionTitle({ title, sub, label }) {
   const { C, getFont } = useApp();
   return (
-    <div style={{ marginBottom:22 }}>
-      <h2 style={{ fontFamily:getFont("serif"), fontSize:26, color:C.text, fontWeight:700, lineHeight:1.2 }}>{title}</h2>
-      {sub && <p style={{ fontFamily:getFont("body"), color:C.sub, fontSize:15, marginTop:4, fontStyle:"italic" }}>{sub}</p>}
+    <div style={{ marginBottom:32 }}>
+      {label && (
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.accent,
+          fontWeight: 600, letterSpacing: "0.02em", marginBottom: 10,
+        }}>
+          {label}
+        </div>
+      )}
+      <h2 style={{
+        fontFamily: getFont("display"), fontSize: 40, fontWeight: 500,
+        color: C.text, lineHeight: 1.05, letterSpacing: "-0.025em",
+        marginBottom: sub ? 12 : 0,
+      }}>{title}</h2>
+      {sub && <p style={{
+        fontFamily: BODY, color: C.textSub, fontSize: 17,
+        lineHeight: 1.5, maxWidth: 500, letterSpacing: "-0.008em",
+      }}>{sub}</p>}
     </div>
   );
 }
 
-function NumInput({ value, onChange, step=50, min=1, unit="g" }) {
-  const { C, getFont, num } = useApp();
+function Label({ children, htmlFor }) {
+  const { C } = useApp();
+  return (
+    <label htmlFor={htmlFor} style={{
+      display: "block", fontFamily: BODY, fontSize: 14,
+      color: C.textSub, fontWeight: 500, letterSpacing: "-0.005em", marginBottom: 8,
+    }}>
+      {children}
+    </label>
+  );
+}
+
+function NumInput({ value, onChange, step=50, min=1, unit="g", label, id }) {
+  const { C } = useApp();
   const [display, setDisplay] = useState(String(value));
   useEffect(() => { setDisplay(String(value)); }, [value]);
   const commit = (raw) => {
@@ -681,76 +1338,174 @@ function NumInput({ value, onChange, step=50, min=1, unit="g" }) {
   const dec = () => { const v = Math.max(min, value - step); onChange(v); setDisplay(String(v)); };
   const inc = () => { const v = value + step; onChange(v); setDisplay(String(v)); };
   return (
-    <div style={{ display:"flex", alignItems:"center", background:C.card, border:`1px solid ${C.border}`, borderRadius:14, overflow:"hidden" }}>
-      <button onClick={dec} style={{ padding:"14px 20px", background:"transparent", border:"none", color:C.sub, fontSize:24, cursor:"pointer", lineHeight:1, userSelect:"none", flexShrink:0 }}>−</button>
-      <input
-        type="text" inputMode="decimal" value={display}
-        onChange={e => { setDisplay(e.target.value); const n=parseFloat(e.target.value); if(!isNaN(n)&&n>=min) onChange(n); }}
-        onBlur={e => commit(e.target.value)}
-        style={{ flex:1, textAlign:"center", background:"transparent", border:"none", fontFamily:getFont("serif"), fontSize:28, color:C.text, outline:"none", minWidth:0 }}
-      />
-      <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, flexShrink:0 }}>{unit}</span>
-      <button onClick={inc} style={{ padding:"14px 20px", background:"transparent", border:"none", color:C.sub, fontSize:24, cursor:"pointer", lineHeight:1, userSelect:"none", flexShrink:0 }}>+</button>
+    <div style={{ minWidth: 0 }}>
+      {label && <Label htmlFor={id}>{label}</Label>}
+      <div style={{
+        display:"flex", alignItems:"center",
+        background: C.bgAlt,
+        border: `1px solid ${C.divider}`,
+        borderRadius: 14,
+        overflow:"hidden",
+        boxShadow: C.shadowSm,
+      }}>
+        <button
+          onClick={dec}
+          aria-label="Decrease"
+          style={{
+            width: 48, height: 52, flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: C.textFaint, background: "transparent",
+            borderRight: `1px solid ${C.dividerSoft}`,
+            transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = C.accent; e.currentTarget.style.background = C.accentDim; }}
+          onMouseLeave={e => { e.currentTarget.style.color = C.textFaint; e.currentTarget.style.background = "transparent"; }}
+        >
+          <Icon name="minus" size={18} />
+        </button>
+        <input
+          id={id}
+          type="text"
+          inputMode="decimal"
+          value={display}
+          aria-label={label || "Value"}
+          onChange={e => { setDisplay(e.target.value); const n=parseFloat(e.target.value); if(!isNaN(n)&&n>=min) onChange(n); }}
+          onBlur={e => commit(e.target.value)}
+          style={{
+            flex:1,
+            minWidth: 0,
+            width: "100%",
+            textAlign:"center",
+            background:"transparent",
+            border:"none",
+            fontFamily: DISPLAY,
+            fontSize: 24,
+            fontWeight: 500,
+            color: C.text,
+            outline:"none",
+            letterSpacing: "-0.02em",
+            padding: "10px 4px",
+          }}
+        />
+        <span style={{
+          fontFamily: BODY, fontSize: 14,
+          color: C.textFaint, padding: "0 8px",
+          fontWeight: 500, flexShrink: 0,
+        }}>{unit}</span>
+        <button
+          onClick={inc}
+          aria-label="Increase"
+          style={{
+            width: 48, height: 52, flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: C.textFaint, background: "transparent",
+            borderLeft: `1px solid ${C.dividerSoft}`,
+            transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = C.accent; e.currentTarget.style.background = C.accentDim; }}
+          onMouseLeave={e => { e.currentTarget.style.color = C.textFaint; e.currentTarget.style.background = "transparent"; }}
+        >
+          <Icon name="plus" size={18} />
+        </button>
+      </div>
     </div>
   );
 }
 
-function Slider({ label, value, onChange, min, max, step=1, unit="%", sublabel }) {
-  const { C, getFont, num } = useApp();
-  const pct = ((value-min)/(max-min))*100;
+function Slider({ label, value, onChange, min, max, step=1, unit="%", sublabel, id }) {
+  const { C, num } = useApp();
+  const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div style={{ marginBottom:22 }}>
-      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-        <div>
-          <span style={{ fontFamily:getFont("body"), fontSize:16, color:C.text }}>{label}</span>
-          {sublabel && <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{sublabel}</span>}
-        </div>
-        <span style={{ fontFamily:getFont("serif"), fontSize:18, color:C.accent, fontWeight:700 }}>{num(value)}{unit}</span>
+    <div style={{ marginBottom: 26 }}>
+      <div style={{
+        display:"flex", justifyContent:"space-between",
+        alignItems:"baseline", marginBottom: 14,
+      }}>
+        <label htmlFor={id} style={{
+          fontFamily: BODY, fontSize: 15, color: C.text,
+          fontWeight: 600, letterSpacing: "-0.005em",
+        }}>
+          {label}
+          {sublabel && <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint,
+            fontWeight: 400, marginLeft: 8,
+          }}>{sublabel}</span>}
+        </label>
+        <span style={{
+          fontFamily: DISPLAY, fontSize: 22, color: C.accent,
+          fontWeight: 600, letterSpacing: "-0.01em",
+          fontVariantNumeric:"tabular-nums",
+        }}>
+          {num(value)}
+          <span style={{fontSize: 14, color: C.textFaint, fontWeight: 500, marginLeft: 2}}>{unit}</span>
+        </span>
       </div>
-      <input type="range" min={min} max={max} step={step} value={value}
-        onChange={e => onChange(parseFloat(e.target.value))}
-        style={{ background:`linear-gradient(to right,${C.accent} 0%,${C.accent} ${pct}%,${C.border} ${pct}%,${C.border} 100%)` }}
-      />
-      <div style={{ display:"flex", justifyContent:"space-between", marginTop:5 }}>
-        <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint }}>{num(min)}{unit}</span>
-        <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint }}>{num(max)}{unit}</span>
+      <div style={{ position:"relative", height: 28, display:"flex", alignItems:"center" }}>
+        <div style={{
+          position:"absolute", left:0, right:0,
+          height: 6, borderRadius: 999,
+          background: C.divider, overflow:"hidden",
+        }}>
+          <div style={{
+            width: `${pct}%`, height: "100%",
+            background: C.accent, borderRadius: 999,
+            transition:"width 0.1s",
+          }} />
+        </div>
+        <input
+          id={id} type="range"
+          min={min} max={max} step={step} value={value}
+          onChange={e => onChange(parseFloat(e.target.value))}
+          style={{ position:"relative", background:"transparent", width:"100%" }}
+        />
+      </div>
+      <div style={{
+        display:"flex", justifyContent:"space-between", marginTop: 8,
+      }}>
+        <span style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, fontVariantNumeric:"tabular-nums" }}>{num(min)}{unit}</span>
+        <span style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, fontVariantNumeric:"tabular-nums" }}>{num(max)}{unit}</span>
       </div>
     </div>
   );
 }
 
 function CopyButton({ getText }) {
-  const { C, t, getFont } = useApp();
+  const { C, t } = useApp();
   const [state, setState] = useState("idle");
   const handleCopy = async () => {
     const ok = await copyText(getText());
     setState(ok ? "done" : "fail");
-    setTimeout(() => setState("idle"), 2000);
+    setTimeout(() => setState("idle"), 2200);
   };
   return (
     <button onClick={handleCopy} style={{
-      display:"flex", alignItems:"center", gap:6, padding:"9px 16px",
-      background: state==="done" ? `${C.green}22` : C.accentDim,
-      border:`1px solid ${state==="done" ? C.green : C.accent}55`,
-      borderRadius:10, color: state==="done" ? C.green : C.accent,
-      fontFamily:getFont("body"), fontSize:14, cursor:"pointer", transition:"all 0.2s",
+      display:"inline-flex", alignItems:"center", gap:8,
+      padding:"10px 18px",
+      background: state==="done" ? C.success : C.accent,
+      color: "#FFFFFF", borderRadius: 999,
+      fontFamily: BODY, fontSize: 14, fontWeight: 600,
+      transition:"all 0.25s",
+      minHeight: 44,
     }}>
+      <Icon name={state === "done" ? "check" : "copy"} size={16} color="#FFFFFF" />
       {state==="done" ? t("copiedLabel") : t("copyList")}
     </button>
   );
 }
 
 function PageFooter() {
-  const { C, t, getFont } = useApp();
+  const { C, t } = useApp();
   return (
-    <div style={{ textAlign:"center", padding:"20px 0 6px", fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:0.5, fontStyle:"italic" }}>
-      {t("footer")}
+    <div style={{ textAlign:"center", padding:"40px 0 24px", marginTop: 24 }}>
+      <div style={{
+        fontFamily: BODY, fontSize: 14, color: C.textFaint, letterSpacing: "-0.005em",
+      }}>{t("footer")}</div>
     </div>
   );
 }
 
 function StepTimer({ label, minutes }) {
-  const { C, t, getFont, num } = useApp();
+  const { C, t, num } = useApp();
   const total = minutes * 60;
   const [seconds, setSeconds] = useState(total);
   const [running, setRunning] = useState(false);
@@ -767,65 +1522,184 @@ function StepTimer({ label, minutes }) {
   const mm = num(rawMm);
   const ss = num(rawSs);
   const pct = ((total - seconds) / total) * 100;
+  const circ = 2 * Math.PI * 32;
+  const strokeOffset = circ - (pct / 100) * circ;
+
   return (
-    <div style={{ background:C.card2, border:`1px solid ${done ? C.green : C.border}`, borderRadius:12, padding:"12px 14px", marginBottom:8, transition:"border-color 0.3s" }}>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8 }}>
-        <div>
-          <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:3 }}>⏱ {label}</div>
-          <div style={{ fontFamily:getFont("serif"), fontSize:24, color:done ? C.green : C.accent, fontWeight:700 }}>
-            {done ? t("timerDone") : `${mm}:${ss}`}
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:6 }}>
-          {!done && (
-            <button onClick={() => setRunning(r => !r)} style={{
-              padding:"9px 16px", borderRadius:8, cursor:"pointer",
-              border:`1px solid ${C.accent}`,
-              background: running ? `${C.accent}22` : C.accent,
-              color: running ? C.accent : "#fff",
-              fontFamily:getFont("body"), fontSize:14, fontWeight:600,
-            }}>
-              {running ? t("timerPause") : t("timerStart")}
-            </button>
-          )}
-          <button onClick={reset} style={{
-            padding:"9px 13px", borderRadius:8, cursor:"pointer",
-            border:`1px solid ${C.border}`, background:"transparent",
-            color:C.sub, fontFamily:getFont("body"), fontSize:15,
-          }}>↺</button>
+    <div style={{
+      display:"flex", alignItems:"center", gap:16,
+      padding:"14px 16px", background: C.bgAlt,
+      border: `1px solid ${done ? C.success : C.divider}`,
+      borderRadius: 14, marginBottom: 10,
+    }}>
+      <div style={{ position:"relative", width:72, height:72, flexShrink:0 }}>
+        <svg width="72" height="72" viewBox="0 0 72 72" style={{ transform:"rotate(-90deg)" }}>
+          <circle cx="36" cy="36" r="32" stroke={C.divider} strokeWidth="3" fill="none" />
+          <circle cx="36" cy="36" r="32"
+            stroke={done ? C.success : C.accent}
+            strokeWidth="3" fill="none"
+            strokeDasharray={circ}
+            strokeDashoffset={strokeOffset}
+            strokeLinecap="round"
+            style={{ transition:"stroke-dashoffset 1s linear, stroke 0.3s" }}
+          />
+        </svg>
+        <div style={{
+          position:"absolute", inset:0,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          fontFamily: DISPLAY, fontSize: 17, fontWeight: 600,
+          color: done ? C.success : C.text,
+          fontVariantNumeric:"tabular-nums",
+        }}>
+          {done ? <Icon name="check" size={20} color={C.success} /> : `${mm}:${ss}`}
         </div>
       </div>
-      {!done && (
-        <div style={{ marginTop:10, height:3, background:C.border, borderRadius:2, overflow:"hidden" }}>
-          <div style={{ height:"100%", borderRadius:2, background:C.accent, width:`${pct}%`, transition:"width 1s linear" }} />
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.textFaint,
+          fontWeight: 500, marginBottom: 2,
+          display:"flex", alignItems:"center", gap: 6,
+        }}>
+          <Icon name="timer" size={14} color={C.textFaint} />
+          {label}
         </div>
-      )}
+        <div style={{
+          fontFamily: DISPLAY, fontSize: 17, fontWeight: 600,
+          color: done ? C.success : C.text,
+        }}>
+          {done ? t("timerDone") : running ? "Running" : "Ready"}
+        </div>
+      </div>
+      <div style={{ display:"flex", gap:8 }}>
+        {!done && (
+          <button onClick={() => setRunning(r => !r)} style={{
+            padding:"10px 18px", borderRadius: 999,
+            background: running ? C.accentSoft : C.accent,
+            color: running ? C.accent : "#FFFFFF",
+            fontFamily: BODY, fontSize: 14, fontWeight: 600,
+            minWidth: 84, minHeight: 44,
+          }}>
+            {running ? t("timerPause") : t("timerStart")}
+          </button>
+        )}
+        <button onClick={reset} aria-label="Reset" style={{
+          width: 44, height: 44, borderRadius: "50%",
+          background: C.dividerSoft, color: C.textSub,
+          display:"flex", alignItems:"center", justifyContent:"center",
+        }}>
+          <Icon name="minus" size={16} color={C.textSub} />
+        </button>
+      </div>
     </div>
   );
 }
 
-// ─── HOME TAB ───────────────────────────────────────────────────────────────
+function SegmentedControl({ options, value, onChange }) {
+  const { C } = useApp();
+  return (
+    <div role="tablist" style={{
+      display:"flex", background: C.bgAlt,
+      borderRadius: 14, padding: 4,
+      border: `1px solid ${C.divider}`, boxShadow: C.shadowSm,
+    }}>
+      {options.map(opt => {
+        const active = value === opt.value;
+        return (
+          <button key={opt.value} role="tab" aria-selected={active}
+            onClick={() => onChange(opt.value)}
+            style={{
+              flex:1, padding:"12px 10px", borderRadius: 10,
+              background: active ? C.accent : "transparent",
+              color: active ? "#FFFFFF" : C.textSub,
+              fontFamily: BODY, fontSize: 15, fontWeight: 600,
+              transition:"all 0.25s cubic-bezier(0.32, 0.72, 0, 1)",
+              minHeight: 48,
+              display:"flex", flexDirection:"column",
+              alignItems:"center", gap: 3,
+            }}
+          >
+            <div style={{ display:"flex", alignItems:"center", gap: 6 }}>
+              {opt.icon && <Icon name={opt.icon} size={16} />}
+              {opt.label}
+            </div>
+            {opt.sub && (
+              <div style={{
+                fontSize: 14, fontWeight: 400,
+                opacity: active ? 0.9 : 0.75,
+              }}>{opt.sub}</div>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ResultRow({ icon, label, sub, value }) {
+  const { C, num } = useApp();
+  return (
+    <div style={{
+      display:"flex", alignItems:"center",
+      justifyContent:"space-between",
+      padding:"13px 0",
+      borderBottom:`1px solid ${C.dividerSoft}`,
+      gap: 12,
+    }}>
+      <div style={{ display:"flex", alignItems:"center", gap: 12, minWidth: 0 }}>
+        {icon && (
+          <div style={{
+            width: 32, height: 32, borderRadius: 8,
+            background: C.accentSoft,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color: C.accent, flexShrink: 0,
+          }}>
+            <Icon name={icon} size={18} />
+          </div>
+        )}
+        <div style={{ minWidth: 0 }}>
+          <div style={{
+            fontFamily: BODY, fontSize: 15, color: C.text,
+            fontWeight: 500, letterSpacing: "-0.005em",
+          }}>{label}</div>
+          {sub && <div style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint, marginTop: 2,
+          }}>{sub}</div>}
+        </div>
+      </div>
+      <span style={{
+        fontFamily: DISPLAY, fontSize: 20, color: C.text,
+        fontWeight: 600, fontVariantNumeric:"tabular-nums",
+        letterSpacing: "-0.01em", flexShrink: 0,
+      }}>
+        {num(fmt(value))}
+        <span style={{fontSize: 14, marginLeft: 2, color: C.textFaint}}>g</span>
+      </span>
+    </div>
+  );
+}
+
+// ─── HOME TAB ──────────────────────────────────────────────────────────────
 function HomeTab({ setTab }) {
   const { C, t, lang, getFont } = useApp();
   const cards = [
-    { icon:"⚖️", labelKey:"doughCalc",  subKey:"doughCalcSub",  tab:"calc"    },
-    { icon:"🍕", labelKey:"pizzaCalc",  subKey:"pizzaCalcSub",  tab:"pizza"   },
-    { icon:"📖", labelKey:"recipes",    subKey:"recipesSub",    tab:"recipes" },
-    { icon:"🎓", labelKey:"guide",      subKey:"guideSub",      tab:"guide"   },
-    { icon:"🔧", labelKey:"trouble",    subKey:"troubleSub",    tab:"trouble" },
-    { icon:"🧫", labelKey:"starter",    subKey:"starterSub",    tab:"starter" },
+    { icon:"scale",    labelKey:"doughCalc",  subKey:"doughCalcSub",  tab:"calc" },
+    { icon:"pizza",    labelKey:"pizzaCalc",  subKey:"pizzaCalcSub",  tab:"pizza" },
+    { icon:"book",     labelKey:"recipes",    subKey:"recipesSub",    tab:"recipes" },
+    { icon:"compass",  labelKey:"guide",      subKey:"guideSub",      tab:"guide" },
+    { icon:"wrench",   labelKey:"trouble",    subKey:"troubleSub",    tab:"trouble" },
+    { icon:"flask",    labelKey:"starter",    subKey:"starterSub",    tab:"starter" },
   ];
 
   const diffRows = lang === "fa" ? [
-    ["🫓","نان تخت",    "هر آردی. فقط تابه. ۳ دقیقه کار فعال.", 1],
-    ["🍞","قالب کشتی",  "از فر استفاده می‌کند. خمیر چسبنده طبیعی است. ۵ دقیقه.", 2],
-    ["🌾","چاودار",     "سنگین، محکم. نیاز به صبر دارد. ۱۰ دقیقه.", 3],
-    ["🥖","گندم آزاد",  "بالاترین سطح مهارت. نیاز به تکنیک دارد.", 4],
+    { icon:"flatbread", name:"نان تخت",    desc:"هر آردی. ۳ دقیقه.", level:1 },
+    { icon:"loaf",      name:"قالب کشتی",  desc:"از فر. ۵ دقیقه.", level:2 },
+    { icon:"rye",       name:"چاودار",     desc:"نیاز به صبر.", level:3 },
+    { icon:"artisan",   name:"گندم آزاد",  desc:"بالاترین مهارت.", level:4 },
   ] : [
-    ["🫓","Flatbread","Any flour. Pan only. 3 min active work.",1],
-    ["🍞","Loaf Pan","Uses oven. Sticky dough is correct. 5 min.",2],
-    ["🌾","Rye Sourdough","Dense, hearty. Needs patience. 10 min.",3],
-    ["🥖","Freestanding Wheat","The supreme discipline. Requires technique.",4],
+    { icon:"flatbread", name:"Flatbread", desc:"Any flour. 3 min.", level:1 },
+    { icon:"loaf",      name:"Loaf Pan",  desc:"Uses oven. 5 min.", level:2 },
+    { icon:"rye",       name:"Rye",       desc:"Patience required.", level:3 },
+    { icon:"artisan",   name:"Artisan",   desc:"The supreme discipline.", level:4 },
   ];
 
   const bakerQuote = lang === "fa"
@@ -834,54 +1708,126 @@ function HomeTab({ setTab }) {
   const bakerSource = lang === "fa" ? "— چارچوب خمیرترش" : "— The Sourdough Framework";
 
   return (
-    <div style={{ padding:"0 16px 28px" }} className="fade-up">
-      <p style={{ fontFamily:getFont("body"), fontSize:15, color:C.sub, fontStyle:"italic", marginBottom:24, lineHeight:1.6 }}>
-        {t("taglineSub")}
-      </p>
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.8, textTransform:"uppercase", marginBottom:12 }}>{t("toolsSections")}</div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:28 }}>
+    <div style={{ padding:"0 24px 32px" }} className="fade-up">
+      <div style={{ marginBottom: 40, paddingTop: 20 }}>
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.accent,
+          fontWeight: 600, letterSpacing: "0.02em", marginBottom: 12,
+        }}>{t("appTagline").toUpperCase()}</div>
+        <h1 style={{
+          fontFamily: getFont("display"), fontSize: 56, fontWeight: 500,
+          color: C.text, lineHeight: 1, letterSpacing: "-0.035em", marginBottom: 18,
+        }}>
+          {t("appName")}
+        </h1>
+        <p style={{
+          fontFamily: BODY, fontSize: 18, color: C.textSub,
+          lineHeight: 1.5, letterSpacing: "-0.008em", maxWidth: 480,
+        }}>{t("taglineSub")}</p>
+      </div>
+
+      <div style={{
+        fontFamily: BODY, fontSize: 14, color: C.textFaint,
+        fontWeight: 600, letterSpacing: "0.02em",
+        marginBottom: 16, textTransform: "uppercase",
+      }}>{t("toolsSections")}</div>
+      <div style={{
+        display:"grid", gridTemplateColumns:"repeat(2, 1fr)",
+        gap: 12, marginBottom: 40,
+      }}>
         {cards.map(card => (
-          <button key={card.tab} onClick={() => setTab(card.tab)} className="tab-btn"
-            style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, padding:"16px 14px", textAlign:"left", cursor:"pointer", transition:"border-color 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = `${C.accent}66`}
-            onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
-          >
-            <div style={{ fontSize:28, marginBottom:8 }}>{card.icon}</div>
-            <div style={{ fontFamily:getFont("serif"), fontSize:14, color:C.text, fontWeight:700, marginBottom:3 }}>{t(card.labelKey)}</div>
-            <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.4 }}>{t(card.subKey)}</div>
-          </button>
+          <GlassPanel key={card.tab} hoverable onClick={() => setTab(card.tab)}
+            style={{ padding:"24px 20px" }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 12,
+              background: C.accentSoft,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              color: C.accent, marginBottom: 16,
+            }}>
+              <Icon name={card.icon} size={24} />
+            </div>
+            <div style={{
+              fontFamily: DISPLAY, fontSize: 19, color: C.text,
+              fontWeight: 600, marginBottom: 6, letterSpacing: "-0.015em",
+              lineHeight: 1.2,
+            }}>{t(card.labelKey)}</div>
+            <div style={{
+              fontFamily: BODY, fontSize: 14, color: C.textFaint,
+              lineHeight: 1.4, letterSpacing: "-0.005em",
+            }}>{t(card.subKey)}</div>
+          </GlassPanel>
         ))}
       </div>
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.8, textTransform:"uppercase", marginBottom:12 }}>{t("diffOverview")}</div>
-      <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, overflow:"hidden", marginBottom:24 }}>
-        {diffRows.map(([em,name,desc,d],i,arr) => (
-          <div key={name} style={{ display:"flex", alignItems:"center", gap:12, padding:"13px 16px", borderBottom: i<arr.length-1 ? `1px solid ${C.border}` : "none" }}>
-            <span style={{ fontSize:22 }}>{em}</span>
-            <div style={{ flex:1 }}>
-              <div style={{ fontFamily:getFont("serif"), fontSize:14, color:C.text, fontWeight:600 }}>{name}</div>
-              <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginTop:2 }}>{desc}</div>
+
+      <GlassPanel style={{ padding: "24px 24px 12px", marginBottom: 24 }}>
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.textFaint,
+          fontWeight: 600, letterSpacing: "0.02em",
+          textTransform: "uppercase", marginBottom: 18,
+        }}>{t("diffOverview")}</div>
+        {diffRows.map((row, i) => (
+          <div key={row.name} style={{
+            display:"flex", alignItems:"center", gap:16,
+            padding:"14px 0",
+            borderBottom: i < diffRows.length - 1 ? `1px solid ${C.divider}` : "none",
+          }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: C.accentSoft,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              color: C.accent, flexShrink: 0,
+            }}>
+              <Icon name={row.icon} size={22} />
             </div>
-            <DiffDots level={d} />
+            <div style={{ flex:1 }}>
+              <div style={{
+                fontFamily: DISPLAY, fontSize: 17, color: C.text,
+                fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 2,
+              }}>{row.name}</div>
+              <div style={{
+                fontFamily: BODY, fontSize: 14, color: C.textFaint,
+                letterSpacing: "-0.005em",
+              }}>{row.desc}</div>
+            </div>
+            <DiffDots level={row.level} />
           </div>
         ))}
-      </div>
-      <div style={{ background:`${C.accent}0D`, border:`1px solid ${C.accent}28`, borderRadius:16, padding:"18px 20px" }}>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, letterSpacing:1.8, textTransform:"uppercase", marginBottom:10 }}>{t("bakerPrinciple")}</div>
-        <p style={{ fontFamily:getFont("serif"), fontSize:16, color:C.text, fontStyle:"italic", lineHeight:1.75 }}>
+      </GlassPanel>
+
+      <GlassPanel style={{
+        padding: "28px",
+        background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+          <Icon name="sparkles" size={18} color={C.accent} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("bakerPrinciple")}</span>
+        </div>
+        <p style={{
+          fontFamily: getFont("display"), fontSize: 20, color: C.text,
+          fontStyle:"italic", lineHeight: 1.55,
+          letterSpacing: "-0.01em", fontWeight: 400,
+        }}>
           "{bakerQuote}"
         </p>
-        <p style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginTop:8 }}>{bakerSource}</p>
-      </div>
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.textFaint,
+          marginTop: 16, letterSpacing: "-0.005em",
+        }}>{bakerSource}</div>
+      </GlassPanel>
+
       <PageFooter />
     </div>
   );
 }
 
-// ─── BREAD CALCULATOR ───────────────────────────────────────────────────────
+// ─── BREAD CALCULATOR (Simplified: no presets, no loaves, 2 yeast types) ───
 function BreadCalc() {
-  const { C, t, lang, getFont, num } = useApp();
+  const { C, t, lang, num } = useApp();
   const [leavenType,   setLeavenType]   = useState("sourdough");
-  const [yeastType,    setYeastType]    = useState("dry");
+  const [yeastType,    setYeastType]    = useState("dry");  // "fresh" or "dry"
   const [inputMode,    setInputMode]    = useState("flour");
   const [flourPerLoaf, setFlourPerLoaf] = useState(500);
   const [totalWeight,  setTotalWeight]  = useState(900);
@@ -890,11 +1836,10 @@ function BreadCalc() {
   const [yeastPct,     setYeastPct]     = useState(0.5);
   const [saltPct,      setSaltPct]      = useState(2);
   const [wholeGrain,   setWholeGrain]   = useState(20);
-  const [loaves,       setLoaves]       = useState(1);
-  const [preset,       setPreset]       = useState("freestanding");
 
-  const YEAST_DEFAULTS = { fresh:2.0, dry:0.5, instant:0.4 };
-  const YEAST_RANGES   = { fresh:[0.5,5], dry:[0.2,2], instant:[0.1,1.5] };
+  // Fresh yeast = ~2%, Dry yeast = ~0.5%
+  const YEAST_DEFAULTS = { fresh: 2.0, dry: 0.5 };
+  const YEAST_RANGES   = { fresh: [0.5, 5], dry: [0.1, 2] };
   useEffect(() => { setYeastPct(YEAST_DEFAULTS[yeastType]); }, [yeastType]);
 
   const leavenPct = leavenType === "sourdough" ? starterPct : yeastPct;
@@ -902,9 +1847,9 @@ function BreadCalc() {
   const dough = useMemo(() => {
     let flour;
     if (inputMode === "flour") {
-      flour = flourPerLoaf * loaves;
+      flour = flourPerLoaf;
     } else {
-      flour = (totalWeight * loaves) / (1 + hydration/100 + leavenPct/100 + saltPct/100);
+      flour = totalWeight / (1 + hydration/100 + leavenPct/100 + saltPct/100);
     }
     const water  = flour * hydration / 100;
     const leaven = flour * leavenPct / 100;
@@ -913,32 +1858,24 @@ function BreadCalc() {
     const breadFlour = flour * (1 - wholeGrain/100);
     const wgFlour    = flour * wholeGrain / 100;
     return { flour, water, leaven, salt, total, breadFlour, wgFlour };
-  }, [inputMode, flourPerLoaf, totalWeight, hydration, leavenPct, saltPct, wholeGrain, loaves]);
+  }, [inputMode, flourPerLoaf, totalWeight, hydration, leavenPct, saltPct, wholeGrain]);
 
-  const perLoaf = { flour:dough.flour/loaves, water:dough.water/loaves, leaven:dough.leaven/loaves, salt:dough.salt/loaves, total:dough.total/loaves, breadFlour:dough.breadFlour/loaves, wgFlour:dough.wgFlour/loaves };
-  const show = loaves > 1 ? perLoaf : dough;
   const hLevel = getHydrationLevel(hydration, lang);
 
-  const applyPreset = (id) => {
-    setPreset(id);
-    const p = PRESETS.find(x => x.id===id);
-    if (p) { setHydration(p.hydration); setStarterPct(p.starter); setSaltPct(p.salt); setWholeGrain(p.wholeGrain); }
-  };
-
   const leavenLabel = leavenType === "sourdough"
-    ? `🧫 ${t("starterLabel")}: ${num(fmt(show.leaven))}g`
-    : `🍺 ${yeastType==="fresh"?t("freshYeast"):yeastType==="dry"?t("dryYeast"):t("instantYeast")} ${t("yeastLabel")}: ${num(fmt(show.leaven))}g`;
+    ? `${t("starterLabel")}: ${num(fmt(dough.leaven))}g`
+    : `${t("yeastLabel")} (${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}): ${num(fmt(dough.leaven))}g`;
 
   const getShoppingList = () => {
-    const d = show;
+    const d = dough;
     const lines = [
-      `🍞 ${t("breadCalc")}${loaves>1 ? ` (×${loaves})` : ""}`,
+      `${t("breadCalc")}`,
       ``,
-      wholeGrain>0 ? `🌾 ${t("breadFlour")}: ${num(fmt(d.breadFlour))}g` : `🌾 ${t("flour")}: ${num(fmt(d.flour))}g`,
-      wholeGrain>0 ? `🌾 ${t("wgFlour")}: ${num(fmt(d.wgFlour))}g` : null,
-      `💧 ${t("water")}: ${num(fmt(d.water))}g`,
+      wholeGrain>0 ? `${t("breadFlour")}: ${num(fmt(d.breadFlour))}g` : `${t("flour")}: ${num(fmt(d.flour))}g`,
+      wholeGrain>0 ? `${t("wgFlour")}: ${num(fmt(d.wgFlour))}g` : null,
+      `${t("water")}: ${num(fmt(d.water))}g`,
       leavenLabel,
-      `🧂 ${t("salt")}: ${num(fmt(d.salt))}g`,
+      `${t("salt")}: ${num(fmt(d.salt))}g`,
       ``,
       `${t("total")}: ${num(fmt(d.total))}g`,
       `${t("hydration")}: ${num(hydration)}%`,
@@ -948,278 +1885,258 @@ function BreadCalc() {
 
   return (
     <div>
-      {/* Leavening type */}
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:10 }}>{t("leavening")}</div>
-      <div style={{ display:"flex", background:C.card, borderRadius:12, padding:4, marginBottom:16, border:`1px solid ${C.border}` }}>
-        {[["sourdough","sourdoughOpt","sourdoughSub"],["yeast","yeastOpt","yeastSub"]].map(([id,lKey,sKey]) => (
-          <button key={id} onClick={() => setLeavenType(id)} style={{
-            flex:1, padding:"10px 6px", borderRadius:9, border:"none", cursor:"pointer",
-            background: leavenType===id ? C.accent : "transparent",
-            color: leavenType===id ? "#fff" : C.sub,
-            fontFamily:getFont("body"), fontSize:14, fontWeight:600, transition:"all 0.18s",
-          }}>
-            <div>{t(lKey)}</div>
-            <div style={{ fontSize:14, fontWeight:400, marginTop:2, opacity:0.8 }}>{t(sKey)}</div>
-          </button>
-        ))}
+      <div style={{ marginBottom: 24 }}>
+        <Label>{t("leavening")}</Label>
+        <SegmentedControl
+          value={leavenType}
+          onChange={setLeavenType}
+          options={[
+            { value:"sourdough", label:t("sourdoughOpt"), sub:t("sourdoughSub"), icon:"flask" },
+            { value:"yeast", label:t("yeastOpt"), sub:t("yeastSub"), icon:"sparkles" },
+          ]}
+        />
       </div>
 
-      {/* Yeast type sub-toggle */}
       {leavenType === "yeast" && (
-        <div style={{ display:"flex", gap:8, marginBottom:16 }}>
-          {[["fresh","freshYeast"],["dry","dryYeast"],["instant","instantYeast"]].map(([id,lKey]) => (
-            <button key={id} onClick={() => setYeastType(id)} style={{
-              flex:1, padding:"8px 4px", borderRadius:10, cursor:"pointer",
-              border:`1px solid ${yeastType===id ? C.accent : C.border}`,
-              background: yeastType===id ? `${C.accent}18` : "transparent",
-              color: yeastType===id ? C.accent : C.sub,
-              fontFamily:getFont("body"), fontSize:14, fontWeight:600,
-            }}>{t(lKey)}</button>
-          ))}
+        <div style={{ marginBottom: 24 }}>
+          <Label>{t("yeastType")}</Label>
+          <div style={{ display:"flex", gap:8 }}>
+            {[["fresh","freshYeast"],["dry","dryYeast"]].map(([id,lKey]) => (
+              <button key={id} onClick={() => setYeastType(id)} style={{
+                flex:1, padding:"12px 8px", borderRadius: 12,
+                border: `1.5px solid ${yeastType===id ? C.accent : C.divider}`,
+                background: yeastType===id ? C.accentSoft : "transparent",
+                color: yeastType===id ? C.accent : C.textSub,
+                fontFamily: BODY, fontSize: 15, fontWeight: 600,
+                transition: "all 0.2s", minHeight: 48,
+              }}>{t(lKey)}</button>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Input mode */}
-      <div style={{ display:"flex", gap:8, marginBottom:20 }}>
-        {[["flour","byFlour"],["total","byTotal"]].map(([id,lKey]) => (
-          <button key={id} onClick={() => setInputMode(id)} style={{
-            flex:1, padding:"10px 6px", borderRadius:10, cursor:"pointer",
-            border:`1px solid ${inputMode===id ? C.accent : C.border}`,
-            background: inputMode===id ? `${C.accent}15` : "transparent",
-            color: inputMode===id ? C.accent : C.sub, fontFamily:getFont("body"), fontSize:14,
-          }}>{t(lKey)}</button>
-        ))}
-      </div>
-
-      {/* Weight input */}
-      <div style={{ marginBottom:20 }}>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:8 }}>
-          {inputMode==="flour" ? t("flourPerLoaf") : t("totalDoughWeight")}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display:"flex", gap:8, marginBottom: 12 }}>
+          {[["flour","byFlour"],["total","byTotal"]].map(([id,lKey]) => (
+            <button key={id} onClick={() => setInputMode(id)} style={{
+              flex:1, padding:"12px 8px", borderRadius: 12,
+              border: `1.5px solid ${inputMode===id ? C.accent : C.divider}`,
+              background: inputMode===id ? C.accentSoft : "transparent",
+              color: inputMode===id ? C.accent : C.textSub,
+              fontFamily: BODY, fontSize: 14, fontWeight: 600,
+              transition: "all 0.2s", minHeight: 48,
+            }}>{t(lKey)}</button>
+          ))}
         </div>
         <NumInput
+          id="weight-input"
           value={inputMode==="flour" ? flourPerLoaf : totalWeight}
           onChange={v => inputMode==="flour" ? setFlourPerLoaf(v) : setTotalWeight(v)}
           step={50} min={50}
+          label={inputMode==="flour" ? t("flourPerLoaf") : t("totalDoughWeight")}
         />
         {inputMode==="flour" && (
-          <div style={{ display:"flex", gap:4, marginTop:8 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:8, marginTop:12 }}>
             {[[100,"rolls"],[500,"standard"],[1000,"large"],[2000,"mega"]].map(([n,lKey]) => (
               <button key={n} onClick={() => setFlourPerLoaf(n)} style={{
-                flex:1, padding:"6px 4px", borderRadius:8, border:`1px solid ${flourPerLoaf===n?C.accent:C.border}`,
-                background: flourPerLoaf===n ? `${C.accent}20` : "transparent",
-                color: flourPerLoaf===n ? C.accent : C.faint, fontFamily:getFont("body"), fontSize:14, cursor:"pointer", textAlign:"center",
-              }}>{num(n)}g<br/><span style={{fontSize:14}}>{t(lKey)}</span></button>
+                padding:"12px 4px", borderRadius: 10,
+                border: `1.5px solid ${flourPerLoaf===n ? C.accent : C.divider}`,
+                background: flourPerLoaf===n ? C.accentSoft : "transparent",
+                color: flourPerLoaf===n ? C.accent : C.textSub,
+                fontFamily: BODY, fontSize: 14, fontWeight: 600,
+                textAlign:"center", transition:"all 0.2s", minHeight: 56,
+                display:"flex", flexDirection:"column",
+                alignItems:"center", justifyContent:"center", gap: 4,
+              }}>
+                <span style={{ fontVariantNumeric:"tabular-nums" }}>{num(n)}g</span>
+                <span style={{fontSize:14, opacity:0.8 }}>{t(lKey)}</span>
+              </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* Presets */}
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:8 }}>{t("presets")}</div>
-      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:20 }}>
-        {PRESETS.map(p => (
-          <button key={p.id} onClick={() => applyPreset(p.id)} style={{
-            padding:"7px 12px", borderRadius:20, cursor:"pointer",
-            border:`1px solid ${preset===p.id ? C.accent : C.border}`,
-            background: preset===p.id ? `${C.accent}20` : "transparent",
-            color: preset===p.id ? C.accent : C.sub, fontFamily:getFont("body"), fontSize:14,
-          }}>{lang==="fa" ? p.nameFa : p.nameEn}</button>
-        ))}
-      </div>
-
-      {/* Sliders */}
-      <div style={{ background:C.card, borderRadius:16, padding:"20px 18px", border:`1px solid ${C.border}`, marginBottom:16 }}>
-        <Slider label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={110}
-          sublabel={`— ${hLevel.label}`}
-        />
-        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:18, marginTop:-8, padding:"8px 12px", background:`${hLevel.color}15`, borderRadius:8, border:`1px solid ${hLevel.color}30` }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:hLevel.color, fontWeight:600 }}>{hLevel.label}</span>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{hLevel.desc}</span>
+      <GlassPanel style={{ padding: "26px 22px 16px", marginBottom: 24 }}>
+        <Slider id="hydration" label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={110} />
+        <div style={{
+          display:"flex", alignItems:"center", gap:12,
+          marginTop:-4, marginBottom:22,
+          padding:"14px 16px", background: C.accentDim,
+          borderRadius: 12, border: `1px solid ${C.accentSoft}`,
+        }}>
+          <Pill color={C.accent} small>{hLevel.label}</Pill>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.textSub,
+            letterSpacing: "-0.005em",
+          }}>{hLevel.desc}</span>
         </div>
         {leavenType === "sourdough" ? (
-          <Slider label={t("starterLabel")} value={starterPct} onChange={setStarterPct} min={5} max={30} />
+          <Slider id="starter" label={t("starterLabel")} value={starterPct} onChange={setStarterPct} min={5} max={30} />
         ) : (
           <Slider
-            label={`${t("yeastLabel")} (${yeastType==="fresh"?t("freshYeast"):yeastType==="dry"?t("dryYeast"):t("instantYeast")})`}
+            id="yeast"
+            label={`${t("yeastLabel")} · ${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}`}
             value={yeastPct} onChange={setYeastPct}
             min={YEAST_RANGES[yeastType][0]} max={YEAST_RANGES[yeastType][1]} step={0.05}
           />
         )}
-        <Slider label={t("salt")} value={saltPct} onChange={setSaltPct} min={1.5} max={3} step={0.1} />
-        <Slider label={t("wholeGrain")} value={wholeGrain} onChange={setWholeGrain} min={0} max={100}
+        <Slider id="salt" label={t("salt")} value={saltPct} onChange={setSaltPct} min={1.5} max={3} step={0.1} />
+        <Slider id="wholegrain" label={t("wholeGrain")} value={wholeGrain} onChange={setWholeGrain} min={0} max={100}
           sublabel={t("ofTotalFlour")}
         />
-      </div>
+      </GlassPanel>
 
-      {/* Loaves */}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 16px", marginBottom:20 }}>
-        <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>{t("numLoaves")}</span>
-        <div style={{ display:"flex", alignItems:"center", gap:16 }}>
-          <button onClick={() => setLoaves(Math.max(1,loaves-1))} style={{ width:34,height:34,borderRadius:"50%",border:`1px solid ${C.border}`,background:"transparent",color:C.text,fontSize:20,cursor:"pointer",userSelect:"none" }}>−</button>
-          <span style={{ fontFamily:getFont("serif"), fontSize:24, color:C.accent, fontWeight:700, minWidth:28, textAlign:"center" }}>{num(loaves)}</span>
-          <button onClick={() => setLoaves(loaves+1)} style={{ width:34,height:34,borderRadius:"50%",border:`1px solid ${C.border}`,background:"transparent",color:C.text,fontSize:20,cursor:"pointer",userSelect:"none" }}>+</button>
-        </div>
-      </div>
-
-      {/* Results */}
-      <div style={{ background:C.resultBg, border:`1px solid ${C.accent}35`, borderRadius:20, padding:"20px 20px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, textTransform:"uppercase", letterSpacing:1.5 }}>
-            {loaves>1 ? `${t("perLoaf")} (×${num(loaves)})` : t("yourFormula")}
+      <GlassPanel style={{
+        padding: "24px 24px 22px",
+        background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`,
+      }}>
+        <div style={{
+          display:"flex", justifyContent:"space-between",
+          alignItems:"center", marginBottom: 18, paddingBottom: 14,
+          borderBottom: `1px solid ${C.divider}`,
+          flexWrap: "wrap", gap: 12,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>
+            {t("yourFormula")}
           </span>
-          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-            {loaves>1 && <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{t("total")}: {num(fmt(dough.total))}g</span>}
-            <CopyButton getText={getShoppingList} />
-          </div>
+          <CopyButton getText={getShoppingList} />
         </div>
 
-        {/* Flour rows */}
         {wholeGrain > 0 ? (
           <>
-            <div style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-              <div>
-                <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🌾 {t("breadFlour")}</span>
-                <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(100-wholeGrain)}%</span>
-              </div>
-              <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.breadFlour))}g</span>
-            </div>
-            <div style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-              <div>
-                <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🌾 {t("wgFlour")}</span>
-                <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(wholeGrain)}%</span>
-              </div>
-              <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.wgFlour))}g</span>
-            </div>
+            <ResultRow icon="wheat" label={t("breadFlour")} sub={`${num(100-wholeGrain)}%`} value={dough.breadFlour} />
+            <ResultRow icon="rye" label={t("wgFlour")} sub={`${num(wholeGrain)}%`} value={dough.wgFlour} />
           </>
         ) : (
-          <div style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-            <div>
-              <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🌾 {t("flour")}</span>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>100%</span>
-            </div>
-            <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.flour))}g</span>
-          </div>
+          <ResultRow icon="wheat" label={t("flour")} sub="100%" value={dough.flour} />
         )}
+        <ResultRow icon="droplet" label={t("water")} sub={`${num(hydration)}%`} value={dough.water} />
+        <ResultRow
+          icon={leavenType === "sourdough" ? "flask" : "sparkles"}
+          label={leavenType === "sourdough" ? t("starterLabel") : `${yeastType==="fresh"?t("freshYeast"):t("dryYeast")} ${t("yeastLabel")}`}
+          sub={`${num(leavenPct)}%`}
+          value={dough.leaven}
+        />
+        <ResultRow icon="salt" label={t("salt")} sub={`${num(saltPct)}%`} value={dough.salt} />
 
-        <div style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-          <div>
-            <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>💧 {t("water")}</span>
-            <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(hydration)}%</span>
-          </div>
-          <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.water))}g</span>
+        <div style={{
+          paddingTop: 18, marginTop: 14,
+          display:"flex", justifyContent:"space-between", alignItems:"baseline",
+          borderTop: `2px solid ${C.divider}`,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("total")}</span>
+          <span style={{
+            fontFamily: DISPLAY, fontSize: 36, color: C.accent,
+            fontWeight: 600, letterSpacing: "-0.02em",
+            fontVariantNumeric:"tabular-nums",
+          }}>
+            {num(fmt(dough.total))}<span style={{fontSize: 15, marginLeft: 4, color: C.textFaint}}>g</span>
+          </span>
         </div>
+        <div style={{
+          marginTop: 12, fontFamily: BODY, fontSize: 14,
+          color: C.textFaint, fontStyle:"italic",
+          textAlign:"right", letterSpacing: "-0.005em",
+        }}>
+          {getWeightFun(dough.total, lang)}
+        </div>
+      </GlassPanel>
 
-        {/* Leavening row */}
-        <div style={{ padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-          {leavenType === "sourdough" ? (
-            <div style={{ display:"flex", justifyContent:"space-between" }}>
-              <div>
-                <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🧫 {t("starterLabel")}</span>
-                <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(starterPct)}%</span>
-              </div>
-              <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.leaven))}g</span>
-            </div>
-          ) : (
-            <>
-              <div style={{ display:"flex", justifyContent:"space-between" }}>
-                <div>
-                  <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🍺 {yeastType==="fresh"?t("freshYeast"):yeastType==="dry"?t("dryYeast"):t("instantYeast")} {t("yeastLabel")}</span>
-                  <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(yeastPct)}%</span>
-                </div>
-                <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.leaven))}g</span>
-              </div>
-              {yeastType==="fresh" && (
-                <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-                  <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:4 }}>
-                    ≈ {t("activeDry")}: {num(fmt2(show.flour * 0.0050 * (yeastPct/2)))}g  /  {t("instant")}: {num(fmt2(show.flour * 0.0040 * (yeastPct/2)))}g
-                  </span>
-                </div>
-              )}
-            </>
-          )}
+      <GlassPanel style={{ marginTop: 20, overflow:"hidden" }}>
+        <div style={{ padding:"16px 22px", borderBottom:`1px solid ${C.divider}` }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("hydGuide")}</span>
         </div>
-
-        <div style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-          <div>
-            <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🧂 {t("salt")}</span>
-            <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginLeft:8 }}>{num(saltPct)}%</span>
-          </div>
-          <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(show.salt))}g</span>
-        </div>
-
-        <div style={{ paddingTop:16, marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.accent }}>{t("total")}</span>
-          <span style={{ fontFamily:getFont("serif"), fontSize:24, color:C.accent, fontWeight:700 }}>{num(fmt(show.total))}g</span>
-        </div>
-        <div style={{ marginTop:8, fontFamily:getFont("body"), fontSize:14, color:C.faint, fontStyle:"italic", textAlign:"right" }}>
-          {getWeightFun(loaves>1 ? dough.total : show.total, lang)}
-        </div>
-      </div>
-
-      {/* Hydration reference */}
-      <div style={{ marginTop:18, background:C.card, border:`1px solid ${C.border}`, borderRadius:14, overflow:"hidden" }}>
-        <div style={{ padding:"12px 16px", borderBottom:`1px solid ${C.border}` }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.5, textTransform:"uppercase" }}>{t("hydGuide")}</span>
-        </div>
-        {HYDRATION_LEVELS.map(l => {
+        {HYDRATION_LEVELS.map((l, i, arr) => {
           const label = lang==="fa" ? l.labelFa : l.label;
           const desc  = lang==="fa" ? l.descFa  : l.desc;
+          const active = hydration>=l.range[0]&&hydration<=l.range[1];
           return (
-            <div key={l.label} style={{ display:"flex", gap:12, alignItems:"center", padding:"10px 16px", borderBottom:`1px solid ${C.border}`, background: hydration>=l.range[0]&&hydration<=l.range[1] ? `${l.color}12` : "transparent" }}>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:l.color, fontWeight:600, minWidth:100 }}>{num(l.range[0])}–{num(l.range[1])}%  {label}</span>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{desc}</span>
+            <div key={l.label} style={{
+              display:"flex", gap:14, alignItems:"center",
+              padding:"14px 22px",
+              borderBottom: i<arr.length-1 ? `1px solid ${C.divider}` : "none",
+              background: active ? C.accentDim : "transparent",
+            }}>
+              <span style={{
+                fontFamily: DISPLAY, fontSize: 15,
+                color: active ? C.accent : C.textSub,
+                fontWeight: 600, minWidth: 90,
+                fontVariantNumeric:"tabular-nums",
+              }}>{num(l.range[0])}–{num(l.range[1])}%</span>
+              <div style={{ flex:1 }}>
+                <div style={{
+                  fontFamily: BODY, fontSize: 15,
+                  color: active ? C.accent : C.text,
+                  fontWeight: 600, marginBottom: 2,
+                }}>{label}</div>
+                <div style={{
+                  fontFamily: BODY, fontSize: 14, color: C.textFaint,
+                }}>{desc}</div>
+              </div>
             </div>
           );
         })}
-      </div>
+      </GlassPanel>
     </div>
   );
 }
 
-// ─── PIZZA CALCULATOR ───────────────────────────────────────────────────────
+// ─── PIZZA CALCULATOR ──────────────────────────────────────────────────────
 function PizzaCalc() {
-  const { C, t, lang, getFont, num } = useApp();
+  const { C, t, lang, num } = useApp();
   const [doughType,    setDoughType]    = useState("yeast");
   const [ovenType,     setOvenType]     = useState("home");
   const [pizzaCount,   setPizzaCount]   = useState(4);
   const [ballWeight,   setBallWeight]   = useState(270);
   const [hydration,    setHydration]    = useState(60);
   const [showToppings, setShowToppings] = useState(false);
+  const [yeastType,    setYeastType]    = useState("dry");
 
   const oven = PIZZA_OVENS.find(o => o.id === ovenType);
   useEffect(() => { setBallWeight(PIZZA_OVENS.find(o=>o.id===ovenType)?.defaultWeight||270); }, [ovenType]);
 
   const pizza = useMemo(() => {
     const totalDough = pizzaCount * ballWeight;
-    const yeastPct   = doughType==="yeast" ? 0.15 : 5;
-    const saltPct    = 2;
+    // Yeast %: fresh=0.3%, dry=0.1% ; Sourdough starter=5%
+    const yeastPct = doughType === "yeast" ? (yeastType === "fresh" ? 0.3 : 0.1) : 5;
+    const saltPct = 2;
     const starterOrYeast = yeastPct / 100;
     const flour  = totalDough / (1 + hydration/100 + saltPct/100 + starterOrYeast);
     const water  = flour * hydration / 100;
     const salt   = flour * saltPct  / 100;
-    const yeast    = flour * 0.0015;
-    const yeastDry = flour * 0.0005;
+    // Yeast calculations: fresh is 3× dry
+    const dryYeastAmt = flour * 0.001;       // 0.1% dry
+    const freshYeastAmt = flour * 0.003;     // 0.3% fresh
     const starter  = flour * 0.05;
     const mozzarella   = 80 * pizzaCount;
     const tomatoSauce  = 60 * pizzaCount;
     const oliveOil     = 6  * pizzaCount;
     const basil        = 10 * pizzaCount;
     const basilPots    = Math.ceil(basil / 80);
-    return { totalDough, flour, water, salt, yeast, yeastDry, starter, mozzarella, tomatoSauce, oliveOil, basil, basilPots };
-  }, [pizzaCount, ballWeight, hydration, doughType]);
+    return { totalDough, flour, water, salt, freshYeastAmt, dryYeastAmt, starter, mozzarella, tomatoSauce, oliveOil, basil, basilPots };
+  }, [pizzaCount, ballWeight, hydration, doughType, yeastType]);
 
   const hLevel = getHydrationLevel(hydration, lang);
 
   const getShoppingList = () => {
     const lines = [
-      `🍕 ${t("pizzaCalcTitle")} — ${num(pizzaCount)} ${lang==="fa"?"پیتزا":"pizza"}${pizzaCount>1&&lang!=="fa"?"s":""}`,
+      `${t("pizzaCalcTitle")} — ${num(pizzaCount)} ${lang==="fa"?"پیتزا":"pizza"}${pizzaCount>1&&lang!=="fa"?"s":""}`,
       ``,
-      `🌾 ${lang==="fa"?"آرد (نان یا ۰۰)":"Flour (bread or 00)"}: ${num(fmt(pizza.flour))}g`,
-      `💧 ${t("water")}: ${num(fmt(pizza.water))}g`,
-      `🧂 ${t("salt")}: ${num(fmt(pizza.salt))}g`,
+      `${lang==="fa"?"آرد":"Flour"}: ${num(fmt(pizza.flour))}g`,
+      `${t("water")}: ${num(fmt(pizza.water))}g`,
+      `${t("salt")}: ${num(fmt(pizza.salt))}g`,
       doughType==="yeast"
-        ? `🍺 ${t("freshYeastLabel")}: ${num(fmt2(pizza.yeast))}g  (${t("orDryYeast")}: ${num(fmt2(pizza.yeastDry))}g)`
-        : `🧫 ${t("activeStarter")}: ${num(fmt(pizza.starter))}g`,
+        ? `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g  (${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g)`
+        : `${t("activeStarter")}: ${num(fmt(pizza.starter))}g`,
     ].filter(Boolean);
     return lines.join("\n");
   };
@@ -1227,157 +2144,372 @@ function PizzaCalc() {
   const partyMsg = pizzaCount===1?t("soloMode"):pizzaCount===2?t("dateNight"):pizzaCount<=4?t("pizzaParty"):pizzaCount<=8?t("bigGathering"):t("fullBakery");
 
   const pizzaTips = lang === "fa" ? [
-    ["🕐","تخمیر آهسته سلاح مخفی شماست","مخمر کم یا خمیرترش + تخمیر طولانی و سرد طعم و کشسانی را به طور چشمگیری بهبود می‌دهد."],
-    ["🌡️","حرارت بالا ضروری است","تا حد امکان داغ پیش‌گرم کنید. سنگ یا صفحه فولادی پیتزا روی طبقه بالایی ایده‌آل است."],
-    ["🤌","با توپینگ‌ها کمتر بیشتر است","چند ماده باکیفیت همیشه از انبوهی از توپینگ‌ها بهتر است."],
+    { icon:"timer", title:"تخمیر آهسته سلاح شماست", body:"مخمر کم + تخمیر طولانی طعم را بهبود می‌دهد." },
+    { icon:"flame", title:"حرارت بالا ضروری", body:"سنگ یا صفحه فولادی روی طبقه بالایی." },
+    { icon:"sparkles", title:"کمتر، بیشتر است", body:"مواد باکیفیت بهتر از انبوه توپینگ‌ها." },
   ] : [
-    ["🕐","Slow fermentation is your secret weapon","Low yeast or sourdough + long, cold rise dramatically improves flavor and stretch."],
-    ["🌡️","High heat is essential","Preheat as hot as possible. A pizza stone or steel baking on top rack is ideal."],
-    ["🤌","Less is more with toppings","A few quality ingredients beat a mountain of toppings every time."],
+    { icon:"timer", title:"Slow fermentation is your secret weapon", body:"Low yeast + long, cold rise improves flavor dramatically." },
+    { icon:"flame", title:"High heat is essential", body:"Preheat as hot as possible. Stone or steel on top rack is ideal." },
+    { icon:"sparkles", title:"Less is more with toppings", body:"A few quality ingredients beat a mountain every time." },
   ];
 
   return (
     <div>
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:10 }}>{t("doughType")}</div>
-      <div style={{ display:"flex", background:C.card, borderRadius:12, padding:4, marginBottom:20, border:`1px solid ${C.border}` }}>
-        {[["yeast","yeastPizza","yeastPizzaSub"],["sourdough","sourdoughPizza","sourdoughPizzaSub"]].map(([id,lKey,sKey]) => (
-          <button key={id} onClick={() => setDoughType(id)} style={{
-            flex:1, padding:"10px 6px", borderRadius:9, border:"none", cursor:"pointer",
-            background: doughType===id ? C.accent : "transparent",
-            color: doughType===id ? "#fff" : C.sub,
-            fontFamily:getFont("body"), fontSize:14, fontWeight:600, transition:"all 0.18s",
-          }}>
-            <div>{t(lKey)}</div>
-            <div style={{ fontSize:14, fontWeight:400, marginTop:2, opacity:0.8 }}>{t(sKey)}</div>
-          </button>
-        ))}
+      <div style={{ marginBottom: 24 }}>
+        <Label>{t("doughType")}</Label>
+        <SegmentedControl
+          value={doughType}
+          onChange={setDoughType}
+          options={[
+            { value:"yeast", label:t("yeastPizza"), sub:t("yeastPizzaSub"), icon:"sparkles" },
+            { value:"sourdough", label:t("sourdoughPizza"), sub:t("sourdoughPizzaSub"), icon:"flask" },
+          ]}
+        />
       </div>
 
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:10 }}>{t("yourOven")}</div>
-      <div style={{ display:"flex", gap:8, marginBottom:12 }}>
-        {PIZZA_OVENS.map(o => (
-          <button key={o.id} onClick={() => setOvenType(o.id)} style={{
-            flex:1, padding:"10px 6px", borderRadius:12, cursor:"pointer", textAlign:"center",
-            border:`1px solid ${ovenType===o.id ? C.accent : C.border}`,
-            background: ovenType===o.id ? `${C.accent}18` : C.card,
-            color: ovenType===o.id ? C.accent : C.sub, fontFamily:getFont("body"), fontSize:14, lineHeight:1.4,
-          }}>{lang==="fa"?o.nameFa:o.nameEn}<br/><span style={{ fontSize:14, color:C.faint }}>{o.temp}</span></button>
-        ))}
-      </div>
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, fontStyle:"italic", marginBottom:20, padding:"10px 14px", background:`${C.accent}0A`, borderRadius:10, border:`1px solid ${C.accent}20` }}>
-        💡 {lang==="fa" ? oven?.tipFa : oven?.tip}
-      </div>
-
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:25, marginBottom:20 }}>
-        <div>
-          <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:8 }}>{t("pizzas")}</div>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 12px" }}>
-            <button onClick={() => setPizzaCount(Math.max(1,pizzaCount-1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>−</button>
-            <span style={{ fontFamily:getFont("serif"), fontSize:26, color:C.accent, fontWeight:700 }}>{num(pizzaCount)}</span>
-            <button onClick={() => setPizzaCount(Math.min(20,pizzaCount+1))} style={{ background:"transparent", border:"none", color:C.sub, fontSize:22, cursor:"pointer", userSelect:"none" }}>+</button>
+      {doughType === "yeast" && (
+        <div style={{ marginBottom: 24 }}>
+          <Label>{t("yeastType")}</Label>
+          <div style={{ display:"flex", gap:8 }}>
+            {[["fresh","freshYeast"],["dry","dryYeast"]].map(([id,lKey]) => (
+              <button key={id} onClick={() => setYeastType(id)} style={{
+                flex:1, padding:"12px 8px", borderRadius: 12,
+                border: `1.5px solid ${yeastType===id ? C.accent : C.divider}`,
+                background: yeastType===id ? C.accentSoft : "transparent",
+                color: yeastType===id ? C.accent : C.textSub,
+                fontFamily: BODY, fontSize: 15, fontWeight: 600,
+                transition: "all 0.2s", minHeight: 48,
+              }}>{t(lKey)}</button>
+            ))}
           </div>
-          <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginTop:5, textAlign:"center" }}>{partyMsg}</div>
         </div>
-        <div style={{ minWidth:0 }}>
-          <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:8 }}>{t("gramsPerPizza")}</div>
-          <NumInput value={ballWeight} onChange={setBallWeight} step={10} min={150} unit="g" />
-          <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, marginTop:5, textAlign:"center" }}>
+      )}
+
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1.6fr", gap:16, marginBottom:28 }}>
+        <div style={{ minWidth: 0 }}>
+          <Label>{t("pizzas")}</Label>
+          <div style={{
+            display:"flex", alignItems:"center", justifyContent:"space-between",
+            background: C.bgAlt, border: `1px solid ${C.divider}`,
+            borderRadius: 14, padding:"8px 10px", boxShadow: C.shadowSm,
+          }}>
+            <button onClick={() => setPizzaCount(Math.max(1,pizzaCount-1))} aria-label="Decrease" style={{
+              background:"transparent", color: C.textFaint,
+              width: 40, height: 40,
+              display:"flex", alignItems:"center", justifyContent:"center",
+            }}>
+              <Icon name="minus" size={18} />
+            </button>
+            <span style={{
+              fontFamily: DISPLAY, fontSize: 32, color: C.accent,
+              fontWeight: 600, fontVariantNumeric:"tabular-nums",
+              letterSpacing: "-0.02em",
+            }}>{num(pizzaCount)}</span>
+            <button onClick={() => setPizzaCount(Math.min(20,pizzaCount+1))} aria-label="Increase" style={{
+              background:"transparent", color: C.textFaint,
+              width: 40, height: 40,
+              display:"flex", alignItems:"center", justifyContent:"center",
+            }}>
+              <Icon name="plus" size={18} />
+            </button>
+          </div>
+          <div style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint,
+            marginTop: 10, textAlign:"center", letterSpacing: "-0.005em",
+          }}>{partyMsg}</div>
+        </div>
+        <div style={{ minWidth: 0, overflow: "hidden" }}>
+          <NumInput
+            id="ball-weight"
+            value={ballWeight}
+            onChange={setBallWeight}
+            step={10} min={150} unit="g"
+            label={t("pizzaDoughWeight")}
+          />
+          <div style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint,
+            marginTop: 8, textAlign:"center", letterSpacing: "-0.005em",
+          }}>
             {ovenType==="home" ? t("homeFor") : t("proFor")}
           </div>
         </div>
       </div>
 
-      <div style={{ background:C.card, borderRadius:16, padding:"20px 18px", border:`1px solid ${C.border}`, marginBottom:20 }}>
-        <Slider label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={75} sublabel={`— ${hLevel.label}`} />
-        <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:-8, padding:"8px 12px", background:`${hLevel.color}15`, borderRadius:8, border:`1px solid ${hLevel.color}30` }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:hLevel.color, fontWeight:600 }}>{hLevel.label}</span>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{hLevel.desc}</span>
+      <GlassPanel style={{ padding: "26px 22px 12px", marginBottom: 28 }}>
+        <Slider id="pizza-hyd" label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={75} />
+        <div style={{
+          display:"flex", alignItems:"center", gap:12,
+          marginTop:-4, marginBottom:16,
+          padding:"14px 16px", background: C.accentDim,
+          borderRadius: 12, border: `1px solid ${C.accentSoft}`,
+        }}>
+          <Pill color={C.accent} small>{hLevel.label}</Pill>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.textSub,
+            letterSpacing: "-0.005em",
+          }}>{hLevel.desc}</span>
         </div>
-      </div>
+      </GlassPanel>
 
-      <div style={{ background:C.resultBg, border:`1px solid ${C.accent}35`, borderRadius:20, padding:"20px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, textTransform:"uppercase", letterSpacing:1.5 }}>
-            {num(pizzaCount)} {lang==="fa"?"پیتزا":"Pizza"}{pizzaCount>1&&lang!=="fa"?"s":""} — {num(fmt(pizza.totalDough))}g {t("totalDough")}
+      <GlassPanel style={{
+        padding: "24px 24px 22px",
+        background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`,
+      }}>
+        <div style={{
+          display:"flex", justifyContent:"space-between",
+          alignItems:"center", marginBottom: 18, paddingBottom: 14,
+          borderBottom: `1px solid ${C.divider}`,
+          flexWrap: "wrap", gap: 12,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>
+            {num(pizzaCount)} {lang==="fa"?"پیتزا":"Pizza"}{pizzaCount>1&&lang!=="fa"?"s":""} · {num(fmt(pizza.totalDough))}g
           </span>
           <CopyButton getText={getShoppingList} />
         </div>
-        {[
-          [`🌾 ${lang==="fa"?"آرد (نان یا ۰۰)":"Flour (bread or 00)"}`, `${num(fmt(pizza.flour))}g`],
-          [`💧 ${t("water")}`,  `${num(fmt(pizza.water))}g`],
-          [`🧂 ${t("salt")}`,   `${num(fmt(pizza.salt))}g`],
-        ].map(([lbl,val]) => (
-          <div key={lbl} style={{ display:"flex", justifyContent:"space-between", padding:"11px 0", borderBottom:`1px solid ${C.border}` }}>
-            <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>{lbl}</span>
-            <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{val}</span>
-          </div>
-        ))}
+        <ResultRow icon="wheat" label={lang==="fa"?"آرد":"Flour"} value={pizza.flour} />
+        <ResultRow icon="droplet" label={t("water")} value={pizza.water} />
+        <ResultRow icon="salt" label={t("salt")} value={pizza.salt} />
         {doughType==="yeast" ? (
-          <div style={{ padding:"11px 0", borderBottom:`1px solid ${C.border}` }}>
-            <div style={{ display:"flex", justifyContent:"space-between" }}>
-              <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🍺 {t("freshYeastLabel")}</span>
-              <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt2(pizza.yeast))}g</span>
+          <>
+            <ResultRow icon="sparkles" label={`${yeastType==="fresh"?t("freshYeast"):t("dryYeast")} ${t("yeastLabel")}`} value={yeastType==="fresh"?pizza.freshYeastAmt:pizza.dryYeastAmt} />
+            <div style={{
+              padding:"6px 0 12px",
+              borderBottom:`1px solid ${C.dividerSoft}`,
+              paddingLeft: 44,
+            }}>
+              <span style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint }}>
+                {yeastType==="fresh" ? `${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g` : `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g`}
+              </span>
             </div>
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint }}>  {t("orDryYeast")}</span>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint }}>{num(fmt2(pizza.yeastDry))}g</span>
-            </div>
-          </div>
+          </>
         ) : (
-          <div style={{ display:"flex", justifyContent:"space-between", padding:"11px 0", borderBottom:`1px solid ${C.border}` }}>
-            <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>🧫 {t("activeStarter")}</span>
-            <span style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text }}>{num(fmt(pizza.starter))}g</span>
-          </div>
+          <ResultRow icon="flask" label={t("activeStarter")} value={pizza.starter} />
         )}
-        <div style={{ paddingTop:14, display:"flex", justifyContent:"space-between" }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.accent }}>{t("totalDough")}</span>
-          <span style={{ fontFamily:getFont("serif"), fontSize:22, color:C.accent, fontWeight:700 }}>{num(fmt(pizza.totalDough))}g</span>
+        <div style={{
+          paddingTop: 18,
+          display:"flex", justifyContent:"space-between", alignItems:"baseline",
+          marginTop: 12, borderTop: `2px solid ${C.divider}`,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("totalDough")}</span>
+          <span style={{
+            fontFamily: DISPLAY, fontSize: 30, color: C.accent,
+            fontWeight: 600, fontVariantNumeric:"tabular-nums",
+            letterSpacing: "-0.02em",
+          }}>
+            {num(fmt(pizza.totalDough))}<span style={{fontSize: 14, marginLeft: 3, color: C.textFaint}}>g</span>
+          </span>
         </div>
-      </div>
+      </GlassPanel>
 
-      {/* Toppings */}
-      <div style={{ marginTop:16, background:C.card, border:`1px solid ${C.border}`, borderRadius:16, overflow:"hidden" }}>
-        <button onClick={() => setShowToppings(!showToppings)} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", width:"100%", padding:"14px 16px", background:"transparent", border:"none", cursor:"pointer" }}>
-          <span style={{ fontFamily:getFont("serif"), fontSize:16, color:C.text, fontWeight:600 }}>{t("toppingsBtn")}</span>
-          <span style={{ color:C.faint, fontSize:18, transform: showToppings?"rotate(90deg)":"none", transition:"transform 0.2s" }}>›</span>
+      {/* Margarita Toppings — BEFORE Your Oven */}
+      <GlassPanel style={{ marginTop: 20, overflow:"hidden" }}>
+        <button onClick={() => setShowToppings(!showToppings)} style={{
+          display:"flex", alignItems:"center", justifyContent:"space-between",
+          width:"100%", padding:"18px 22px",
+          background:"transparent", minHeight: 60,
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap: 12 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: C.accentSoft,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              color: C.accent,
+            }}>
+              <Icon name="tomato" size={20} />
+            </div>
+            <span style={{
+              fontFamily: DISPLAY, fontSize: 18, color: C.text,
+              fontWeight: 600, letterSpacing: "-0.01em",
+            }}>{t("toppingsBtn")}</span>
+          </div>
+          <div style={{
+            color: C.textFaint,
+            transform: showToppings ? "rotate(90deg)" : "none",
+            transition:"transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+          }}>
+            <Icon name="chevronRight" size={22} />
+          </div>
         </button>
         {showToppings && (
-          <div style={{ borderTop:`1px solid ${C.border}`, padding:"14px 16px" }}>
-            {[
-              [`🧀 ${lang==="fa"?"موتزارلا":"Mozzarella"}`,    `${num(pizza.mozzarella)}g`],
-              [`🍅 ${lang==="fa"?"سس گوجه":"Tomato sauce"}`,   `${num(pizza.tomatoSauce)}g`],
-              [`🫒 ${lang==="fa"?"روغن زیتون":"Olive oil"}`,   `${num(pizza.oliveOil)}ml`],
-              [`🌿 ${lang==="fa"?"ریحان":"Basil leaves"}`,     `${num(pizza.basil)}g  (≈ ${num(pizza.basilPots)} ${lang==="fa"?"گلدان":"pot"}${pizza.basilPots>1&&lang!=="fa"?"s":""})`],
-            ].map(([lbl,val]) => (
-              <div key={lbl} style={{ display:"flex", justifyContent:"space-between", marginBottom:10 }}>
-                <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>{lbl}</span>
-                <span style={{ fontFamily:getFont("serif"), fontSize:15, color:C.text }}>{val}</span>
+          <div style={{
+            borderTop:`1px solid ${C.divider}`,
+            padding:"16px 22px 18px", background: C.accentDim,
+          }}>
+            <ResultRow icon="cheese" label={lang==="fa"?"موتزارلا":"Mozzarella"} value={pizza.mozzarella} />
+            <ResultRow icon="tomato" label={lang==="fa"?"سس گوجه":"Tomato sauce"} value={pizza.tomatoSauce} />
+            <ResultRow icon="olive" label={lang==="fa"?"روغن زیتون":"Olive oil"} value={pizza.oliveOil} />
+            <div style={{
+              display:"flex", justifyContent:"space-between",
+              alignItems:"center", padding:"12px 0", gap: 12,
+            }}>
+              <div style={{ display:"flex", alignItems:"center", gap: 12 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: C.accentSoft,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  color: C.accent,
+                }}>
+                  <Icon name="leaf" size={18} />
+                </div>
+                <span style={{
+                  fontFamily: BODY, fontSize: 15, color: C.text, fontWeight: 500,
+                }}>{lang==="fa"?"ریحان":"Basil leaves"}</span>
               </div>
-            ))}
+              <span style={{
+                fontFamily: DISPLAY, fontSize: 17, color: C.text,
+                fontWeight: 600, fontVariantNumeric:"tabular-nums",
+              }}>
+                {num(pizza.basil)}g
+                <span style={{fontSize: 14, color: C.textFaint, marginLeft: 6, fontFamily: BODY }}>
+                  (≈ {num(pizza.basilPots)} {lang==="fa"?"گلدان":"pot"}{pizza.basilPots>1&&lang!=="fa"?"s":""})
+                </span>
+              </span>
+            </div>
           </div>
+        )}
+      </GlassPanel>
+
+      {/* Your Oven — moved here, AFTER toppings, BIGGER */}
+      <div style={{ marginTop: 28 }}>
+        <div style={{
+          display:"flex", alignItems:"center", gap: 8, marginBottom: 16,
+        }}>
+          <Icon name="flame" size={18} color={C.accent} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("yourOven")}</span>
+        </div>
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(3, 1fr)",
+          gap:10,
+          marginBottom: 16,
+        }}>
+          {PIZZA_OVENS.map(o => {
+            const active = ovenType === o.id;
+            return (
+              <GlassPanel key={o.id} hoverable
+                onClick={() => setOvenType(o.id)}
+                style={{
+                  padding:"20px 12px",
+                  textAlign:"center",
+                  border: active ? `2px solid ${C.accent}` : `1px solid ${C.glassBorder}`,
+                  background: active
+                    ? `linear-gradient(135deg, ${C.accentSoft}, ${C.glass})`
+                    : C.glass,
+                  minHeight: 120,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: 12,
+                  background: active ? C.accent : C.accentSoft,
+                  color: active ? "#FFFFFF" : C.accent,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  transition: "all 0.25s",
+                }}>
+                  <Icon name={o.icon} size={26} color={active ? "#FFFFFF" : C.accent} />
+                </div>
+                <div style={{
+                  fontFamily: DISPLAY, fontSize: 17,
+                  fontWeight: 600, color: active ? C.accent : C.text,
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.2,
+                }}>{lang==="fa"?o.nameFa:o.nameEn}</div>
+                <div style={{
+                  fontFamily: BODY, fontSize: 14,
+                  color: C.textFaint, fontVariantNumeric:"tabular-nums",
+                  fontWeight: 500,
+                }}>{o.temp}</div>
+              </GlassPanel>
+            );
+          })}
+        </div>
+
+        {oven && (
+          <GlassPanel style={{
+            padding:"18px 20px",
+            background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`,
+            border: `1px solid ${C.accentSoft}`,
+          }}>
+            <div style={{
+              display:"flex", gap: 14, alignItems:"flex-start",
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: C.accentSoft,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                color: C.accent, flexShrink: 0,
+              }}>
+                <Icon name={oven.icon} size={22} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontFamily: DISPLAY, fontSize: 18, color: C.accent,
+                  fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em",
+                }}>{lang==="fa"?oven.nameFa:oven.nameEn}</div>
+                <div style={{
+                  fontFamily: BODY, fontSize: 15, color: C.textSub,
+                  lineHeight: 1.55, letterSpacing: "-0.005em",
+                }}>
+                  {lang==="fa" ? oven.tipFa : oven.tip}
+                </div>
+              </div>
+            </div>
+          </GlassPanel>
         )}
       </div>
 
-      {/* Pizza tips */}
-      <div style={{ marginTop:16, background:`${C.accent}0D`, border:`1px solid ${C.accent}28`, borderRadius:16, padding:"16px" }}>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, textTransform:"uppercase", letterSpacing:1.5, marginBottom:12 }}>{t("proTips")}</div>
-        {pizzaTips.map(([icon,title,body]) => (
-          <div key={title} style={{ display:"flex", gap:12, marginBottom:12 }}>
-            <span style={{ fontSize:20, flexShrink:0 }}>{icon}</span>
+      <GlassPanel style={{ marginTop: 24, padding: "24px 22px" }}>
+        <div style={{
+          display:"flex", alignItems:"center", gap: 8, marginBottom: 20,
+        }}>
+          <Icon name="sparkles" size={18} color={C.accent} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("proTips")}</span>
+        </div>
+        {pizzaTips.map(tip => (
+          <div key={tip.title} style={{ display:"flex", gap:14, marginBottom: 16 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: C.accentSoft,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              color: C.accent, flexShrink:0,
+            }}>
+              <Icon name={tip.icon} size={20} />
+            </div>
             <div>
-              <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.text, fontWeight:600, marginBottom:3 }}>{title}</div>
-              <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.55 }}>{body}</div>
+              <div style={{
+                fontFamily: DISPLAY, fontSize: 16, color: C.text,
+                fontWeight: 600, marginBottom: 4, letterSpacing: "-0.01em",
+              }}>{tip.title}</div>
+              <div style={{
+                fontFamily: BODY, fontSize: 15, color: C.textSub,
+                lineHeight: 1.55, letterSpacing: "-0.005em",
+              }}>{tip.body}</div>
             </div>
           </div>
         ))}
-      </div>
+      </GlassPanel>
     </div>
   );
 }
 
-// ─── STARTER CALCULATOR ─────────────────────────────────────────────────────
+// ─── STARTER CALCULATOR ────────────────────────────────────────────────────
 function StarterCalc() {
-  const { C, t, lang, getFont, num } = useApp();
+  const { C, t, lang, num } = useApp();
   const [targetStarter, setTargetStarter] = useState(200);
   const [feedRatio,     setFeedRatio]     = useState(1);
 
@@ -1388,7 +2520,7 @@ function StarterCalc() {
   }, [targetStarter, feedRatio]);
 
   const getShoppingList = () => [
-    `🧫 ${t("starterTitle")}`,
+    `${t("starterTitle")}`,
     ``,
     `${t("seedStarter")}: ${num(fmt(starterCalc.seed))}g`,
     `${t("freshFlour")}: ${num(fmt(starterCalc.flour))}g`,
@@ -1403,75 +2535,154 @@ function StarterCalc() {
   return (
     <div>
       <SectionTitle title={t("starterTitle")} sub={t("starterSub2")} />
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:8 }}>{t("howMuchStarter")}</div>
-      <div style={{ marginBottom:24 }}>
-        <NumInput value={targetStarter} onChange={setTargetStarter} step={10} min={10} />
-      </div>
-      <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.6, textTransform:"uppercase", marginBottom:10 }}>{t("feedingRatio")}</div>
-      <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:24 }}>
-        {FEED_RATIOS.map((r,i) => (
-          <button key={r.label} onClick={() => setFeedRatio(i)} style={{
-            padding:"8px 14px", borderRadius:20, cursor:"pointer",
-            border:`1px solid ${feedRatio===i ? C.accent : C.border}`,
-            background: feedRatio===i ? `${C.accent}20` : "transparent",
-            color: feedRatio===i ? C.accent : C.sub, fontFamily:getFont("body"), fontSize:14,
-          }}>{r.label}</button>
-        ))}
+
+      <div style={{ marginBottom: 28 }}>
+        <NumInput
+          id="target-starter"
+          value={targetStarter}
+          onChange={setTargetStarter}
+          step={10} min={10}
+          label={t("howMuchStarter")}
+        />
       </div>
 
-      <div style={{ background:C.resultBg, border:`1px solid ${C.accent}35`, borderRadius:20, padding:"20px", marginBottom:20 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, textTransform:"uppercase", letterSpacing:1.5 }}>{t("feedingFormula")}</span>
+      <div style={{ marginBottom: 28 }}>
+        <Label>{t("feedingRatio")}</Label>
+        <div style={{
+          display:"flex", background: C.bgAlt,
+          borderRadius: 14, padding: 4,
+          border: `1px solid ${C.divider}`, boxShadow: C.shadowSm,
+        }}>
+          {FEED_RATIOS.map((r,i) => (
+            <button key={r.label} onClick={() => setFeedRatio(i)} style={{
+              flex:1, padding:"14px 4px", borderRadius: 10,
+              background: feedRatio===i ? C.accent : "transparent",
+              color: feedRatio===i ? "#FFFFFF" : C.textSub,
+              fontFamily: DISPLAY, fontSize: 15, fontWeight: 600,
+              fontVariantNumeric:"tabular-nums",
+              transition:"all 0.25s", minHeight: 48,
+            }}>{r.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <GlassPanel style={{
+        padding: "24px 24px 22px",
+        background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`,
+      }}>
+        <div style={{
+          display:"flex", justifyContent:"space-between",
+          alignItems:"center", marginBottom: 18, paddingBottom: 14,
+          borderBottom: `1px solid ${C.divider}`,
+          flexWrap: "wrap", gap: 12,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("feedingFormula")}</span>
           <CopyButton getText={getShoppingList} />
         </div>
-        {[
-          [t("seedStarter"), starterCalc.seed],
-          [t("freshFlour"),  starterCalc.flour],
-          [t("freshWater"),  starterCalc.water],
-        ].map(([label,val], i, arr) => (
-          <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom: i<arr.length-1 ? `1px solid ${C.border}` : "none" }}>
-            <span style={{ fontFamily:getFont("body"), fontSize:16, color:C.text }}>{label}</span>
-            <span style={{ fontFamily:getFont("serif"), fontSize:18, color:C.text }}>{num(fmt(val))}g</span>
-          </div>
-        ))}
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", paddingTop:16, marginTop:8, borderTop:`1px solid ${C.accent}30` }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:16, color:C.accent }}>{t("readyStarter")}</span>
-          <span style={{ fontFamily:getFont("serif"), fontSize:24, color:C.accent, fontWeight:700 }}>{num(fmt(targetStarter))}g</span>
+        <ResultRow icon="flask" label={t("seedStarter")} value={starterCalc.seed} />
+        <ResultRow icon="wheat" label={t("freshFlour")} value={starterCalc.flour} />
+        <ResultRow icon="droplet" label={t("freshWater")} value={starterCalc.water} />
+        <div style={{
+          display:"flex", justifyContent:"space-between", alignItems:"baseline",
+          paddingTop: 18, marginTop: 12, borderTop: `2px solid ${C.divider}`,
+        }}>
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("readyStarter")}</span>
+          <span style={{
+            fontFamily: DISPLAY, fontSize: 36, color: C.accent,
+            fontWeight: 600, fontVariantNumeric:"tabular-nums",
+            letterSpacing: "-0.02em",
+          }}>
+            {num(fmt(targetStarter))}<span style={{fontSize: 15, marginLeft: 4, color: C.textFaint}}>g</span>
+          </span>
         </div>
-      </div>
+      </GlassPanel>
 
-      <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, padding:"16px 18px" }}>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.5, textTransform:"uppercase", marginBottom:14 }}>{t("ratioRef")}</div>
+      <GlassPanel style={{ marginTop: 20, padding: "24px 22px 8px" }}>
+        <div style={{
+          display:"flex", alignItems:"center", gap: 8, marginBottom: 18,
+        }}>
+          <Icon name="compass" size={18} color={C.accent} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("ratioRef")}</span>
+        </div>
         {FEED_RATIOS.map((r,i) => (
-          <div key={r.label} style={{ display:"flex", gap:12, marginBottom:10 }}>
-            <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, minWidth:56, fontWeight:600 }}>{r.label}</span>
-            <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{ratioDescs[i]}</span>
+          <div key={r.label} style={{
+            display:"flex", gap:16, alignItems:"baseline",
+            padding:"13px 12px",
+            borderBottom: i<FEED_RATIOS.length-1 ? `1px solid ${C.dividerSoft}` : "none",
+            background: feedRatio === i ? C.accentDim : "transparent",
+            borderRadius: 8,
+          }}>
+            <span style={{
+              fontFamily: DISPLAY, fontSize: 17,
+              color: feedRatio === i ? C.accent : C.text,
+              fontWeight: 600, minWidth: 70,
+              fontVariantNumeric:"tabular-nums",
+            }}>{r.label}</span>
+            <span style={{
+              fontFamily: BODY, fontSize: 15, color: C.textSub,
+              lineHeight: 1.55, letterSpacing: "-0.005em",
+            }}>{ratioDescs[i]}</span>
           </div>
         ))}
-        <div style={{ marginTop:14, paddingTop:14, borderTop:`1px solid ${C.border}`, fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.6, fontStyle:"italic" }}>
-          {t("starterRatioTip")}
+        <div style={{
+          marginTop: 18, padding:"16px 18px",
+          background: C.accentDim, borderRadius: 14,
+          border: `1px solid ${C.accentSoft}`,
+          display: "flex", gap: 12, alignItems: "flex-start",
+        }}>
+          <Icon name="sparkles" size={20} color={C.accent} style={{ marginTop: 2, flexShrink: 0 }} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.textSub,
+            lineHeight: 1.6, letterSpacing: "-0.005em",
+          }}>
+            {t("starterRatioTip")}
+          </span>
         </div>
-      </div>
+      </GlassPanel>
     </div>
   );
 }
 
-// ─── CALC TAB ────────────────────────────────────────────────────────────────
+// ─── CALC TAB ──────────────────────────────────────────────────────────────
 function CalcTab({ initialMode }) {
-  const { C, t, getFont } = useApp();
+  const { C, t } = useApp();
   const [mode, setMode] = useState(initialMode || "bread");
-  const modes = [["bread",`⚖️ ${t("breadCalc")}`],["pizza",`🍕 ${t("pizzaCalcTitle")}`],["starter",`🧫 ${t("starterTitle")}`]];
+  const modes = [
+    { value: "bread", label: t("breadCalc"), icon: "scale" },
+    { value: "pizza", label: t("pizzaCalcTitle"), icon: "pizza" },
+    { value: "starter", label: t("starterTitle"), icon: "flask" },
+  ];
   return (
-    <div style={{ padding:"0 16px 24px" }} className="fade-up">
-      <div style={{ display:"flex", background:C.card, borderRadius:14, padding:4, marginBottom:24, border:`1px solid ${C.border}` }}>
-        {modes.map(([id,lbl]) => (
-          <button key={id} onClick={() => setMode(id)} style={{
-            flex:1, padding:"10px 4px", borderRadius:11, border:"none", cursor:"pointer",
-            fontFamily:getFont("body"), fontSize:14, fontWeight:600,
-            background: mode===id ? C.accent : "transparent",
-            color: mode===id ? "#fff" : C.sub, transition:"all 0.18s",
-          }}>{lbl}</button>
-        ))}
+    <div style={{ padding:"0 24px 32px" }} className="fade-up">
+      <div style={{ marginBottom: 28 }}>
+        <div style={{
+          display:"flex", background: C.bgAlt,
+          borderRadius: 14, padding: 4,
+          border: `1px solid ${C.divider}`, boxShadow: C.shadowSm,
+        }}>
+          {modes.map(m => (
+            <button key={m.value} onClick={() => setMode(m.value)} style={{
+              flex:1, padding:"12px 6px", borderRadius: 10,
+              fontFamily: BODY, fontSize: 14, fontWeight: 600,
+              background: mode===m.value ? C.accent : "transparent",
+              color: mode===m.value ? "#FFFFFF" : C.textSub,
+              transition:"all 0.25s", minHeight: 48,
+              display:"flex", alignItems:"center", justifyContent:"center", gap: 6,
+            }}>
+              <Icon name={m.icon} size={16} color={mode===m.value ? "#FFFFFF" : C.textSub} />
+              {m.label}
+            </button>
+          ))}
+        </div>
       </div>
       {mode==="bread"   && <BreadCalc />}
       {mode==="pizza"   && <PizzaCalc />}
@@ -1481,141 +2692,352 @@ function CalcTab({ initialMode }) {
   );
 }
 
-// ─── RECIPES TAB ─────────────────────────────────────────────────────────────
+// ─── RECIPES TAB (grouped, with loaf multiplier) ───────────────────────────
 function RecipesTab() {
   const { C, t, lang, getFont, num } = useApp();
   const [selected, setSelected] = useState(null);
-  const [scale,    setScale]    = useState(1);
+  const [loaves,   setLoaves]   = useState(1);
+
+  const lowRecipes    = RECIPES.filter(r => r.family === "low");
+  const mediumRecipes = RECIPES.filter(r => r.family === "medium");
+  const highRecipes   = RECIPES.filter(r => r.family === "high");
 
   if (selected) {
     const r = RECIPES.find(x => x.id===selected);
     const isFa = lang === "fa";
-    const s = g => num(fmt(g * scale));
+    const s = g => num(fmt(g * loaves));
     const rName     = isFa ? r.nameFa     : r.name;
     const rSub      = isFa ? r.subFa      : r.sub;
     const rDiffLbl  = isFa ? r.diffLabelFa: r.diffLabel;
-    const rWorkTime = isFa ? r.workTimeFa : r.workTime;
     const rTotalTime= isFa ? r.totalTimeFa: r.totalTime;
     const rTips     = isFa ? r.tipsFa     : r.tips;
 
     return (
-      <div style={{ padding:"0 16px 32px" }} className="fade-up">
-        <button onClick={() => { setSelected(null); setScale(1); }} style={{ display:"flex", alignItems:"center", gap:6, background:"transparent", border:"none", color:C.sub, fontFamily:getFont("body"), fontSize:15, cursor:"pointer", marginBottom:20, padding:0 }}>
-          {t("allRecipes")}
+      <div style={{ padding:"0 24px 32px" }} className="fade-up">
+        <button onClick={() => { setSelected(null); setLoaves(1); }} style={{
+          display:"inline-flex", alignItems:"center", gap:6,
+          background:"transparent", color: C.accent,
+          fontFamily: BODY, fontSize: 15, fontWeight: 600,
+          marginBottom: 24, padding: "8px 0", minHeight: 44,
+        }}>
+          <Icon name="chevronRight" size={18} style={{ transform: "rotate(180deg)" }} />
+          {t("back")}
         </button>
-        <div style={{ marginBottom:22 }}>
-          <div style={{ fontSize:50, marginBottom:10 }}>{r.emoji}</div>
-          <h2 style={{ fontFamily:getFont("serif"), fontSize:26, fontWeight:700, color:C.text, lineHeight:1.2 }}>{rName}</h2>
-          <p style={{ fontFamily:getFont("body"), fontSize:15, color:C.sub, fontStyle:"italic", marginTop:4 }}>{rSub}</p>
-          <div style={{ display:"flex", gap:8, marginTop:12, flexWrap:"wrap" }}>
+        <div style={{ marginBottom: 32 }}>
+          <div style={{
+            width: 80, height: 80, borderRadius: 20,
+            background: C.accentSoft,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color: C.accent, marginBottom: 20,
+          }}>
+            <Icon name={r.icon} size={42} />
+          </div>
+          <h2 style={{
+            fontFamily: getFont("display"), fontSize: 40, fontWeight: 500,
+            color: C.text, lineHeight: 1.05, letterSpacing: "-0.025em",
+            marginBottom: 10,
+          }}>{rName}</h2>
+          <p style={{
+            fontFamily: BODY, fontSize: 17, color: C.textSub,
+            letterSpacing: "-0.005em", lineHeight: 1.5, marginBottom: 18,
+          }}>{rSub}</p>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap", alignItems:"center" }}>
             <DiffDots level={r.difficulty} />
             <Pill>{rDiffLbl}</Pill>
-            <Pill color={C.sub}>⏱ {rTotalTime}</Pill>
-            <Pill color={C.blue}>💧 {num(r.hydration)}%</Pill>
+            <Pill color={C.textSub}>
+              <Icon name="timer" size={14} /> {rTotalTime}
+            </Pill>
+            <Pill>
+              <Icon name="droplet" size={14} /> {num(r.hydration)}%
+            </Pill>
           </div>
         </div>
-        <div style={{ background:C.card, borderRadius:12, padding:"10px 14px", marginBottom:22, border:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-          <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{t("scale")}</span>
-          <div style={{ display:"flex", gap:6 }}>
-            {[0.5,1,1.5,2,3].map(sv => (
-              <button key={sv} onClick={() => setScale(sv)} style={{ padding:"6px 11px", borderRadius:8, cursor:"pointer", border:`1px solid ${scale===sv?C.accent:C.border}`, background: scale===sv?`${C.accent}22`:"transparent", color: scale===sv?C.accent:C.sub, fontFamily:getFont("body"), fontSize:14 }}>{num(sv)}×</button>
-            ))}
+
+        {/* Loaf Multiplier */}
+        <div style={{
+          background: C.bgAlt, border: `1px solid ${C.divider}`,
+          borderRadius: 14, padding:"16px 18px", marginBottom: 28,
+          boxShadow: C.shadowSm,
+          display:"flex", alignItems:"center", justifyContent:"space-between",
+        }}>
+          <div>
+            <div style={{
+              fontFamily: BODY, fontSize: 14, color: C.textFaint,
+              fontWeight: 500, marginBottom: 4,
+            }}>{t("loaves")}</div>
+            <div style={{
+              fontFamily: DISPLAY, fontSize: 28, color: C.accent,
+              fontWeight: 600, letterSpacing: "-0.02em",
+              fontVariantNumeric:"tabular-nums",
+            }}>
+              {num(loaves)}
+            </div>
+          </div>
+          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <button onClick={() => setLoaves(Math.max(1,loaves-1))} aria-label="Decrease" style={{
+              width:44, height:44, borderRadius:"50%",
+              border:`1px solid ${C.divider}`, background: C.bg,
+              color: C.text, display:"flex",
+              alignItems:"center", justifyContent:"center",
+            }}>
+              <Icon name="minus" size={18} />
+            </button>
+            <button onClick={() => setLoaves(loaves+1)} aria-label="Increase" style={{
+              width:44, height:44, borderRadius:"50%",
+              border:`1px solid ${C.divider}`, background: C.bg,
+              color: C.text, display:"flex",
+              alignItems:"center", justifyContent:"center",
+            }}>
+              <Icon name="plus" size={18} />
+            </button>
           </div>
         </div>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>{t("ingredients")}</div>
-        <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, overflow:"hidden", marginBottom:24 }}>
-          {r.ingredients.map((ing, i) => (
-            <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", borderBottom: i<r.ingredients.length-1?`1px solid ${C.border}`:"none" }}>
-              <span style={{ fontFamily:getFont("body"), fontSize:15, color:C.text }}>{isFa ? ing.nameFa : ing.name}</span>
-              <span style={{ fontFamily:getFont("serif"), fontSize:15, color:C.accent, fontWeight:600, whiteSpace:"nowrap", marginLeft:12 }}>
-                {ing.unit ? `${s(ing.amount)}${ing.unit}` : num(ing.amount)}
+
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.textFaint,
+          fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          marginBottom: 12,
+        }}>{t("ingredients")}</div>
+        <GlassPanel style={{ marginBottom: 28, overflow:"hidden" }}>
+          {r.ingredients.map((ing, i, arr) => (
+            <div key={i} style={{
+              display:"flex", justifyContent:"space-between",
+              alignItems:"center", padding:"14px 20px",
+              borderBottom: i<arr.length-1 ? `1px solid ${C.divider}` : "none",
+              gap: 12,
+            }}>
+              <div style={{ display:"flex", alignItems:"center", gap: 12 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: C.accentSoft,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  color: C.accent, flexShrink: 0,
+                }}>
+                  <Icon name={ing.icon} size={16} />
+                </div>
+                <span style={{
+                  fontFamily: BODY, fontSize: 15, color: C.text,
+                  fontWeight: 500, letterSpacing: "-0.005em",
+                }}>{isFa ? ing.nameFa : ing.name}</span>
+              </div>
+              <span style={{
+                fontFamily: DISPLAY, fontSize: 17, color: C.accent,
+                fontWeight: 600, fontVariantNumeric:"tabular-nums",
+                whiteSpace:"nowrap", letterSpacing: "-0.01em",
+              }}>
+                {ing.unit ? `${s(ing.amount)}${ing.unit}` : num(ing.amount * loaves)}
               </span>
             </div>
           ))}
-        </div>
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>{t("steps")}</div>
+        </GlassPanel>
+
+        <div style={{
+          fontFamily: BODY, fontSize: 14, color: C.textFaint,
+          fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          marginBottom: 18,
+        }}>{t("steps")}</div>
         {r.steps.map((step, i) => {
           const stepTitle = isFa ? step[2] : step[0];
           const stepBody  = isFa ? step[3] : step[1];
           return (
-            <div key={i} style={{ display:"flex", gap:14, marginBottom:20 }}>
-              <div style={{ width:28, height:28, borderRadius:"50%", background:C.accent, color:"#fff", fontSize:14, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>{num(i+1)}</div>
-              <div>
-                <div style={{ fontFamily:getFont("serif"), fontSize:16, color:C.text, fontWeight:700, marginBottom:4 }}>{stepTitle}</div>
-                <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.65 }}>{stepBody}</div>
+            <div key={i} style={{ display:"flex", gap:18, marginBottom: 26 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius:"50%",
+                background: C.accent, color:"#FFFFFF",
+                fontSize: 16, fontWeight: 700, fontFamily: DISPLAY,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                flexShrink:0, marginTop: 2,
+                boxShadow: `0 4px 12px ${C.accent}55`,
+              }}>{num(i+1)}</div>
+              <div style={{ flex:1 }}>
+                <div style={{
+                  fontFamily: DISPLAY, fontSize: 19, color: C.text,
+                  fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em",
+                }}>{stepTitle}</div>
+                <div style={{
+                  fontFamily: BODY, fontSize: 15, color: C.textSub,
+                  lineHeight: 1.6, letterSpacing: "-0.005em",
+                }}>{stepBody}</div>
               </div>
             </div>
           );
         })}
-        <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>{t("proTips")}</div>
-        <div style={{ background:`${C.accent}0D`, border:`1px solid ${C.accent}28`, borderRadius:16, padding:"16px 18px" }}>
-          {rTips.map((tip, i) => (
-            <div key={i} style={{ display:"flex", gap:10, marginBottom: i<rTips.length-1?12:0 }}>
-              <span style={{ color:C.accent, fontSize:16, flexShrink:0 }}>✦</span>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.6 }}>{tip}</span>
+
+        <div style={{
+          display:"flex", alignItems:"center", gap: 8, marginBottom: 14,
+        }}>
+          <Icon name="sparkles" size={18} color={C.accent} />
+          <span style={{
+            fontFamily: BODY, fontSize: 14, color: C.accent,
+            fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+          }}>{t("proTips")}</span>
+        </div>
+        <GlassPanel style={{
+          padding: "22px",
+          background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`,
+        }}>
+          {rTips.map((tip, i, arr) => (
+            <div key={i} style={{
+              display:"flex", gap:14, marginBottom: i<arr.length-1 ? 16 : 0,
+            }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 8,
+                background: C.accentSoft,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                color: C.accent, flexShrink:0,
+              }}>
+                <Icon name="sparkles" size={14} />
+              </div>
+              <span style={{
+                fontFamily: BODY, fontSize: 15, color: C.textSub,
+                lineHeight: 1.6, letterSpacing: "-0.005em", paddingTop: 2,
+              }}>{tip}</span>
             </div>
           ))}
-        </div>
+        </GlassPanel>
         <PageFooter />
       </div>
     );
   }
 
-  return (
-    <div style={{ padding:"0 16px 28px" }} className="fade-up">
-      <SectionTitle title={t("recipesTitle")} sub={t("recipesSub2")} />
-      {RECIPES.map(r => {
-        const isFa = lang === "fa";
-        const rName     = isFa ? r.nameFa      : r.name;
-        const rSub      = isFa ? r.subFa       : r.sub;
-        const rDiffLbl  = isFa ? r.diffLabelFa : r.diffLabel;
-        const rTotalTime= isFa ? r.totalTimeFa : r.totalTime;
-        return (
-          <button key={r.id} onClick={() => setSelected(r.id)} style={{ display:"block", width:"100%", textAlign:"left", cursor:"pointer", background:C.card, border:`1px solid ${C.border}`, borderRadius:18, padding:"16px 18px", marginBottom:12 }}
-            onMouseEnter={e => e.currentTarget.style.borderColor=`${C.accent}55`}
-            onMouseLeave={e => e.currentTarget.style.borderColor=C.border}
-          >
-            <div style={{ display:"flex", gap:14, alignItems:"center" }}>
-              <span style={{ fontSize:36 }}>{r.emoji}</span>
-              <div style={{ flex:1 }}>
-                <div style={{ fontFamily:getFont("serif"), fontSize:17, color:C.text, fontWeight:700 }}>{rName}</div>
-                <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, fontStyle:"italic", marginTop:2 }}>{rSub}</div>
-                <div style={{ display:"flex", gap:8, marginTop:8, flexWrap:"wrap" }}>
-                  <DiffDots level={r.difficulty} />
-                  <Pill small>{rDiffLbl}</Pill>
-                  <Pill small color={C.sub}>⏱ {rTotalTime}</Pill>
-                  <Pill small color={C.blue}>💧 {num(r.hydration)}%</Pill>
-                </div>
-              </div>
-              <span style={{ color:C.faint, fontSize:22 }}>›</span>
+  const RecipeCard = ({ r }) => {
+    const isFa = lang === "fa";
+    const rName     = isFa ? r.nameFa      : r.name;
+    const rSub      = isFa ? r.subFa       : r.sub;
+    const rDiffLbl  = isFa ? r.diffLabelFa : r.diffLabel;
+    const rTotalTime= isFa ? r.totalTimeFa : r.totalTime;
+    return (
+      <GlassPanel hoverable onClick={() => setSelected(r.id)}
+        style={{ padding:"20px", marginBottom: 12 }}>
+        <div style={{ display:"flex", gap:16, alignItems:"center" }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: 14,
+            background: C.accentSoft,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color: C.accent, flexShrink: 0,
+          }}>
+            <Icon name={r.icon} size={30} />
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{
+              fontFamily: DISPLAY, fontSize: 20, color: C.text,
+              fontWeight: 600, letterSpacing: "-0.015em",
+              marginBottom: 4, lineHeight: 1.2,
+            }}>{rName}</div>
+            <div style={{
+              fontFamily: BODY, fontSize: 15, color: C.textSub,
+              letterSpacing: "-0.005em", marginBottom: 10,
+            }}>{rSub}</div>
+            <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
+              <DiffDots level={r.difficulty} />
+              <span style={{ color: C.divider, fontSize: 16 }}>·</span>
+              <span style={{
+                fontFamily: BODY, fontSize: 14, color: C.textFaint,
+                fontWeight: 500, display:"inline-flex", alignItems:"center", gap: 4,
+              }}>
+                <Icon name="timer" size={14} />
+                {rTotalTime}
+              </span>
+              <span style={{ color: C.divider, fontSize: 16 }}>·</span>
+              <span style={{
+                fontFamily: BODY, fontSize: 14, color: C.textFaint,
+                fontWeight: 500, display:"inline-flex", alignItems:"center", gap: 4,
+              }}>
+                <Icon name="droplet" size={14} />
+                {num(r.hydration)}%
+              </span>
             </div>
-          </button>
-        );
-      })}
+          </div>
+          <div style={{ color: C.textFaint }}>
+            <Icon name="chevronRight" size={24} />
+          </div>
+        </div>
+      </GlassPanel>
+    );
+  };
+
+  const FamilySection = ({ title, icon, color, recipes, family }) => (
+    <div style={{ marginBottom: 36 }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: 12,
+        marginBottom: 16, paddingBottom: 12,
+        borderBottom: `1px solid ${C.divider}`,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10,
+          background: `${color}18`,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          color: color,
+        }}>
+          <Icon name="droplet" size={20} />
+        </div>
+        <div>
+          <div style={{
+            fontFamily: DISPLAY, fontSize: 22, color: C.text,
+            fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.1,
+          }}>{title}</div>
+          <div style={{
+            fontFamily: BODY, fontSize: 14, color: C.textFaint,
+            marginTop: 2,
+          }}>
+            {family === "low" ? "50–60%" : family === "medium" ? "65–72%" : "78–85%"} · {num(recipes.length)} {lang==="fa"?"دستور":"recipe"}{recipes.length>1&&lang!=="fa"?"s":""}
+          </div>
+        </div>
+      </div>
+      {recipes.map(r => <RecipeCard key={r.id} r={r} />)}
+    </div>
+  );
+
+  return (
+    <div style={{ padding:"0 24px 32px" }} className="fade-up">
+      <SectionTitle title={t("recipesTitle")} sub={t("recipesSub2")} />
+
+      <FamilySection
+        title={t("lowHydration")}
+        icon="droplet"
+        color={C.success}
+        recipes={lowRecipes}
+        family="low"
+      />
+      <FamilySection
+        title={t("mediumHydration")}
+        icon="droplet"
+        color={C.accent}
+        recipes={mediumRecipes}
+        family="medium"
+      />
+      <FamilySection
+        title={t("highHydration")}
+        icon="droplet"
+        color={C.danger}
+        recipes={highRecipes}
+        family="high"
+      />
       <PageFooter />
     </div>
   );
 }
 
-// ─── GUIDE TAB ───────────────────────────────────────────────────────────────
+// ─── GUIDE TAB ─────────────────────────────────────────────────────────────
 function GuideTab() {
-  const { C, t, lang, getFont, num } = useApp();
+  const { C, t, lang, getFont } = useApp();
   const [open, setOpen] = useState(1);
   const isFa = lang === "fa";
 
   const bakersRows = isFa ? [
-    ["آبیاری",   "آب ÷ آرد × ۱۰۰",     "معمولاً ۶۵–۸۵٪"],
-    ["استارتر",  "استارتر ÷ آرد × ۱۰۰", "معمولاً ۱۰–۲۰٪"],
-    ["نمک",      "نمک ÷ آرد × ۱۰۰",     "معمولاً ۱٫۸–۲٫۲٪"],
+    ["آبیاری",   "آب ÷ آرد × ۱۰۰",     "۶۵–۸۵٪"],
+    ["استارتر",  "استارتر ÷ آرد × ۱۰۰", "۱۰–۲۰٪"],
+    ["نمک",      "نمک ÷ آرد × ۱۰۰",     "۱٫۸–۲٫۲٪"],
   ] : [
-    ["Hydration",   "Water ÷ Flour × 100",     "Typically 65–85%"],
-    ["Starter",     "Starter ÷ Flour × 100",   "Typically 10–20%"],
-    ["Salt",        "Salt ÷ Flour × 100",      "Typically 1.8–2.2%"],
+    ["Hydration", "Water ÷ Flour × 100",     "65–85%"],
+    ["Starter",   "Starter ÷ Flour × 100",   "10–20%"],
+    ["Salt",      "Salt ÷ Flour × 100",      "1.8–2.2%"],
   ];
 
   return (
-    <div style={{ padding:"0 16px 28px" }} className="fade-up">
+    <div style={{ padding:"0 24px 32px" }} className="fade-up">
       <SectionTitle title={t("guideTitle")} sub={t("guideSub2")} />
+
       {GUIDE.map((step) => {
         const phase  = isFa ? step.phaseFa  : step.phase;
         const title  = isFa ? step.titleFa  : step.title;
@@ -1623,159 +3045,317 @@ function GuideTab() {
         const checks = isFa ? step.checksFa : step.checks;
         const tip    = isFa ? step.tipFa    : step.tip;
         const timers = isFa ? step.timersFa : step.timers;
+        const isOpen = open === step.id;
         return (
-          <div key={step.id} style={{ marginBottom:10 }}>
-            <button onClick={() => setOpen(open===step.id?null:step.id)} style={{ display:"block", width:"100%", textAlign:"left", cursor:"pointer", background:C.card, border:`1px solid ${open===step.id?step.color:C.border}`, borderRadius: open===step.id?"16px 16px 0 0":16, padding:"14px 16px" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <div style={{ width:32, height:32, borderRadius:"50%", background:`${step.color}30`, border:`1px solid ${step.color}60`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>{step.emoji}</div>
-                <div style={{ flex:1 }}>
-                  <div style={{ fontFamily:getFont("body"), fontSize:14, color:step.color, textTransform:"uppercase", letterSpacing:1.2, marginBottom:2 }}>{phase}</div>
-                  <div style={{ fontFamily:getFont("serif"), fontSize:15, color:C.text, fontWeight:700 }}>{title}</div>
-                </div>
-                <span style={{ color:C.faint, fontSize:18, transform:open===step.id?"rotate(90deg)":"none", transition:"transform 0.2s" }}>›</span>
+          <GlassPanel key={step.id} style={{ marginBottom: 12, overflow:"hidden" }}>
+            <button onClick={() => setOpen(isOpen ? null : step.id)} style={{
+              display:"flex", alignItems:"center", gap:16,
+              width:"100%", textAlign:"left",
+              padding:"18px 20px", background: "transparent", minHeight: 76,
+            }}>
+              <div style={{
+                width: 48, height: 48, borderRadius:"50%",
+                background: C.accentSoft,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                color: C.accent, flexShrink:0,
+              }}>
+                <Icon name={step.icon} size={24} />
+              </div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{
+                  fontFamily: BODY, fontSize: 14, color: C.accent,
+                  fontWeight: 600, letterSpacing: "0.02em",
+                  textTransform: "uppercase", marginBottom: 4,
+                }}>{phase}</div>
+                <div style={{
+                  fontFamily: DISPLAY, fontSize: 19, color: C.text,
+                  fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.2,
+                }}>{title}</div>
+              </div>
+              <div style={{
+                color: C.textFaint,
+                transform: isOpen ? "rotate(90deg)" : "none",
+                transition:"transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+              }}>
+                <Icon name="chevronRight" size={24} />
               </div>
             </button>
-            {open===step.id && (
-              <div style={{ background:`${step.color}0A`, border:`1px solid ${step.color}40`, borderTop:"none", borderRadius:"0 0 16px 16px", padding:"16px" }}>
-                <p style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.7, marginBottom:16 }}>{body}</p>
+            {isOpen && (
+              <div style={{
+                background: C.accentDim,
+                padding:"22px 22px 24px",
+                borderTop: `1px solid ${C.divider}`,
+                animation:"fadeUp 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
+              }}>
+                <p style={{
+                  fontFamily: BODY, fontSize: 15, color: C.textSub,
+                  lineHeight: 1.65, marginBottom: 20,
+                }}>{body}</p>
                 {checks.length > 0 && (
                   <>
-                    <div style={{ fontFamily:getFont("body"), fontSize:14, color:step.color, textTransform:"uppercase", letterSpacing:1.2, marginBottom:10 }}>{t("checks")}</div>
+                    <div style={{
+                      fontFamily: BODY, fontSize: 14, color: C.accent,
+                      fontWeight: 600, letterSpacing: "0.02em",
+                      textTransform: "uppercase", marginBottom: 12,
+                    }}>{t("checks")}</div>
                     {checks.map((c,i) => (
-                      <div key={i} style={{ display:"flex", gap:10, marginBottom:8 }}>
-                        <span style={{ color:step.color, fontSize:16 }}>☐</span>
-                        <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{c}</span>
+                      <div key={i} style={{
+                        display:"flex", gap:12, alignItems:"flex-start", marginBottom: 10,
+                      }}>
+                        <div style={{
+                          width: 20, height: 20, borderRadius: 6,
+                          border: `1.5px solid ${C.accent}`, flexShrink:0, marginTop: 1,
+                        }} />
+                        <span style={{
+                          fontFamily: BODY, fontSize: 15, color: C.textSub,
+                          lineHeight: 1.5,
+                        }}>{c}</span>
                       </div>
                     ))}
                   </>
                 )}
                 {timers.length > 0 && (
-                  <div style={{ marginTop:16 }}>
-                    <div style={{ fontFamily:getFont("body"), fontSize:14, color:step.color, textTransform:"uppercase", letterSpacing:1.2, marginBottom:10 }}>{t("timerLabel")}</div>
+                  <div style={{ marginTop: 22 }}>
+                    <div style={{
+                      fontFamily: BODY, fontSize: 14, color: C.accent,
+                      fontWeight: 600, letterSpacing: "0.02em",
+                      textTransform: "uppercase", marginBottom: 12,
+                    }}>{t("timerLabel")}</div>
                     {timers.map(timer => <StepTimer key={timer.label} label={timer.label} minutes={timer.minutes} />)}
                   </div>
                 )}
-                <div style={{ marginTop:14, padding:"10px 14px", background:`${step.color}15`, borderRadius:10, fontFamily:getFont("body"), fontSize:14, color:C.sub, fontStyle:"italic", lineHeight:1.6 }}>
-                  💡 {tip}
+                <div style={{
+                  marginTop: 22, padding:"16px 18px",
+                  background: C.bgAlt, borderRadius: 14,
+                  border: `1px solid ${C.divider}`,
+                  display:"flex", gap: 12, alignItems: "flex-start",
+                }}>
+                  <Icon name="sparkles" size={20} color={C.accent} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <span style={{
+                    fontFamily: BODY, fontSize: 14, color: C.textSub,
+                    lineHeight: 1.6,
+                  }}>
+                    {tip}
+                  </span>
                 </div>
               </div>
             )}
-          </div>
+          </GlassPanel>
         );
       })}
 
-      {/* Baker's % */}
-      <div style={{ marginTop:24, background:C.card, border:`1px solid ${C.border}`, borderRadius:16, padding:"18px" }}>
-        <div style={{ fontFamily:getFont("serif"), fontSize:18, color:C.text, fontWeight:700, marginBottom:14 }}>{t("bakersPercent")}</div>
-        <p style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, marginBottom:14, lineHeight:1.65 }}>
+      <GlassPanel style={{ marginTop: 28, padding: "26px 24px" }}>
+        <div style={{
+          fontFamily: DISPLAY, fontSize: 24, color: C.text,
+          fontWeight: 600, marginBottom: 12, letterSpacing: "-0.015em",
+        }}>{t("bakersPercent")}</div>
+        <p style={{
+          fontFamily: BODY, fontSize: 15, color: C.textSub,
+          marginBottom: 20, lineHeight: 1.6,
+        }}>
           {t("bakersMathBody")}
         </p>
-        {bakersRows.map(([n,f,ex]) => (
-          <div key={n} style={{ borderTop:`1px solid ${C.border}`, paddingTop:12, marginBottom:12 }}>
-            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.text, fontWeight:600 }}>{n}</span>
-              <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent }}>{f}</span>
-            </div>
-            <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.faint, fontStyle:"italic" }}>{ex}</div>
+        {bakersRows.map(([n,f,ex], i) => (
+          <div key={n} style={{
+            borderTop: i > 0 ? `1px solid ${C.divider}` : "none",
+            paddingTop: i > 0 ? 14 : 0,
+            marginTop: i > 0 ? 14 : 0,
+            display:"flex", justifyContent:"space-between",
+            alignItems:"baseline", gap: 12,
+          }}>
+            <span style={{
+              fontFamily: DISPLAY, fontSize: 17, color: C.text,
+              fontWeight: 600, letterSpacing: "-0.01em",
+            }}>{n}</span>
+            <span style={{
+              fontFamily: BODY, fontSize: 14, color: C.accent,
+              fontVariantNumeric:"tabular-nums", fontWeight: 500,
+            }}>{f}</span>
+            <span style={{
+              fontFamily: BODY, fontSize: 14, color: C.textFaint,
+              fontStyle:"italic", minWidth: 70, textAlign:"right",
+            }}>{ex}</span>
           </div>
         ))}
-      </div>
+      </GlassPanel>
       <PageFooter />
     </div>
   );
 }
 
-// ─── TROUBLESHOOT TAB ─────────────────────────────────────────────────────────
+// ─── TROUBLESHOOT TAB ──────────────────────────────────────────────────────
 function TroubleTab() {
-  const { C, t, lang, getFont } = useApp();
+  const { C, t, lang } = useApp();
   const [open, setOpen] = useState(null);
   const isFa = lang === "fa";
 
   const glossary = isFa ? [
-    ["لوون / استارتر","کشت زنده مخمر وحشی و باکتری. عامل تخمیر برای تمام پخت‌های خمیرترش."],
-    ["تخمیر حجمی","مرحله اصلی تخمیر که در آن کل توده خمیر با هم تخمیر می‌کند، معمولاً ۴–۸ ساعت."],
-    ["اتولیز","استراحت آرد و آب بدون استارتر برای توسعه منفعل گلوتن."],
-    ["آبیاری","آب به عنوان درصدی از وزن آرد. بیشتر = خمیر مرطوب‌تر، مغز بازتر."],
-    ["بانتون","سبد تخمیر (چوب بامبو یا خمیر چوب) که شکل خمیر را در طول تخمیر ثانویه حفظ می‌کند."],
-    ["پف فر","بالا آمدن سریع در دقایق اول پخت با گسترش گازها از گرما."],
-    ["برش زدن","بریدن سطح خمیر با تیغ/لاموس قبل از پختن برای کنترل نحوه باز شدن آن."],
-    ["آزمایش پنجره","کشش خمیر تا آنجا که نور از آن دیده شود — توسعه خوب گلوتن را تأیید می‌کند."],
+    ["لوون / استارتر","کشت زنده مخمر وحشی و باکتری."],
+    ["تخمیر حجمی","مرحله اصلی تخمیر که کل توده خمیر با هم تخمیر می‌کند."],
+    ["اتولیز","استراحت آرد و آب بدون استارتر."],
+    ["آبیاری","آب به عنوان درصدی از وزن آرد."],
+    ["بانتون","سبد تخمیر که شکل خمیر را حفظ می‌کند."],
+    ["پف فر","بالا آمدن سریع در دقایق اول پخت."],
+    ["برش زدن","بریدن سطح خمیر قبل از پختن."],
+    ["آزمایش پنجره","کشش خمیر تا نازک شود."],
   ] : [
-    ["Levain / Starter","A live culture of wild yeast and bacteria. The leavening agent for all sourdough baking."],
-    ["Bulk fermentation","The main fermentation phase where the whole dough mass ferments together, typically 4–8 hours."],
+    ["Levain / Starter","A live culture of wild yeast and bacteria. The leavening agent for all sourdough."],
+    ["Bulk fermentation","The main phase where the whole dough mass ferments together, typically 4–8 hours."],
     ["Autolyse","Resting flour and water without starter for passive gluten development."],
     ["Hydration","Water as a percentage of flour weight. Higher = wetter dough, more open crumb."],
-    ["Banneton","A proofing basket (cane or wood pulp) that supports the dough's shape while proofing."],
+    ["Banneton","A proofing basket that supports the dough's shape while proofing."],
     ["Oven spring","The rapid rise in the first minutes of baking as gases expand from heat."],
-    ["Scoring","Cutting dough surface with a razor/lame before baking to control how it opens."],
+    ["Scoring","Cutting dough surface with a razor before baking to control how it opens."],
     ["Windowpane test","Stretching dough thin enough to see light through — confirms good gluten development."],
   ];
 
   return (
-    <div style={{ padding:"0 16px 24px" }} className="fade-up">
+    <div style={{ padding:"0 24px 32px" }} className="fade-up">
       <SectionTitle title={t("troubleTitle")} sub={t("troubleSub2")} />
+
       {TROUBLE.map((tr,i) => {
         const problem = isFa ? tr.problemFa : tr.problem;
         const causes  = isFa ? tr.causesFa  : tr.causes;
         const fixes   = isFa ? tr.fixesFa   : tr.fixes;
+        const isOpen = open === i;
         return (
-          <div key={i} style={{ marginBottom:10 }}>
-            <button onClick={() => setOpen(open===i?null:i)} style={{ display:"block", width:"100%", textAlign:"left", cursor:"pointer", background:C.card, border:`1px solid ${open===i?C.red:C.border}`, borderRadius: open===i?"14px 14px 0 0":14, padding:"13px 16px" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ fontSize:24 }}>{tr.emoji}</span>
-                <span style={{ fontFamily:getFont("serif"), fontSize:15, color:C.text, fontWeight:700, flex:1 }}>{problem}</span>
-                <span style={{ color:C.faint, fontSize:18, transform:open===i?"rotate(90deg)":"none", transition:"transform 0.2s" }}>›</span>
+          <GlassPanel key={i} style={{ marginBottom: 12, overflow:"hidden" }}>
+            <button onClick={() => setOpen(isOpen ? null : i)} style={{
+              display:"flex", alignItems:"center", gap:16,
+              width:"100%", textAlign:"left",
+              padding:"18px 20px", background: "transparent", minHeight: 72,
+            }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: `${C.danger}20`,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                color: C.danger, flexShrink: 0,
+              }}>
+                <Icon name={tr.icon} size={24} />
+              </div>
+              <span style={{
+                fontFamily: DISPLAY, fontSize: 17, color: C.text,
+                fontWeight: 600, flex:1,
+                letterSpacing: "-0.01em", lineHeight: 1.3,
+              }}>{problem}</span>
+              <div style={{
+                color: C.textFaint,
+                transform: isOpen ? "rotate(90deg)" : "none",
+                transition:"transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+              }}>
+                <Icon name="chevronRight" size={22} />
               </div>
             </button>
-            {open===i && (
-              <div style={{ background:`${C.red}08`, border:`1px solid ${C.red}40`, borderTop:"none", borderRadius:"0 0 14px 14px", padding:"14px 16px" }}>
-                <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.red, textTransform:"uppercase", letterSpacing:1.3, marginBottom:10 }}>{t("likelyCauses")}</div>
+            {isOpen && (
+              <div style={{
+                background: C.accentDim,
+                padding:"22px 22px 24px",
+                borderTop: `1px solid ${C.divider}`,
+                animation:"fadeUp 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
+              }}>
+                <div style={{
+                  display:"flex", alignItems:"center", gap: 8, marginBottom: 14,
+                }}>
+                  <Icon name="alert" size={16} color={C.danger} />
+                  <span style={{
+                    fontFamily: BODY, fontSize: 14, color: C.danger,
+                    fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+                  }}>{t("likelyCauses")}</span>
+                </div>
                 {causes.map((c,j) => (
-                  <div key={j} style={{ display:"flex", gap:10, marginBottom:8 }}>
-                    <span style={{ color:C.red, fontSize:14, marginTop:1 }}>•</span>
-                    <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{c}</span>
+                  <div key={j} style={{
+                    display:"flex", gap:12, alignItems:"flex-start", marginBottom: 10,
+                  }}>
+                    <div style={{
+                      width: 20, height: 20, borderRadius: 6,
+                      background: `${C.danger}20`,
+                      display:"flex", alignItems:"center", justifyContent:"center",
+                      color: C.danger, flexShrink:0, marginTop: 1,
+                    }}>
+                      <Icon name="x" size={12} />
+                    </div>
+                    <span style={{
+                      fontFamily: BODY, fontSize: 15, color: C.textSub,
+                      lineHeight: 1.5,
+                    }}>{c}</span>
                   </div>
                 ))}
-                <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.green, textTransform:"uppercase", letterSpacing:1.3, margin:"14px 0 10px" }}>{t("howToFix")}</div>
+                <div style={{
+                  display:"flex", alignItems:"center", gap: 8,
+                  margin:"22px 0 14px", paddingTop: 20,
+                  borderTop: `1px solid ${C.divider}`,
+                }}>
+                  <Icon name="check" size={16} color={C.success} />
+                  <span style={{
+                    fontFamily: BODY, fontSize: 14, color: C.success,
+                    fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase",
+                  }}>{t("howToFix")}</span>
+                </div>
                 {fixes.map((f,j) => (
-                  <div key={j} style={{ display:"flex", gap:10, marginBottom:8 }}>
-                    <span style={{ color:C.green, fontSize:14, marginTop:1 }}>✓</span>
-                    <span style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub }}>{f}</span>
+                  <div key={j} style={{
+                    display:"flex", gap:12, alignItems:"flex-start", marginBottom: 10,
+                  }}>
+                    <div style={{
+                      width: 20, height: 20, borderRadius: 6,
+                      background: `${C.success}20`,
+                      display:"flex", alignItems:"center", justifyContent:"center",
+                      color: C.success, flexShrink:0, marginTop: 1,
+                    }}>
+                      <Icon name="check" size={12} />
+                    </div>
+                    <span style={{
+                      fontFamily: BODY, fontSize: 15, color: C.textSub,
+                      lineHeight: 1.5,
+                    }}>{f}</span>
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </GlassPanel>
         );
       })}
 
-      {/* Glossary */}
-      <div style={{ marginTop:22, background:C.card, border:`1px solid ${C.border}`, borderRadius:16, padding:"18px" }}>
-        <div style={{ fontFamily:getFont("serif"), fontSize:18, color:C.text, fontWeight:700, marginBottom:14 }}>{t("quickGlossary")}</div>
-        {glossary.map(([term,def]) => (
-          <div key={term} style={{ borderTop:`1px solid ${C.border}`, paddingTop:11, marginBottom:11 }}>
-            <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.accent, fontWeight:600, marginBottom:3 }}>{term}</div>
-            <div style={{ fontFamily:getFont("body"), fontSize:14, color:C.sub, lineHeight:1.65 }}>{def}</div>
+      <GlassPanel style={{ marginTop: 28, padding: "26px 24px" }}>
+        <div style={{
+          fontFamily: DISPLAY, fontSize: 24, color: C.text,
+          fontWeight: 600, marginBottom: 18, letterSpacing: "-0.015em",
+        }}>{t("quickGlossary")}</div>
+        {glossary.map(([term,def], i) => (
+          <div key={term} style={{
+            borderTop: i > 0 ? `1px solid ${C.divider}` : "none",
+            paddingTop: i > 0 ? 18 : 0, marginTop: i > 0 ? 18 : 0,
+            display:"grid",
+            gridTemplateColumns: "minmax(130px, 0.7fr) 1fr",
+            gap: 20, alignItems:"baseline",
+          }}>
+            <div style={{
+              fontFamily: DISPLAY, fontSize: 16, color: C.accent,
+              fontWeight: 600, letterSpacing: "-0.01em",
+            }}>{term}</div>
+            <div style={{
+              fontFamily: BODY, fontSize: 15, color: C.textSub,
+              lineHeight: 1.6,
+            }}>{def}</div>
           </div>
         ))}
-      </div>
+      </GlassPanel>
       <PageFooter />
     </div>
   );
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+// ─── MAIN APP ──────────────────────────────────────────────────────────────
 const TABS = [
-  { id:"home",    icon:"🏠", labelKey:"home"       },
-  { id:"calc",    icon:"⚖️", labelKey:"calculator" },
-  { id:"recipes", icon:"📖", labelKey:"recipes"    },
-  { id:"guide",   icon:"🎓", labelKey:"guide"      },
-  { id:"trouble", icon:"🔧", labelKey:"fix"        },
+  { id:"home",    icon:"home",    labelKey:"home"       },
+  { id:"calc",    icon:"scale",   labelKey:"calculator" },
+  { id:"recipes", icon:"book",    labelKey:"recipes"    },
+  { id:"guide",   icon:"compass", labelKey:"guide"      },
+  { id:"trouble", icon:"wrench",  labelKey:"fix"        },
 ];
 
 export default function App() {
   const [tab,   setTab]   = useState("home");
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
   const [lang,  setLang]  = useState("en");
 
   const C       = theme === "dark" ? DARK : LIGHT;
@@ -1783,7 +3363,7 @@ export default function App() {
   const t       = (key) => T[lang]?.[key] ?? T.en?.[key] ?? key;
   const getFont = (type) => {
     if (isRTL) return FARSI;
-    return type === "serif" ? SERIF : BODY;
+    return type === "display" ? DISPLAY : BODY;
   };
   const num = (v) => isRTL ? toFaNum(v) : String(v);
 
@@ -1813,68 +3393,149 @@ export default function App() {
     }
   };
 
+  const isCalcTabActive = tab === "calc" || tab === "pizza";
+
   return (
     <AppCtx.Provider value={ctxValue}>
-      <div style={{ minHeight:"100vh", background:C.bg, display:"flex", justifyContent:"center", fontFamily:getFont("body"), transition:"background 0.3s" }}>
-        <div style={{ width:"100%", maxWidth:430, display:"flex", flexDirection:"column", minHeight:"100vh" }}>
+      <div style={{
+        minHeight:"100vh", background: C.bg,
+        display:"flex", justifyContent:"center",
+        fontFamily: BODY, transition:"background 0.4s ease",
+      }}>
+        <div style={{
+          width:"100%", maxWidth: 520,
+          display:"flex", flexDirection:"column",
+          minHeight:"100vh", position: "relative",
+        }}>
 
-          {/* Header */}
-          <div style={{ padding:"12px 16px", borderBottom:`1px solid ${C.border}`, background:`${C.bg}F2`, backdropFilter:"blur(12px)", position:"sticky", top:0, zIndex:20, display:"flex", alignItems:"center", justifyContent:"space-between", transition:"background 0.3s, border-color 0.3s" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <span style={{ fontSize:22 }}>🍞</span>
-              <span style={{ fontFamily:getFont("serif"), fontSize:20, color:C.text, fontWeight:700, letterSpacing:-0.3 }}>{t("appName")}</span>
+          <header style={{
+            padding:"12px 20px",
+            borderBottom: `1px solid ${C.divider}`,
+            background: C.glass,
+            backdropFilter: "blur(24px) saturate(180%)",
+            WebkitBackdropFilter: "blur(24px) saturate(180%)",
+            position:"sticky", top:0, zIndex: 20,
+            display:"flex", alignItems:"center",
+            justifyContent:"space-between",
+            gap: 12,
+          }}>
+            <div style={{
+              display:"flex", alignItems:"center",
+              gap: 12, flex: 1, minWidth: 0,
+            }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: `linear-gradient(135deg, ${C.accent}, ${C.accent}CC)`,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                color: "#FFFFFF",
+                boxShadow: `0 4px 12px ${C.accent}55`,
+                flexShrink: 0,
+              }}>
+                <Icon name="bread" size={24} color="#FFFFFF" />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{
+                  fontFamily: DISPLAY, fontSize: 18, color: C.text,
+                  fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1,
+                }}>{t("appName")}</div>
+                <div style={{
+                  fontFamily: BODY, fontSize: 14, color: C.textFaint,
+                  marginTop: 2, letterSpacing: "-0.005em",
+                  overflow: "hidden", textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}>{t("appTagline")}</div>
+              </div>
             </div>
-            <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+            <div style={{ display:"flex", gap:8, alignItems:"center", flexShrink: 0 }}>
               <button
                 onClick={() => setLang(l => l === "en" ? "fa" : "en")}
+                aria-label={lang==="en" ? "Switch to Farsi" : "Switch to English"}
                 style={{
-                  padding:"5px 12px", borderRadius:20, cursor:"pointer",
-                  border:`1px solid ${C.border}`,
-                  background: lang==="fa" ? `${C.accent}20` : "transparent",
-                  color: C.sub,
-                  fontFamily: lang==="fa" ? FARSI : BODY,
-                  fontSize:14, fontWeight:600, transition:"all 0.2s",
-                  display:"flex", alignItems:"center", gap:4,
+                  width: 80, height: 44, borderRadius: 999,
+                  border: `1px solid ${C.divider}`,
+                  background: C.bgAlt, color: C.text,
+                  fontFamily: BODY, fontSize: 14, fontWeight: 600,
+                  boxShadow: C.shadowSm,
+                  display: "flex", alignItems:"center",
+                  justifyContent:"center", gap: 6,
                 }}
-                title={lang==="en" ? "Switch to Farsi / فارسی" : "Switch to English"}
               >
-                <span>{lang==="en" ? "فا" : "EN"}</span>
+                <Icon name="globe" size={16} />
+                {lang==="en" ? "فارسی" : "EN"}
               </button>
               <button
                 onClick={() => setTheme(th => th === "dark" ? "light" : "dark")}
+                aria-label={theme==="dark" ? "Light mode" : "Dark mode"}
                 style={{
-                  width:36, height:36, borderRadius:"50%", cursor:"pointer",
-                  border:`1px solid ${C.border}`,
-                  background: "transparent",
-                  color: C.sub, fontSize:16,
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  transition:"all 0.2s",
+                  width: 44, height: 44, borderRadius: "50%",
+                  border: `1px solid ${C.divider}`,
+                  background: C.bgAlt, color: C.text,
+                  display:"flex", alignItems:"center",
+                  justifyContent:"center",
+                  boxShadow: C.shadowSm,
                 }}
-                title={theme==="dark" ? (lang==="fa" ? "حالت روشن" : "Light mode") : (lang==="fa" ? "حالت تاریک" : "Dark mode")}
               >
-                {theme==="dark" ? "☀️" : "🌙"}
+                <Icon name={theme==="dark" ? "sun" : "moon"} size={20} />
               </button>
             </div>
-          </div>
+          </header>
 
-          {/* Content */}
-          <div style={{ flex:1, overflowY:"auto", paddingTop:20 }} className="ls">
+          <main style={{
+            flex:1, overflowY:"auto",
+            paddingTop: 28, paddingBottom: 20,
+          }} className="ls">
             {renderContent()}
-          </div>
+          </main>
 
-          {/* Bottom nav */}
-          <div style={{ display:"flex", borderTop:`1px solid ${C.border}`, background:`${C.surf}F5`, backdropFilter:"blur(12px)", position:"sticky", bottom:0, paddingBottom:"max(env(safe-area-inset-bottom,0px),6px)", transition:"background 0.3s, border-color 0.3s" }}>
+          <nav aria-label="Main navigation" style={{
+            display:"flex",
+            borderTop: `1px solid ${C.divider}`,
+            background: C.glass,
+            backdropFilter: "blur(24px) saturate(180%)",
+            WebkitBackdropFilter: "blur(24px) saturate(180%)",
+            position:"sticky", bottom:0,
+            paddingBottom:"max(env(safe-area-inset-bottom,0px),8px)",
+            paddingTop: 6,
+          }}>
             {TABS.map(tItem => {
-              const active = tItem.id === tab || (tItem.id === "calc" && (tab === "calc" || tab === "pizza"));
+              const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
               return (
-                <button key={tItem.id} onClick={() => setTab(tItem.id)} style={{ flex:1, paddingTop:10, paddingBottom:6, background:"transparent", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                  <span style={{ fontSize:18, filter: active?"none":"grayscale(80%) opacity(55%)", transition:"filter 0.18s" }}>{tItem.icon}</span>
-                  <span style={{ fontFamily:getFont("body"), fontSize:14, letterSpacing:0.3, color: active?C.accent:C.faint, fontWeight: active?700:400 }}>{t(tItem.labelKey)}</span>
-                  {active && <div style={{ width:16, height:2, borderRadius:1, background:C.accent }} />}
+                <button
+                  key={tItem.id}
+                  onClick={() => setTab(tItem.id)}
+                  aria-label={t(tItem.labelKey)}
+                  aria-current={active ? "page" : undefined}
+                  style={{
+                    flex:1, paddingTop: 10, paddingBottom: 8,
+                    background:"transparent", border:"none",
+                    display:"flex", flexDirection:"column",
+                    alignItems:"center", gap: 4,
+                    position:"relative", minHeight: 60,
+                  }}
+                >
+                  <div style={{
+                    color: active ? C.accent : C.textFaint,
+                    transition:"all 0.2s",
+                    transform: active ? "translateY(-2px)" : "none",
+                  }}>
+                    <Icon name={tItem.icon} size={24} />
+                  </div>
+                  <span style={{
+                    fontFamily: BODY, fontSize: 14,
+                    color: active ? C.accent : C.textFaint,
+                    fontWeight: active ? 600 : 500,
+                    letterSpacing: "-0.005em",
+                  }}>{t(tItem.labelKey)}</span>
+                  {active && <div style={{
+                    position:"absolute", top: 0,
+                    left: "25%", right: "25%",
+                    height: 2, borderRadius: 1,
+                    background: C.accent,
+                  }} />}
                 </button>
               );
             })}
-          </div>
+          </nav>
 
         </div>
       </div>
