@@ -1236,7 +1236,7 @@ function QuoteCarousel() {
               <div style={{
                 position: "absolute",
                 inset: 0,
-                background: `rgba(0,0,0,${overlayOpacity})`,
+                background: `rgba(${overlayColor},${overlayOpacity})`,
                 transition: "background 0.8s ease",
                 pointerEvents: "none",
                 borderRadius: 24,
