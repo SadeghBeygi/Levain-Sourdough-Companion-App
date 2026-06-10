@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useEffect, useContext, createContext } from"react";
+﻿import { useState, useMemo, useEffect, useContext, createContext } from "react";
 
 const AppCtx = createContext(null);
 const useApp = () => useContext(AppCtx);
@@ -24,7 +24,7 @@ function useBreakpoint() {
 
 function useSystemTheme() {
   const [systemTheme, setSystemTheme] = useState(() => {
-    if (typeof window === "undefined") return"dark";
+    if (typeof window === "undefined") return "dark";
     return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
   });
   useEffect(() => {
@@ -220,8 +220,8 @@ function BackgroundDecor() {
   if (!bp.desktop && !bp.wide) return null;
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }} aria-hidden="true">
-      <div style={{ position: "absolute", top: "-20%", right: "-10%", width: bp.wide ? "50vw" : "60vw", height: bp.wide ? "50vw" : "60vw", maxWidth: "900px", maxHeight: "900px", borderRadius: "50%", background: `radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%), filter: "blur(100px)" }} className="drift" />
-      <div style={{ position: "absolute", bottom: "-15%", left: "-15%", width: bp.wide ? "40vw" : "50vw", height: bp.wide ? "40vw" : "50vw", maxWidth: "750px", maxHeight: "750px", borderRadius: "50%", background: `radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%), filter: "blur(100px)", animation: "drift 35s ease-in-out infinite reverse" }} />
+      <div style={{ position: "absolute", top: "-20%", right: "-10%", width: bp.wide ? "50vw" : "60vw", height: bp.wide ? "50vw" : "60vw", maxWidth: "900px", maxHeight: "900px", borderRadius: "50%", background: `radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%)`, filter: "blur(100px)" }} className="drift" />
+      <div style={{ position: "absolute", bottom: "-15%", left: "-15%", width: bp.wide ? "40vw" : "50vw", height: bp.wide ? "40vw" : "50vw", maxWidth: "750px", maxHeight: "750px", borderRadius: "50%", background: `radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%)`, filter: "blur(100px)", animation: "drift 35s ease-in-out infinite reverse" }} />
     </div>
   );
 }
@@ -294,7 +294,7 @@ function Slider({ label, value, onChange, min, max, step = 1, unit = "%", sublab
         <span style={{ fontFamily: DISPLAY, fontSize: 24, color: C.accent, fontWeight: 600, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", transition: "color 0.2s" }}>{num(value)}<span style={{ fontSize: 14, color: C.textFaint, fontWeight: 500, marginLeft: 2 }}>{unit}</span></span>
       </div>
       <div style={{ position: "relative", height: 32, display: "flex", alignItems: "center" }}>
-        <div style={{ position: "absolute", left: 0, right: 0, height: 8, borderRadius: 999, background: C.divider, overflow: "hidden" }}><div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${C.accentDeep || C.accent}, ${C.accent}), borderRadius: 999, transition: "width 0.15s ease-out" }} /></div>
+        <div style={{ position: "absolute", left: 0, right: 0, height: 8, borderRadius: 999, background: C.divider, overflow: "hidden" }}><div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${C.accentDeep || C.accent}, ${C.accent})`, borderRadius: 999, transition: "width 0.15s ease-out" }} /></div>
         <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(parseFloat(e.target.value))} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value} style={{ position: "relative", background: "transparent", width: "100%" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10 }}>
@@ -310,7 +310,7 @@ function CopyButton({ getText }) {
   const [state, setState] = useState("idle");
   const handleCopy = async () => { const ok = await copyText(getText()); setState(ok ? "done" : "fail"); setTimeout(() => setState("idle"), 2200); };
   return (
-    <button onClick={handleCopy} type="button" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 20px", background: state === "done" ? C.success : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", borderRadius: 999, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 44, boxShadow: state === "done" ? `0 4px 14px ${C.success}44` : `0 4px 14px ${C.accent}44`, transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)" }}>
+    <button onClick={handleCopy} type="button" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 20px", background: state === "done" ? C.success : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", borderRadius: 999, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 44, boxShadow: state === "done" ? `0 4px 14px ${C.success}44` : `0 4px 14px ${C.accent}44`, transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)" }}>
       <Icon name={state === "done" ? "check" : "copy"} size={16} color="#FFFFFF" />
       {state === "done" ? t("copiedLabel") : t("copyList")}
     </button>
@@ -349,7 +349,7 @@ function StepTimer({ label, minutes }) {
         <div style={{ fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, color: done ? C.success : C.text }}>{statusText}</div>
       </div>
       <div style={{ display: "flex", gap: 8, justifyContent: stack ? "center" : "flex-start" }}>
-        {!done && (<button onClick={() => setRunning((r) => !r)} type="button" style={{ padding: "10px 20px", borderRadius: 999, background: running ? C.accentSoft : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: running ? C.accent : "#FFFFFF", fontFamily: BODY, fontSize: 14, fontWeight: 600, minWidth: 84, minHeight: 44, boxShadow: running ? "none" : `0 4px 12px ${C.accent}44` }}>{running ? t("timerPause") : t("timerStart")}</button>)}
+        {!done && (<button onClick={() => setRunning((r) => !r)} type="button" style={{ padding: "10px 20px", borderRadius: 999, background: running ? C.accentSoft : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: running ? C.accent : "#FFFFFF", fontFamily: BODY, fontSize: 14, fontWeight: 600, minWidth: 84, minHeight: 44, boxShadow: running ? "none" : `0 4px 12px ${C.accent}44` }}>{running ? t("timerPause") : t("timerStart")}</button>)}
         <button onClick={reset} aria-label={t("reset")} type="button" style={{ width: 44, height: 44, borderRadius: "50%", background: C.dividerSoft, color: C.textSub, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="minus" size={16} color={C.textSub} /></button>
       </div>
     </GlassPanel>
@@ -363,7 +363,7 @@ function SegmentedControl({ options, value, onChange }) {
       {options.map((opt) => {
         const active = value === opt.value;
         return (
-          <button key={opt.value} role="tab" aria-selected={active} type="button" onClick={() => onChange(opt.value)} style={{ flex: 1, padding: "12px 10px", borderRadius: 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}) : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)", minHeight: 48, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, boxShadow: active ? `0 4px 12px ${C.accent}33` : "none" }}>
+          <button key={opt.value} role="tab" aria-selected={active} type="button" onClick={() => onChange(opt.value)} style={{ flex: 1, padding: "12px 10px", borderRadius: 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)", minHeight: 48, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, boxShadow: active ? `0 4px 12px ${C.accent}33` : "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>{opt.icon && <Icon name={opt.icon} size={16} />}{opt.label}</div>
             {opt.sub && (<div style={{ fontSize: 13, fontWeight: 400, opacity: active ? 0.9 : 0.75 }}>{opt.sub}</div>)}
           </button>
@@ -405,7 +405,7 @@ function HomeTab({ setTab }) {
         <p style={{ fontFamily: BODY, fontSize: bp.mobile ? 18 : bp.tablet ? 20 : 22, color: C.textSub, lineHeight: 1.5, letterSpacing: "-0.008em", maxWidth: isWideLayout ? 640 : 480 }}>{t("taglineSub")}</p>
       </div>
       <div style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 16, textTransform: "uppercase" }}>{t("toolsSections")}</div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr), gap: bp.mobile ? 12 : bp.tablet ? 16 : 20, marginBottom: isWideLayout ? 56 : 40 }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: bp.mobile ? 12 : bp.tablet ? 16 : 20, marginBottom: isWideLayout ? 56 : 40 }}>
         {cards.map((card, i) => (
           <GlassPanel key={card.tab} hoverable onClick={() => setTab(card.tab)} style={{ padding: bp.mobile ? "24px 20px" : "28px 24px", animation: `fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${i * 0.05}s backwards` }}>
             <div style={{ width: isWideLayout ? 56 : 48, height: isWideLayout ? 56 : 48, borderRadius: isWideLayout ? 16 : 14, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isWideLayout ? 20 : 16 }}><Icon name={card.icon} size={isWideLayout ? 30 : 26} /></div>
@@ -426,7 +426,7 @@ function HomeTab({ setTab }) {
               </div>
             ))}
           </GlassPanel>
-          <GlassPanel style={{ padding: "32px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass}), display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <GlassPanel style={{ padding: "32px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}><Icon name="sparkles" size={20} color={C.accent} /><span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("bakerPrinciple")}</span></div>
             <p style={{ fontFamily: getFont("display"), fontSize: bp.wide ? 26 : 22, color: C.text, fontStyle: "italic", lineHeight: 1.55, letterSpacing: "-0.01em", fontWeight: 400 }}>"{bakerQuote}"</p>
             <div style={{ fontFamily: BODY, fontSize: 15, color: C.textFaint, marginTop: 20, letterSpacing: "-0.005em" }}>{bakerSource}</div>
@@ -444,7 +444,7 @@ function HomeTab({ setTab }) {
               </div>
             ))}
           </GlassPanel>
-          <GlassPanel style={{ padding: "28px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass}) }}>
+          <GlassPanel style={{ padding: "28px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}><Icon name="sparkles" size={18} color={C.accent} /><span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("bakerPrinciple")}</span></div>
             <p style={{ fontFamily: getFont("display"), fontSize: 20, color: C.text, fontStyle: "italic", lineHeight: 1.55, letterSpacing: "-0.01em", fontWeight: 400 }}>"{bakerQuote}"</p>
             <div style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, marginTop: 16, letterSpacing: "-0.005em" }}>{bakerSource}</div>
@@ -524,7 +524,7 @@ function BreadCalc() {
   );
   const resultsPanel = (
     <div style={{ position: isDesktop ? "sticky" : "static", top: 100 }}>
-      <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim}), marginBottom: 20 }}>
+      <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`, marginBottom: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("yourFormula")}</span>
           <CopyButton getText={getShoppingList} />
@@ -597,7 +597,7 @@ function PizzaCalc() {
       `${t("water")}: ${num(fmt(pizza.water))}g`,
       `${t("salt")}: ${num(fmt(pizza.salt))}g`,
       doughType === "yeast"
-        ? `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g (${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g)
+        ? `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g (${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g)`
         : `${t("activeStarter")}: ${num(fmt(pizza.starter))}g`,
     ].filter(Boolean);
     return lines.join("\n");
@@ -630,7 +630,7 @@ function PizzaCalc() {
         </GlassPanel>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginBottom: 28 }}>
-        <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim}) }}>
+        <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
             <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{num(pizzaCount)} {lang === "fa" ? "پیتزا" : "pizza"}{pizzaCount > 1 && lang !== "fa" ? "s" : ""} · {num(fmt(pizza.totalDough))}g</span>
             <CopyButton getText={getShoppingList} />
@@ -673,8 +673,8 @@ function PizzaCalc() {
           {PIZZA_OVENS.map((o) => {
             const active = ovenType === o.id;
             return (
-              <GlassPanel key={o.id} hoverable onClick={() => setOvenType(o.id)} style={{ padding: isDesktop ? "28px 16px" : "20px 12px", textAlign: "center", border: active ? `2px solid ${C.accent}` : `1px solid ${C.glassBorder}`, background: active ? `linear-gradient(135deg, ${C.accentSoft}, ${C.glass}) : C.glass, minHeight: isDesktop ? 160 : 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isDesktop ? 12 : 10 }}>
-                <div style={{ width: isDesktop ? 60 : 48, height: isDesktop ? 60 : 48, borderRadius: isDesktop ? 18 : 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}) : C.accentSoft, color: active ? "#FFFFFF" : C.accent, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: active ? `0 4px 16px ${C.accent}44` : "none" }}><Icon name={o.icon} size={isDesktop ? 32 : 26} color={active ? "#FFFFFF" : C.accent} /></div>
+              <GlassPanel key={o.id} hoverable onClick={() => setOvenType(o.id)} style={{ padding: isDesktop ? "28px 16px" : "20px 12px", textAlign: "center", border: active ? `2px solid ${C.accent}` : `1px solid ${C.glassBorder}`, background: active ? `linear-gradient(135deg, ${C.accentSoft}, ${C.glass})` : C.glass, minHeight: isDesktop ? 160 : 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isDesktop ? 12 : 10 }}>
+                <div style={{ width: isDesktop ? 60 : 48, height: isDesktop ? 60 : 48, borderRadius: isDesktop ? 18 : 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : C.accentSoft, color: active ? "#FFFFFF" : C.accent, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: active ? `0 4px 16px ${C.accent}44` : "none" }}><Icon name={o.icon} size={isDesktop ? 32 : 26} color={active ? "#FFFFFF" : C.accent} /></div>
                 <div style={{ fontFamily: DISPLAY, fontSize: isDesktop ? 19 : 17, fontWeight: 600, color: active ? C.accent : C.text, letterSpacing: "-0.01em", lineHeight: 1.2 }}>{lang === "fa" ? o.nameFa : o.nameEn}</div>
                 <div style={{ fontFamily: BODY, fontSize: isDesktop ? 15 : 14, color: C.textFaint, fontVariantNumeric: "tabular-nums", fontWeight: 500 }}>{o.temp}</div>
               </GlassPanel>
@@ -682,7 +682,7 @@ function PizzaCalc() {
           })}
         </div>
         {oven && (
-          <GlassPanel style={{ padding: "20px 22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass}), border: `1px solid ${C.accentSoft}` }}>
+          <GlassPanel style={{ padding: "20px 22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`, border: `1px solid ${C.accentSoft}` }}>
             <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
               <div style={{ width: 48, height: 48, borderRadius: 14, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, flexShrink: 0 }}><Icon name={oven.icon} size={26} /></div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -738,11 +738,11 @@ function StarterCalc() {
           <div style={{ marginBottom: isDesktop ? 0 : 28 }}>
             <Label>{t("feedingRatio")}</Label>
             <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow }}>
-              {FEED_RATIOS.map((r, i) => (<button key={r.label} onClick={() => setFeedRatio(i)} type="button" style={{ flex: 1, padding: "14px 4px", borderRadius: 14, background: feedRatio === i ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}) : "transparent", color: feedRatio === i ? "#FFFFFF" : C.textSub, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", minHeight: 48, boxShadow: feedRatio === i ? `0 4px 12px ${C.accent}33` : "none" }}>{r.label}</button>))}
+              {FEED_RATIOS.map((r, i) => (<button key={r.label} onClick={() => setFeedRatio(i)} type="button" style={{ flex: 1, padding: "14px 4px", borderRadius: 14, background: feedRatio === i ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: feedRatio === i ? "#FFFFFF" : C.textSub, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", minHeight: 48, boxShadow: feedRatio === i ? `0 4px 12px ${C.accent}33` : "none" }}>{r.label}</button>))}
             </div>
           </div>
         </div>
-        <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim}) }}>
+        <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
             <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("feedingFormula")}</span>
             <CopyButton getText={getShoppingList} />
@@ -784,7 +784,7 @@ function CalcTab({ initialMode }) {
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow, maxWidth: bp.mobile ? "none" : 720 }}>
           {modes.map((m) => (
-            <button key={m.value} onClick={() => setMode(m.value)} type="button" role="tab" aria-selected={mode === m.value} style={{ flex: 1, padding: "12px 6px", borderRadius: 14, fontFamily: BODY, fontSize: 14, fontWeight: 600, background: mode === m.value ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}) : "transparent", color: mode === m.value ? "#FFFFFF" : C.textSub, minHeight: 48, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: mode === m.value ? `0 4px 12px ${C.accent}33` : "none" }}>
+            <button key={m.value} onClick={() => setMode(m.value)} type="button" role="tab" aria-selected={mode === m.value} style={{ flex: 1, padding: "12px 6px", borderRadius: 14, fontFamily: BODY, fontSize: 14, fontWeight: 600, background: mode === m.value ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: mode === m.value ? "#FFFFFF" : C.textSub, minHeight: 48, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: mode === m.value ? `0 4px 12px ${C.accent}33` : "none" }}>
               <Icon name={m.icon} size={16} color={mode === m.value ? "#FFFFFF" : C.textSub} />{m.label}
             </button>
           ))}
@@ -819,7 +819,7 @@ function RecipesTab() {
       <div style={{ padding: bp.mobile ? "0 24px 32px" : bp.tablet ? "0 40px 40px" : "0 48px 48px" }} className="fade-up">
         <button onClick={() => { setSelected(null); setLoaves(1); }} type="button" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: C.accent, fontFamily: BODY, fontSize: 15, fontWeight: 600, marginBottom: 24, padding: "8px 0", minHeight: 44 }}><Icon name="arrowLeft" size={20} />{t("back")}</button>
         <div style={{ display: isDesktop ? "grid" : "block", gridTemplateColumns: "auto 1fr", gap: 32, marginBottom: isDesktop ? 40 : 32, alignItems: isDesktop ? "center" : "flex-start" }}>
-          <div style={{ width: isDesktop ? 100 : 80, height: isDesktop ? 100 : 80, borderRadius: isDesktop ? 28 : 22, background: `linear-gradient(135deg, ${C.accentSoft}, ${C.accentDim}), display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isDesktop ? 0 : 20, boxShadow: `0 8px 24px ${C.accent}22` }}><Icon name={r.icon} size={isDesktop ? 56 : 42} /></div>
+          <div style={{ width: isDesktop ? 100 : 80, height: isDesktop ? 100 : 80, borderRadius: isDesktop ? 28 : 22, background: `linear-gradient(135deg, ${C.accentSoft}, ${C.accentDim})`, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isDesktop ? 0 : 20, boxShadow: `0 8px 24px ${C.accent}22` }}><Icon name={r.icon} size={isDesktop ? 56 : 42} /></div>
           <div>
             <h2 style={{ fontFamily: getFont("display"), fontSize: bp.mobile ? 40 : bp.tablet ? 48 : 56, fontWeight: 500, color: C.text, lineHeight: 1.05, letterSpacing: "-0.025em", marginBottom: 10 }}>{rName}</h2>
             <p style={{ fontFamily: BODY, fontSize: 17, color: C.textSub, letterSpacing: "-0.005em", lineHeight: 1.5, marginBottom: 18 }}>{rSub}</p>
@@ -853,7 +853,7 @@ function RecipesTab() {
                 const stepBody = isFa ? step[3] : step[1];
                 return (
                   <div key={i} style={{ display: "flex", gap: 18, marginBottom: 26 }}>
-                    <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
+                    <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
                     <div style={{ flex: 1 }}><div style={{ fontFamily: DISPLAY, fontSize: 20, color: C.text, fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em" }}>{stepTitle}</div><div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6, letterSpacing: "-0.005em" }}>{stepBody}</div></div>
                   </div>
                 );
@@ -877,7 +877,7 @@ function RecipesTab() {
               const stepBody = isFa ? step[3] : step[1];
               return (
                 <div key={i} style={{ display: "flex", gap: 18, marginBottom: 26 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
                   <div style={{ flex: 1 }}><div style={{ fontFamily: DISPLAY, fontSize: 19, color: C.text, fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em" }}>{stepTitle}</div><div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6, letterSpacing: "-0.005em" }}>{stepBody}</div></div>
                 </div>
               );
@@ -885,7 +885,7 @@ function RecipesTab() {
           </>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: isDesktop ? 40 : 0, marginBottom: 14 }}><Icon name="sparkles" size={18} color={C.accent} /><span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("proTips")}</span></div>
-        <GlassPanel style={{ padding: "22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass}) }}>
+        <GlassPanel style={{ padding: "22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})` }}>
           <div style={{ display: isDesktop ? "grid" : "block", gridTemplateColumns: isDesktop ? "1fr 1fr" : "none", gap: isDesktop ? 16 : 0 }}>
             {rTips.map((tip, i) => (
               <div key={i} style={{ display: "flex", gap: 14, marginBottom: i < rTips.length - 1 && !isDesktop ? 16 : 0 }}>
@@ -1077,12 +1077,12 @@ export default function App() {
   const setTabProxy = (target) => { if (target === "starter") { setTab("calc"); } else if (target === "pizza") { setTab("pizza"); } else setTab(target); };
   const renderContent = () => {
     switch (tab) {
-      case"home": return <HomeTab setTab={setTabProxy} />;
-      case"calc": return <CalcTab initialMode="bread" />;
-      case"pizza": return <CalcTab initialMode="pizza" />;
-      case"recipes": return <RecipesTab />;
-      case"guide": return <GuideTab />;
-      case"trouble": return <TroubleTab />;
+      case "home": return <HomeTab setTab={setTabProxy} />;
+      case "calc": return <CalcTab initialMode="bread" />;
+      case "pizza": return <CalcTab initialMode="pizza" />;
+      case "recipes": return <RecipesTab />;
+      case "guide": return <GuideTab />;
+      case "trouble": return <TroubleTab />;
       default: return <HomeTab setTab={setTabProxy} />;
     }
   };
@@ -1097,7 +1097,7 @@ export default function App() {
           <header style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
             <div style={{ maxWidth: maxWidth, margin: "0 auto", padding: bp.mobile ? "12px 20px" : bp.tablet ? "14px 40px" : "16px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: bp.mobile ? 12 : 16, flex: 1, minWidth: 0 }}>
-                <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow: `0 4px 14px ${C.accent}55`, flexShrink: 0 }}><Icon name="bread" size={bp.mobile ? 24 : 28} color="#FFFFFF" /></div>
+                <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow: `0 4px 14px ${C.accent}55`, flexShrink: 0 }}><Icon name="bread" size={bp.mobile ? 24 : 28} color="#FFFFFF" /></div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontFamily: DISPLAY, fontSize: bp.mobile ? 18 : bp.tablet ? 20 : 22, color: C.text, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1 }}>{t("appName")}</div>
                   <div style={{ fontFamily: BODY, fontSize: bp.mobile ? 13 : 14, color: C.textFaint, marginTop: 2, letterSpacing: "-0.005em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t("appTagline")}</div>
@@ -1108,7 +1108,7 @@ export default function App() {
                   {TABS.map((tItem) => {
                     const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
                     return (
-                      <button key={tItem.id} onClick={() => setTab(tItem.id)} type="button" aria-current={active ? "page" : undefined} style={{ padding: "8px 16px", borderRadius: 999, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}) : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, minHeight: 36, boxShadow: active ? `0 2px 8px ${C.accent}33` : "none" }}>
+                      <button key={tItem.id} onClick={() => setTab(tItem.id)} type="button" aria-current={active ? "page" : undefined} style={{ padding: "8px 16px", borderRadius: 999, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, minHeight: 36, boxShadow: active ? `0 2px 8px ${C.accent}33` : "none" }}>
                         <Icon name={tItem.icon} size={16} color={active ? "#FFFFFF" : C.textSub} />{t(tItem.labelKey)}
                       </button>
                     );
