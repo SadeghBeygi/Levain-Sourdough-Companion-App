@@ -1885,15 +1885,70 @@ export default function App() {
         <BackgroundDecor />
         <div style={{ width: "100%", maxWidth: maxWidth, display: "flex", flexDirection: "column", minHeight: "100vh", position: "relative", zIndex: 1 }}>
           <header dir="ltr" className="pwa-header" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, borderBottom: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
-             {/* ... Your Header Code ... */}
+
+            <div style={{ maxWidth: maxWidth, margin: "0 auto", padding: bp.mobile ? "12px 20px" : bp.tablet ? "14px 40px" : "16px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: bp.mobile ? 12 : 16, flex: 1, minWidth: 0 }}>
+                <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow: `0 4px 14px ${C.accent}55`, flexShrink: 0 }}>
+                  <Icon name="bread" size={bp.mobile ? 24 : 28} color="#FFFFFF" />
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontFamily: DISPLAY, fontSize: bp.mobile ? 18 : bp.tablet ? 20 : 22, color: C.text, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1 }}>{t("appName")}</div>
+                  <div style={{ fontFamily: BODY, fontSize: bp.mobile ? 13 : 14, color: C.textFaint, marginTop: 2, letterSpacing: "-0.005em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t("appTagline")}</div>
+                </div>
+              </div>
+
+              {!bp.mobile && (
+                <nav style={{ display: bp.tablet ? "none" : "flex", gap: 4, background: C.bgAlt, padding: 4, borderRadius: 999, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow }} aria-label="Main navigation">
+                  {NAV_TABS.map((tItem) => {
+                    const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
+                    return (
+                      <button key={tItem.id} onClick={() => setTab(tItem.id)} type="button" aria-current={active ? "page" : undefined} style={{ padding: "8px 16px", borderRadius: 999, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, minHeight: 36, boxShadow: active ? `0 2px 8px ${C.accent}33` : "none" }}>
+                        <Icon name={tItem.icon} size={16} color={active ? "#FFFFFF" : C.textSub} />
+                        {t(tItem.labelKey)}
+                      </button>
+                    );
+                  })}
+                </nav>
+              )}
+
+              <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+                <button onClick={() => setLang((l) => (l === "en" ? "fa" : "en"))} aria-label={t("switchLang")} type="button" title={t("switchLang")} style={{ width: 80, height: 44, borderRadius: 999, border: `1px solid ${C.divider}`, background: C.bgAlt, color: C.text, fontFamily: BODY, fontSize: 14, fontWeight: 600, boxShadow: C.glassShadow, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  <Icon name="globe" size={16} />
+                  {lang === "en" ? "فارسی" : "EN"}
+                </button>
+                <button onClick={() => setTheme((th) => (th === "dark" ? "light" : "dark"))} aria-label={theme === "dark" ? t("lightMode") : t("darkMode")} type="button" title={theme === "dark" ? t("lightMode") : t("darkMode")} style={{ width: 44, height: 44, borderRadius: "50%", border: `1px solid ${C.divider}`, background: C.bgAlt, color: C.text, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: C.glassShadow }}>
+                  <Icon name={theme === "dark" ? "sun" : "moon"} size={20} />
+                </button>
+              </div>
+            </div>
+
           </header>
+
           <main style={{ flex: 1, overflowY: "auto", paddingTop: contentPadding + 80, paddingBottom: bp.mobile ? 100 : contentPadding }} className="ls">
             {renderContent()}
           </main>
+
           <InstallPrompt />
+
           {(bp.mobile || bp.tablet) && (
             <nav dir="ltr" className="pwa-bottom-nav" aria-label="Main navigation" style={{ display: "flex", borderTop: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", position: "fixed", bottom: 0, left: 0, right: 0, paddingBottom: "max(env(safe-area-inset-bottom,0px),8px)", paddingTop: 6, zIndex: 15 }}>
-              {/* ... Your Bottom Nav Code ... */}
+
+
+              <div style={{ maxWidth: maxWidth, margin: "0 auto", width: "100%", display: "flex" }}>
+                {NAV_TABS.map((tItem) => {
+                  const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
+                  return (
+                    <button key={tItem.id} onClick={() => setTab(tItem.id)} aria-label={t(tItem.labelKey)} aria-current={active ? "page" : undefined} type="button" style={{ flex: 1, paddingTop: 10, paddingBottom: 8, background: "transparent", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, position: "relative", minHeight: 60 }}>
+                      <div style={{ color: active ? C.accent : C.textFaint, transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)", transform: active ? "translateY(-2px) scale(1.05)" : "none" }}>
+                        <Icon name={tItem.icon} size={24} />
+                      </div>
+                      <span style={{ fontFamily: BODY, fontSize: 13, color: active ? C.accent : C.textFaint, fontWeight: active ? 600 : 500, letterSpacing: "-0.005em", transition: "color 0.2s" }}>{t(tItem.labelKey)}</span>
+                      {active && <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 2, borderRadius: 1, background: C.accent }} />}
+                    </button>
+                  );
+                })}
+              </div>
+
             </nav>
           )}
         </div>
