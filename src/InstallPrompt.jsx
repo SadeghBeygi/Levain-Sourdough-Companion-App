@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useApp } from "./App";
+import { useApp } from "./App"; // Assuming AppCtx is exported
 
 export default function InstallPrompt() {
   const { C, t } = useApp();
@@ -9,12 +9,15 @@ export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    // Detect if already installed
     const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     setIsStandalone(isStandaloneMode);
 
+    // Detect iOS
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     setIsIOS(isIOSDevice);
 
+    // Android Native Prompt Listener
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -23,6 +26,7 @@ export default function InstallPrompt() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
+    // Show iOS guide if not installed
     if (isIOSDevice && !isStandaloneMode) {
       setShowPrompt(true);
     }
@@ -39,6 +43,7 @@ export default function InstallPrompt() {
     }
   };
 
+  // Don't show if already installed or dismissed
   if (!showPrompt || isStandalone) return null;
 
   return (
