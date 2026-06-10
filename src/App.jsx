@@ -170,6 +170,15 @@ input, button { font-family: inherit; }
   header, nav, button, .ls::-webkit-scrollbar { display: none !important; }
   body { background: white !important; color: black !important; }
 }
+/* Fix for iPhone Notch / Dynamic Island in PWA mode */
+@supports (padding: max(0px)) {
+  .pwa-header {
+    padding-top: max(16px, env(safe-area-inset-top)) !important;
+  }
+  .pwa-bottom-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  }
+}
 `;
 }
 
@@ -2371,7 +2380,7 @@ export default function App() {
         <div style={{ width: "100%", maxWidth: maxWidth, display: "flex", flexDirection: "column", minHeight: "100vh", position: "relative", zIndex: 1 }}>
           
           {/* FIXED HEADER with forced LTR for consistent Nav order */}
-          <header dir="ltr" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, borderBottom: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
+          <header dir="ltr" className="pwa-header" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, borderBottom: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
             <div style={{ maxWidth: maxWidth, margin: "0 auto", padding: bp.mobile ? "12px 20px" : bp.tablet ? "14px 40px" : "16px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: bp.mobile ? 12 : 16, flex: 1, minWidth: 0 }}>
                 <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow: `0 4px 14px ${C.accent}55`, flexShrink: 0 }}>
@@ -2415,7 +2424,7 @@ export default function App() {
 
           {/* FIXED BOTTOM NAV with forced LTR */}
           {(bp.mobile || bp.tablet) && (
-            <nav dir="ltr" aria-label="Main navigation" style={{ display: "flex", borderTop: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", position: "fixed", bottom: 0, left: 0, right: 0, paddingBottom: "max(env(safe-area-inset-bottom,0px),8px)", paddingTop: 6, zIndex: 15 }}>
+            <nav dir="ltr" className="pwa-bottom-nav" aria-label="Main navigation" style={{ display: "flex", borderTop: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", position: "fixed", bottom: 0, left: 0, right: 0, paddingBottom: "max(env(safe-area-inset-bottom,0px),8px)", paddingTop: 6, zIndex: 15 }}>
               <div style={{ maxWidth: maxWidth, margin: "0 auto", width: "100%", display: "flex" }}>
                 {NAV_TABS.map((tItem) => {
                   const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
@@ -2434,6 +2443,7 @@ export default function App() {
           )}
         </div>
       </div>
+      <InstallPrompt />
     </AppCtx.Provider>
   );
 }
