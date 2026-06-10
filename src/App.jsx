@@ -512,7 +512,7 @@ function BackgroundDecor() {
   if (!bp.desktop && !bp.wide) return null;
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }} aria-hidden="true">
-      <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60vw", height: "60vw", maxWidth: "900px", maxHeight: "900px", borderRadius: "50%", background: `radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%)`, filter: "blur(100px)" }} className="drift" />
+      <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60vw", height: "60vw", maxWidth: "900px", maxHeight: "900px", borderRadius: "50%", background:radial-gradient(circle, ${C.decorGlow} 0%, transparent 70%), filter: "blur(100px)" }} className="drift" />
     </div>
   );
 }
@@ -522,7 +522,7 @@ function GlassPanel({ children, style, onClick, hoverable, as: Tag = "div", ...r
   const [hovered, setHovered] = useState(false);
   return (
     <Tag onClick={onClick} onMouseEnter={hoverable ? () => setHovered(true) : undefined} onMouseLeave={hoverable ? () => setHovered(false) : undefined}
-      style={{ background: hovered && hoverable ? C.glass.replace(/[\d.]+\)$/, "0.75)") : C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", border: `1px solid ${C.glassBorder}`, boxShadow: `${C.glassShadow}, ${C.glassHighlight}`, borderRadius: 24, transition: "all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)", cursor: onClick ? "pointer" : "default", ...style }} {...rest}>
+      style={{ background: hovered && hoverable ? C.glass.replace(/[\d.]+\)$/, "0.75)") : C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", border:1px solid ${C.glassBorder}, boxShadow:${C.glassShadow}, ${C.glassHighlight}, borderRadius: 24, transition: "all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)", cursor: onClick ? "pointer" : "default", ...style }} {...rest}>
       {children}
     </Tag>
   );
@@ -534,7 +534,7 @@ function Pill({ children, color, small }) {
   const { C } = useApp();
   const c = color || C.accent;
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: `${c}18`, color: c, padding: small ? "4px 10px" : "6px 14px", borderRadius: 999, fontSize: 14, fontFamily: BODY, fontWeight: 600, letterSpacing: "-0.005em", whiteSpace: "nowrap", border: `1px solid ${c}10` }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background:${c}18, color: c, padding: small ? "4px 10px" : "6px 14px", borderRadius: 999, fontSize: 14, fontFamily: BODY, fontWeight: 600, letterSpacing: "-0.005em", whiteSpace: "nowrap", border:1px solid ${c}10}}>
       {children}
     </span>
   );
@@ -543,9 +543,9 @@ function Pill({ children, color, small }) {
 function DiffDots({ level }) {
   const { C } = useApp();
   return (
-    <span style={{ display: "flex", gap: 4, alignItems: "center" }} role="img" aria-label={`Difficulty ${level} of 4`}>
+    <span style={{ display: "flex", gap: 4, alignItems: "center" }} role="img" aria-label={Difficulty ${level} of 4}>
       {[1, 2, 3, 4].map((i) => (
-        <span key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: i <= level ? C.accent : C.divider, transition: "background 0.3s ease", boxShadow: i <= level ? `0 0 8px ${C.accent}66` : "none" }} />
+        <span key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: i <= level ? C.accent : C.divider, transition: "background 0.3s ease", boxShadow: i <= level ?0 0 8px ${C.accent}66: "none" }} />
       ))}
     </span>
   );
@@ -617,7 +617,7 @@ function NumInput({ value, onChange, step = 50, min = 1, unit = "g", label, id }
     <div style={{ minWidth: 0 }}>
       {label && <Label htmlFor={id}>{label}</Label>}
       <GlassPanel style={{ display: "flex", alignItems: "center", padding: 0, overflow: "hidden", borderRadius: 18 }}>
-        <button onClick={dec} aria-label={t("decrease")} type="button" style={{ width: 52, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: C.textFaint, background: "transparent", borderRight: `1px solid ${C.dividerSoft}`, transition: "color 0.15s, background 0.15s" }}
+        <button onClick={dec} aria-label={t("decrease")} type="button" style={{ width: 52, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: C.textFaint, background: "transparent", borderRight:1px solid ${C.dividerSoft}, transition: "color 0.15s, background 0.15s" }}
           onMouseEnter={(e) => { e.currentTarget.style.color = C.accent; e.currentTarget.style.background = C.accentDim; }}
           onMouseLeave={(e) => { e.currentTarget.style.color = C.textFaint; e.currentTarget.style.background = "transparent"; }}>
           <Icon name="minus" size={20} />
@@ -632,7 +632,7 @@ function NumInput({ value, onChange, step = 50, min = 1, unit = "g", label, id }
           onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           style={{ flex: 1, minWidth: 0, width: "100%", textAlign: "center", background: "transparent", border: "none", fontFamily: DISPLAY, fontSize: 26, fontWeight: 500, color: C.text, outline: "none", letterSpacing: "-0.02em", padding: "10px 4px" }} />
         <span style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, padding: "0 10px", fontWeight: 600, flexShrink: 0 }}>{unit}</span>
-        <button onClick={inc} aria-label={t("increase")} type="button" style={{ width: 52, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: C.textFaint, background: "transparent", borderLeft: `1px solid ${C.dividerSoft}`, transition: "color 0.15s, background 0.15s" }}
+        <button onClick={inc} aria-label={t("increase")} type="button" style={{ width: 52, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: C.textFaint, background: "transparent", borderLeft:1px solid ${C.dividerSoft}, transition: "color 0.15s, background 0.15s" }}
           onMouseEnter={(e) => { e.currentTarget.style.color = C.accent; e.currentTarget.style.background = C.accentDim; }}
           onMouseLeave={(e) => { e.currentTarget.style.color = C.textFaint; e.currentTarget.style.background = "transparent"; }}>
           <Icon name="plus" size={20} />
@@ -658,7 +658,7 @@ function Slider({ label, value, onChange, min, max, step = 1, unit = "%", sublab
       </div>
       <div style={{ position: "relative", height: 32, display: "flex", alignItems: "center" }}>
         <div style={{ position: "absolute", left: 0, right: 0, height: 8, borderRadius: 999, background: C.divider, overflow: "hidden" }}>
-          <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${C.accentDeep || C.accent}, ${C.accent})`, borderRadius: 999, transition: "width 0.15s ease-out" }} />
+          <div style={{ width:${pct}%, height: "100%", background:linear-gradient(90deg, ${C.accentDeep || C.accent}, ${C.accent}), borderRadius: 999, transition: "width 0.15s ease-out" }} />
         </div>
         <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(parseFloat(e.target.value))} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value} style={{ position: "relative", background: "transparent", width: "100%" }} />
       </div>
@@ -679,7 +679,7 @@ function CopyButton({ getText }) {
     setTimeout(() => setState("idle"), 2200);
   };
   return (
-    <button onClick={handleCopy} type="button" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 20px", background: state === "done" ? C.success : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", borderRadius: 999, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 44, boxShadow: state === "done" ? `0 4px 14px ${C.success}44` : `0 4px 14px ${C.accent}44`, transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)" }}>
+    <button onClick={handleCopy} type="button" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 20px", background: state === "done" ? C.success :linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", borderRadius: 999, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 44, boxShadow: state === "done" ?0 4px 14px ${C.success}44:0 4px 14px ${C.accent}44, transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)" }}>
       <Icon name={state === "done" ? "check" : "copy"} size={16} color="#FFFFFF" />
       {state === "done" ? t("copiedLabel") : t("copyList")}
     </button>
@@ -719,14 +719,14 @@ function StepTimer({ label, minutes }) {
   const stack = bp.mobile;
   const statusText = done ? t("timerDone") : running ? t("timerRunning") : t("timerReady");
   return (
-    <GlassPanel role="timer" aria-live="polite" aria-atomic="true" style={{ display: "flex", flexDirection: stack ? "column" : "row", alignItems: stack ? "stretch" : "center", gap: stack ? 14 : 16, padding: "14px 16px", marginBottom: 10, border: `1px solid ${done ? C.success : C.glassBorder}` }}>
+    <GlassPanel role="timer" aria-live="polite" aria-atomic="true" style={{ display: "flex", flexDirection: stack ? "column" : "row", alignItems: stack ? "stretch" : "center", gap: stack ? 14 : 16, padding: "14px 16px", marginBottom: 10, border:1px solid ${done ? C.success : C.glassBorder}}}>
       <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0, margin: stack ? "0 auto" : 0 }} aria-hidden="true">
         <svg width="72" height="72" viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
           <circle cx="36" cy="36" r="32" stroke={C.divider} strokeWidth="4" fill="none" />
           <circle cx="36" cy="36" r="32" stroke={done ? C.success : C.accent} strokeWidth="4" fill="none" strokeDasharray={circ} strokeDashoffset={strokeOffset} strokeLinecap="round" style={{ transition: "stroke-dashoffset 1s linear, stroke 0.3s" }} />
         </svg>
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, color: done ? C.success : C.text, fontVariantNumeric: "tabular-nums" }}>
-          {done ? <Icon name="check" size={20} color={C.success} /> : `${mm}:${ss}`}
+          {done ? <Icon name="check" size={20} color={C.success} /> :${mm}:${ss}}
         </div>
       </div>
       <div style={{ flex: 1, minWidth: 0, textAlign: stack ? "center" : "left" }}>
@@ -737,7 +737,7 @@ function StepTimer({ label, minutes }) {
       </div>
       <div style={{ display: "flex", gap: 8, justifyContent: stack ? "center" : "flex-start" }}>
         {!done && (
-          <button onClick={() => setRunning((r) => !r)} type="button" style={{ padding: "10px 20px", borderRadius: 999, background: running ? C.accentSoft : `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: running ? C.accent : "#FFFFFF", fontFamily: BODY, fontSize: 14, fontWeight: 600, minWidth: 84, minHeight: 44, boxShadow: running ? "none" : `0 4px 12px ${C.accent}44` }}>
+          <button onClick={() => setRunning((r) => !r)} type="button" style={{ padding: "10px 20px", borderRadius: 999, background: running ? C.accentSoft :linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: running ? C.accent : "#FFFFFF", fontFamily: BODY, fontSize: 14, fontWeight: 600, minWidth: 84, minHeight: 44, boxShadow: running ? "none" :0 4px 12px ${C.accent}44}}>
             {running ? t("timerPause") : t("timerStart")}
           </button>
         )}
@@ -756,7 +756,7 @@ function SegmentedControl({ options, value, onChange }) {
       {options.map((opt) => {
         const active = value === opt.value;
         return (
-          <button key={opt.value} role="tab" aria-selected={active} type="button" onClick={() => onChange(opt.value)} style={{ flex: 1, padding: "12px 10px", borderRadius: 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)", minHeight: 48, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, boxShadow: active ? `0 4px 12px ${C.accent}33` : "none" }}>
+          <button key={opt.value} role="tab" aria-selected={active} type="button" onClick={() => onChange(opt.value)} style={{ flex: 1, padding: "12px 10px", borderRadius: 14, background: active ?linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}): "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)", minHeight: 48, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, boxShadow: active ?0 4px 12px ${C.accent}33: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {opt.icon && <Icon name={opt.icon} size={16} />}{opt.label}
             </div>
@@ -771,7 +771,7 @@ function SegmentedControl({ options, value, onChange }) {
 function ResultRow({ icon, label, sub, value }) {
   const { C, num } = useApp();
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", borderBottom: `1px solid ${C.dividerSoft}`, gap: 12 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", borderBottom:1px solid ${C.dividerSoft}, gap: 12 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
         {icon && (
           <div style={{ width: 36, height: 36, borderRadius: 10, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, flexShrink: 0 }} aria-hidden="true">
@@ -811,7 +811,7 @@ function QuoteCarousel({ style }) {
         return (
           <div key={i} style={{ position: "absolute", width: bp.mobile ? "85%" : "60%", maxWidth: 700, height: "100%", transition: "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)", transform, opacity, filter, zIndex, pointerEvents: offset === 0 ? "auto" : "none" }}>
             <GlassPanel style={{ padding: bp.mobile ? "28px 24px" : "40px 48px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 0, background: `rgba(${overlayColor},${overlayOpacity})`, transition: "background 0.8s ease", pointerEvents: "none", borderRadius: 24, zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background:rgba(${overlayColor},${overlayOpacity}), transition: "background 0.8s ease", pointerEvents: "none", borderRadius: 24, zIndex: 1 }} />
               <div style={{ position: "relative", zIndex: 2 }}>
                 <div style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 20 }}>{title}</div>
                 <p style={{ fontFamily: getFont("display"), fontSize: bp.mobile ? 20 : 26, color: C.text, fontStyle: "italic", lineHeight: 1.5, letterSpacing: "-0.01em", fontWeight: 400, marginBottom: 24, maxWidth: 600 }}>"{quote}"</p>
@@ -860,9 +860,9 @@ function HomeTab({ setTab }) {
       <div style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 16, textTransform: "uppercase" }}>
         {t("toolsSections")}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: bp.mobile ? 12 : bp.tablet ? 16 : 20, marginBottom: isWideLayout ? 56 : 40 }}>
+      <div style={{ display: "grid", gridTemplateColumns:repeat(${gridCols}, 1fr), gap: bp.mobile ? 12 : bp.tablet ? 16 : 20, marginBottom: isWideLayout ? 56 : 40 }}>
         {cards.map((card, i) => (
-          <GlassPanel key={card.tab} hoverable onClick={() => setTab(card.tab)} style={{ padding: bp.mobile ? "24px 20px" : "28px 24px", animation: `fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${i * 0.05}s backwards` }}>
+          <GlassPanel key={card.tab} hoverable onClick={() => setTab(card.tab)} style={{ padding: bp.mobile ? "24px 20px" : "28px 24px", animation:fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${i * 0.05}s backwards}}>
             <div style={{ width: isWideLayout ? 56 : 48, height: isWideLayout ? 56 : 48, borderRadius: isWideLayout ? 16 : 14, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isWideLayout ? 20 : 16 }}>
               <Icon name={card.icon} size={isWideLayout ? 30 : 26} />
             </div>
@@ -921,20 +921,15 @@ function BreadCalc() {
 
   const hLevel = getHydrationLevel(hydration, lang);
   const leavenLabel = leavenType === "sourdough"
-    ? `${t("starterLabel")}: ${num(fmt(dough.leaven))}g`
-    : `${t("yeastLabel")} (${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}): ${num(fmt(dough.leaven))}g`;
+    ?${t("starterLabel")}: ${num(fmt(dough.leaven))}g:${t("yeastLabel")} (${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}): ${num(fmt(dough.leaven))}g`;
 
   const getShoppingList = () => {
     const d = dough;
     const lines = [
       t("breadCalc"),
-      wholeGrain > 0 ? `${t("breadFlour")}: ${num(fmt(d.breadFlour))}g` : `${t("flour")}: ${num(fmt(d.flour))}g`,
-      wholeGrain > 0 ? `${t("wgFlour")}: ${num(fmt(d.wgFlour))}g` : null,
-      `${t("water")}: ${num(fmt(d.water))}g`,
-      leavenLabel,
-      `${t("salt")}: ${num(fmt(d.salt))}g`,
-      `${t("total")}: ${num(fmt(d.total))}g`,
-      `${t("hydration")}: ${num(hydration)}%`,
+      wholeGrain > 0 ?${t("breadFlour")}: ${num(fmt(d.breadFlour))}g:${t("flour")}: ${num(fmt(d.flour))}g,
+      wholeGrain > 0 ?${t("wgFlour")}: ${num(fmt(d.wgFlour))}g: null,${t("water")}: ${num(fmt(d.water))}g,
+      leavenLabel,${t("salt")}: ${num(fmt(d.salt))}g,${t("total")}: ${num(fmt(d.total))}g,${t("hydration")}: ${num(hydration)}%,
     ].filter(Boolean);
     return lines.join("\n");
   };
@@ -956,7 +951,7 @@ function BreadCalc() {
           <Label>{t("yeastType")}</Label>
           <div style={{ display: "flex", gap: 8 }}>
             {[["fresh", "freshYeast"], ["dry", "dryYeast"]].map(([id, lKey]) => (
-              <button key={id} onClick={() => setYeastType(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border: `1.5px solid ${yeastType === id ? C.accent : C.divider}`, background: yeastType === id ? C.accentSoft : "transparent", color: yeastType === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, minHeight: 48 }}>
+              <button key={id} onClick={() => setYeastType(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border:1.5px solid ${yeastType === id ? C.accent : C.divider}, background: yeastType === id ? C.accentSoft : "transparent", color: yeastType === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, minHeight: 48 }}>
                 {t(lKey)}
               </button>
             ))}
@@ -967,7 +962,7 @@ function BreadCalc() {
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           {[["flour", "byFlour"], ["total", "byTotal"]].map(([id, lKey]) => (
-            <button key={id} onClick={() => setInputMode(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border: `1.5px solid ${inputMode === id ? C.accent : C.divider}`, background: inputMode === id ? C.accentSoft : "transparent", color: inputMode === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 48 }}>
+            <button key={id} onClick={() => setInputMode(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border:1.5px solid ${inputMode === id ? C.accent : C.divider}, background: inputMode === id ? C.accentSoft : "transparent", color: inputMode === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, minHeight: 48 }}>
               {t(lKey)}
             </button>
           ))}
@@ -977,14 +972,14 @@ function BreadCalc() {
 
       <GlassPanel style={{ padding: "26px 22px 16px", marginBottom: 24 }}>
         <Slider id="hydration" label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={110} />
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: -4, marginBottom: 22, padding: "14px 16px", background: C.accentDim, borderRadius: 14, border: `1px solid ${C.accentSoft}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: -4, marginBottom: 22, padding: "14px 16px", background: C.accentDim, borderRadius: 14, border:1px solid ${C.accentSoft}}}>
           <Pill color={C.accent} small>{hLevel.label}</Pill>
           <span style={{ fontFamily: BODY, fontSize: 14, color: C.textSub, letterSpacing: "-0.005em" }}>{hLevel.desc}</span>
         </div>
         {leavenType === "sourdough" ? (
           <Slider id="starter" label={t("starterLabel")} value={starterPct} onChange={setStarterPct} min={5} max={30} />
         ) : (
-          <Slider id="yeast" label={`${t("yeastLabel")} · ${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}`} value={yeastPct} onChange={setYeastPct} min={YEAST_RANGES[yeastType][0]} max={YEAST_RANGES[yeastType][1]} step={0.05} />
+          <Slider id="yeast" label={${t("yeastLabel")} · ${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")}} value={yeastPct} onChange={setYeastPct} min={YEAST_RANGES[yeastType][0]} max={YEAST_RANGES[yeastType][1]} step={0.05} />
         )}
         <Slider id="salt" label={t("salt")} value={saltPct} onChange={setSaltPct} min={1.5} max={3} step={0.1} />
         <Slider id="wholegrain" label={t("wholeGrain")} value={wholeGrain} onChange={setWholeGrain} min={0} max={100} sublabel={t("ofTotalFlour")} />
@@ -994,24 +989,24 @@ function BreadCalc() {
 
   const resultsPanel = (
     <div style={{ position: isDesktop ? "sticky" : "static", top: 100 }}>
-      <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`, marginBottom: 20 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
+      <GlassPanel style={{ padding: "24px 24px 22px", background:linear-gradient(135deg, ${C.glass}, ${C.accentDim}), marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom:1px solid ${C.divider}, flexWrap: "wrap", gap: 12 }}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("yourFormula")}</span>
           <CopyButton getText={getShoppingList} />
         </div>
         {wholeGrain > 0 ? (
           <>
-            <ResultRow icon="wheat" label={t("breadFlour")} sub={`${num(100 - wholeGrain)}%`} value={dough.breadFlour} />
-            <ResultRow icon="rye" label={t("wgFlour")} sub={`${num(wholeGrain)}%`} value={dough.wgFlour} />
+            <ResultRow icon="wheat" label={t("breadFlour")} sub={${num(100 - wholeGrain)}%} value={dough.breadFlour} />
+            <ResultRow icon="rye" label={t("wgFlour")} sub={${num(wholeGrain)}%} value={dough.wgFlour} />
           </>
         ) : (
           <ResultRow icon="wheat" label={t("flour")} sub="100%" value={dough.flour} />
         )}
-        <ResultRow icon="droplet" label={t("water")} sub={`${num(hydration)}%`} value={dough.water} />
-        <ResultRow icon={leavenType === "sourdough" ? "flask" : "sparkles"} label={leavenType === "sourdough" ? t("starterLabel") : `${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")} ${t("yeastLabel")}`} sub={`${num(leavenPct)}%`} value={dough.leaven} />
-        <ResultRow icon="salt" label={t("salt")} sub={`${num(saltPct)}%`} value={dough.salt} />
+        <ResultRow icon="droplet" label={t("water")} sub={${num(hydration)}%} value={dough.water} />
+        <ResultRow icon={leavenType === "sourdough" ? "flask" : "sparkles"} label={leavenType === "sourdough" ? t("starterLabel") :${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")} ${t("yeastLabel")}} sub={${num(leavenPct)}%} value={dough.leaven} />
+        <ResultRow icon="salt" label={t("salt")} sub={${num(saltPct)}%} value={dough.salt} />
 
-        <div style={{ paddingTop: 18, marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop: `2px solid ${C.divider}` }}>
+        <div style={{ paddingTop: 18, marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop:2px solid ${C.divider}}}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("total")}</span>
           <span style={{ fontFamily: DISPLAY, fontSize: isDesktop ? 42 : 36, color: C.accent, fontWeight: 600, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
             {num(fmt(dough.total))} <span style={{ fontSize: 15, marginLeft: 4, color: C.textFaint }}>g</span>
@@ -1023,7 +1018,7 @@ function BreadCalc() {
       </GlassPanel>
 
       <GlassPanel style={{ overflow: "hidden" }}>
-        <div style={{ padding: "16px 22px", borderBottom: `1px solid ${C.divider}` }}>
+        <div style={{ padding: "16px 22px", borderBottom:1px solid ${C.divider}}}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("hydGuide")}</span>
         </div>
         {HYDRATION_LEVELS.map((l, i, arr) => {
@@ -1031,7 +1026,7 @@ function BreadCalc() {
           const desc = lang === "fa" ? l.descFa : l.desc;
           const active = hydration >= l.range[0] && hydration <= l.range[1];
           return (
-            <div key={l.label} style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 22px", borderBottom: i < arr.length - 1 ? `1px solid ${C.divider}` : "none", background: active ? C.accentDim : "transparent", transition: "background 0.3s" }}>
+            <div key={l.label} style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 22px", borderBottom: i < arr.length - 1 ?1px solid ${C.divider}: "none", background: active ? C.accentDim : "transparent", transition: "background 0.3s" }}>
               <span style={{ fontFamily: DISPLAY, fontSize: 15, color: active ? C.accent : C.textSub, fontWeight: 600, minWidth: 90, fontVariantNumeric: "tabular-nums" }}>
                 {num(l.range[0])}–{num(l.range[1])}%
               </span>
@@ -1099,13 +1094,9 @@ function PizzaCalc() {
 
   const getShoppingList = () => {
     const lines = [
-      `${t("pizzaCalcTitle")} — ${num(pizzaCount)} ${lang === "fa" ? "پیتزا" : "pizza"}${pizzaCount > 1 && lang !== "fa" ? "s" : ""}`,
-      `${lang === "fa" ? "آرد" : "Flour"}: ${num(fmt(pizza.flour))}g`,
-      `${t("water")}: ${num(fmt(pizza.water))}g`,
-      `${t("salt")}: ${num(fmt(pizza.salt))}g`,
+      `${t("pizzaCalcTitle")} — ${num(pizzaCount)} ${lang === "fa" ? "پیتزا" : "pizza"}${pizzaCount > 1 && lang !== "fa" ? "s" : ""},${lang === "fa" ? "آرد" : "Flour"}: ${num(fmt(pizza.flour))}g,${t("water")}: ${num(fmt(pizza.water))}g,${t("salt")}: ${num(fmt(pizza.salt))}g,
       doughType === "yeast"
-        ? `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g (${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g)`
-        : `${t("activeStarter")}: ${num(fmt(pizza.starter))}g`,
+        ?${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g (${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g):${t("activeStarter")}: ${num(fmt(pizza.starter))}g,
     ].filter(Boolean);
     return lines.join("\n");
   };
@@ -1139,7 +1130,7 @@ function PizzaCalc() {
           <Label>{t("yeastType")}</Label>
           <div style={{ display: "flex", gap: 8 }}>
             {[["fresh", "freshYeast"], ["dry", "dryYeast"]].map(([id, lKey]) => (
-              <button key={id} onClick={() => setYeastType(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border: `1.5px solid ${yeastType === id ? C.accent : C.divider}`, background: yeastType === id ? C.accentSoft : "transparent", color: yeastType === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, minHeight: 48 }}>
+              <button key={id} onClick={() => setYeastType(id)} type="button" style={{ flex: 1, padding: "12px 8px", borderRadius: 14, border:1.5px solid ${yeastType === id ? C.accent : C.divider}, background: yeastType === id ? C.accentSoft : "transparent", color: yeastType === id ? C.accent : C.textSub, fontFamily: BODY, fontSize: 15, fontWeight: 600, minHeight: 48 }}>
                 {t(lKey)}
               </button>
             ))}
@@ -1149,7 +1140,7 @@ function PizzaCalc() {
 
       <GlassPanel style={{ padding: "24px", marginBottom: 24 }}>
         <Label>{t("pizzas")}</Label>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bgAlt, border: `1px solid ${C.divider}`, borderRadius: 16, padding: "8px 10px", boxShadow: C.glassShadow, marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bgAlt, border:1px solid ${C.divider}, borderRadius: 16, padding: "8px 10px", boxShadow: C.glassShadow, marginBottom: 12 }}>
           <button onClick={() => setPizzaCount(Math.max(1, pizzaCount - 1))} aria-label={t("decrease")} type="button" style={{ background: "transparent", color: C.textFaint, width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 12 }}>
             <Icon name="minus" size={20} />
           </button>
@@ -1165,9 +1156,9 @@ function PizzaCalc() {
           {ovenType === "home" ? t("homeFor") : t("proFor")}
         </div>
 
-        <div style={{ borderTop: `1px solid ${C.dividerSoft}`, paddingTop: 20 }}>
+        <div style={{ borderTop:1px solid ${C.dividerSoft}, paddingTop: 20 }}>
           <Slider id="pizza-hyd" label={t("hydration")} value={hydration} onChange={setHydration} min={55} max={75} />
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: -4, marginBottom: doughType === "sourdough" ? 24 : 0, padding: "14px 16px", background: C.accentDim, borderRadius: 14, border: `1px solid ${C.accentSoft}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: -4, marginBottom: doughType === "sourdough" ? 24 : 0, padding: "14px 16px", background: C.accentDim, borderRadius: 14, border:1px solid ${C.accentSoft}}}>
             <Pill color={C.accent} small>{hLevel.label}</Pill>
             <span style={{ fontFamily: BODY, fontSize: 14, color: C.textSub, letterSpacing: "-0.005em" }}>{hLevel.desc}</span>
           </div>
@@ -1182,8 +1173,8 @@ function PizzaCalc() {
 
   const resultsPanel = (
     <div style={{ position: isDesktop ? "sticky" : "static", top: 100 }}>
-      <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})`, marginBottom: 20 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
+      <GlassPanel style={{ padding: "24px 24px 22px", background:linear-gradient(135deg, ${C.glass}, ${C.accentDim}), marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom:1px solid ${C.divider}, flexWrap: "wrap", gap: 12 }}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             {num(pizzaCount)} {lang === "fa" ? "پیتزا" : "pizza"}{pizzaCount > 1 && lang !== "fa" ? "s" : ""} · {num(fmt(pizza.totalDough))}g
           </span>
@@ -1194,17 +1185,17 @@ function PizzaCalc() {
         <ResultRow icon="salt" label={t("salt")} value={pizza.salt} />
         {doughType === "yeast" ? (
           <>
-            <ResultRow icon="sparkles" label={`${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")} ${t("yeastLabel")}`} value={yeastType === "fresh" ? pizza.freshYeastAmt : pizza.dryYeastAmt} />
-            <div style={{ padding: "6px 0 12px", borderBottom: `1px solid ${C.dividerSoft}`, paddingLeft: 48 }}>
+            <ResultRow icon="sparkles" label={${yeastType === "fresh" ? t("freshYeast") : t("dryYeast")} ${t("yeastLabel")}} value={yeastType === "fresh" ? pizza.freshYeastAmt : pizza.dryYeastAmt} />
+            <div style={{ padding: "6px 0 12px", borderBottom:1px solid ${C.dividerSoft}, paddingLeft: 48 }}>
               <span style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint }}>
-                {yeastType === "fresh" ? `${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g` : `${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g`}
+                {yeastType === "fresh" ?${t("dryYeast")}: ${num(fmt2(pizza.dryYeastAmt))}g:${t("freshYeastLabel")}: ${num(fmt2(pizza.freshYeastAmt))}g}
               </span>
             </div>
           </>
         ) : (
           <ResultRow icon="flask" label={t("activeStarter")} value={pizza.starter} />
         )}
-        <div style={{ paddingTop: 18, display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, borderTop: `2px solid ${C.divider}` }}>
+        <div style={{ paddingTop: 18, display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, borderTop:2px solid ${C.divider}}}>
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("totalDough")}</span>
           <span style={{ fontFamily: DISPLAY, fontSize: 30, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
             {num(fmt(pizza.totalDough))} <span style={{ fontSize: 14, marginLeft: 3, color: C.textFaint }}>g</span>
@@ -1225,7 +1216,7 @@ function PizzaCalc() {
           </div>
         </button>
         {showToppings && (
-          <div style={{ borderTop: `1px solid ${C.divider}`, padding: "16px 22px 18px", background: C.accentDim }}>
+          <div style={{ borderTop:1px solid ${C.divider}, padding: "16px 22px 18px", background: C.accentDim }}>
             <ResultRow icon="cheese" label={lang === "fa" ? "موتزارلا" : "Mozzarella"} value={pizza.mozzarella} />
             <ResultRow icon="tomato" label={lang === "fa" ? "سس گوجه" : "Tomato sauce"} value={pizza.tomatoSauce} />
             <ResultRow icon="olive" label={lang === "fa" ? "روغن زیتون" : "Olive oil"} value={pizza.oliveOil} />
@@ -1259,8 +1250,8 @@ function PizzaCalc() {
         {PIZZA_OVENS.map((o) => {
           const active = ovenType === o.id;
           return (
-            <GlassPanel key={o.id} hoverable onClick={() => setOvenType(o.id)} style={{ padding: isDesktop ? "28px 16px" : "20px 12px", textAlign: "center", border: active ? `2px solid ${C.accent}` : `1px solid ${C.glassBorder}`, background: active ? `linear-gradient(135deg, ${C.accentSoft}, ${C.glass})` : C.glass, minHeight: isDesktop ? 160 : 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isDesktop ? 12 : 10 }}>
-              <div style={{ width: isDesktop ? 60 : 48, height: isDesktop ? 60 : 48, borderRadius: isDesktop ? 18 : 14, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : C.accentSoft, color: active ? "#FFFFFF" : C.accent, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: active ? `0 4px 16px ${C.accent}44` : "none" }}>
+            <GlassPanel key={o.id} hoverable onClick={() => setOvenType(o.id)} style={{ padding: isDesktop ? "28px 16px" : "20px 12px", textAlign: "center", border: active ?2px solid ${C.accent}:1px solid ${C.glassBorder}, background: active ?linear-gradient(135deg, ${C.accentSoft}, ${C.glass}): C.glass, minHeight: isDesktop ? 160 : 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isDesktop ? 12 : 10 }}>
+              <div style={{ width: isDesktop ? 60 : 48, height: isDesktop ? 60 : 48, borderRadius: isDesktop ? 18 : 14, background: active ?linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}): C.accentSoft, color: active ? "#FFFFFF" : C.accent, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: active ?0 4px 16px ${C.accent}44: "none" }}>
                 <Icon name={o.icon} size={isDesktop ? 32 : 26} color={active ? "#FFFFFF" : C.accent} />
               </div>
               <div style={{ fontFamily: DISPLAY, fontSize: isDesktop ? 19 : 17, fontWeight: 600, color: active ? C.accent : C.text, letterSpacing: "-0.01em", lineHeight: 1.2 }}>{lang === "fa" ? o.nameFa : o.nameEn}</div>
@@ -1271,7 +1262,7 @@ function PizzaCalc() {
       </div>
 
       {oven && (
-        <GlassPanel style={{ padding: "20px 22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})`, border: `1px solid ${C.accentSoft}` }}>
+        <GlassPanel style={{ padding: "20px 22px", background:linear-gradient(135deg, ${C.accentDim}, ${C.glass}), border:1px solid ${C.accentSoft}}}>
           <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
             <div style={{ width: 48, height: 48, borderRadius: 14, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, flexShrink: 0 }}>
               <Icon name={oven.icon} size={26} />
@@ -1343,12 +1334,7 @@ function StarterCalc() {
   }, [targetStarter, feedRatio]);
 
   const getShoppingList = () => [
-    t("starterTitle"),
-    `${t("seedStarter")}: ${num(fmt(starterCalc.seed))}g`,
-    `${t("freshFlour")}: ${num(fmt(starterCalc.flour))}g`,
-    `${t("freshWater")}: ${num(fmt(starterCalc.water))}g`,
-    `${lang === "fa" ? "نسبت" : "Ratio"}: ${FEED_RATIOS[feedRatio].label}`,
-    `${t("readyStarter")}: ${num(fmt(targetStarter))}g`,
+    t("starterTitle"),${t("seedStarter")}: ${num(fmt(starterCalc.seed))}g,${t("freshFlour")}: ${num(fmt(starterCalc.flour))}g,${t("freshWater")}: ${num(fmt(starterCalc.water))}g,${lang === "fa" ? "نسبت" : "Ratio"}: ${FEED_RATIOS[feedRatio].label},${t("readyStarter")}: ${num(fmt(targetStarter))}g,
   ].join("\n");
 
   const ratioDescs = FEED_RATIO_DESCS.map((k) => t(k));
@@ -1364,9 +1350,9 @@ function StarterCalc() {
           </div>
           <div style={{ marginBottom: isDesktop ? 0 : 28 }}>
             <Label>{t("feedingRatio")}</Label>
-            <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow }}>
+            <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border:1px solid ${C.divider}, boxShadow: C.glassShadow }}>
               {FEED_RATIOS.map((r, i) => (
-                <button key={r.label} onClick={() => setFeedRatio(i)} type="button" style={{ flex: 1, padding: "14px 4px", borderRadius: 14, background: feedRatio === i ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: feedRatio === i ? "#FFFFFF" : C.textSub, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", minHeight: 48, boxShadow: feedRatio === i ? `0 4px 12px ${C.accent}33` : "none" }}>
+                <button key={r.label} onClick={() => setFeedRatio(i)} type="button" style={{ flex: 1, padding: "14px 4px", borderRadius: 14, background: feedRatio === i ?linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}): "transparent", color: feedRatio === i ? "#FFFFFF" : C.textSub, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", minHeight: 48, boxShadow: feedRatio === i ?0 4px 12px ${C.accent}33: "none" }}>
                   {r.label}
                 </button>
               ))}
@@ -1374,15 +1360,15 @@ function StarterCalc() {
           </div>
         </div>
 
-        <GlassPanel style={{ padding: "24px 24px 22px", background: `linear-gradient(135deg, ${C.glass}, ${C.accentDim})` }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.divider}`, flexWrap: "wrap", gap: 12 }}>
+        <GlassPanel style={{ padding: "24px 24px 22px", background:linear-gradient(135deg, ${C.glass}, ${C.accentDim})}}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom:1px solid ${C.divider}, flexWrap: "wrap", gap: 12 }}>
             <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("feedingFormula")}</span>
             <CopyButton getText={getShoppingList} />
           </div>
           <ResultRow icon="flask" label={t("seedStarter")} value={starterCalc.seed} />
           <ResultRow icon="wheat" label={t("freshFlour")} value={starterCalc.flour} />
           <ResultRow icon="droplet" label={t("freshWater")} value={starterCalc.water} />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 18, marginTop: 12, borderTop: `2px solid ${C.divider}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 18, marginTop: 12, borderTop:2px solid ${C.divider}}}>
             <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("readyStarter")}</span>
             <span style={{ fontFamily: DISPLAY, fontSize: 36, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
               {num(fmt(targetStarter))} <span style={{ fontSize: 15, marginLeft: 4, color: C.textFaint }}>g</span>
@@ -1398,13 +1384,13 @@ function StarterCalc() {
         </div>
         <div style={{ display: isDesktop ? "grid" : "block", gridTemplateColumns: "repeat(5, 1fr)", gap: isDesktop ? 12 : 0 }}>
           {FEED_RATIOS.map((r, i) => (
-            <div key={r.label} style={{ display: "flex", flexDirection: isDesktop ? "column" : "row", gap: isDesktop ? 8 : 16, alignItems: isDesktop ? "flex-start" : "baseline", padding: isDesktop ? "16px 14px" : "13px 12px", borderBottom: isDesktop ? "none" : i < FEED_RATIOS.length - 1 ? `1px solid ${C.dividerSoft}` : "none", background: feedRatio === i ? C.accentDim : "transparent", borderRadius: 10, transition: "background 0.3s" }}>
+            <div key={r.label} style={{ display: "flex", flexDirection: isDesktop ? "column" : "row", gap: isDesktop ? 8 : 16, alignItems: isDesktop ? "flex-start" : "baseline", padding: isDesktop ? "16px 14px" : "13px 12px", borderBottom: isDesktop ? "none" : i < FEED_RATIOS.length - 1 ?1px solid ${C.dividerSoft}: "none", background: feedRatio === i ? C.accentDim : "transparent", borderRadius: 10, transition: "background 0.3s" }}>
               <span style={{ fontFamily: DISPLAY, fontSize: isDesktop ? 20 : 17, color: feedRatio === i ? C.accent : C.text, fontWeight: 600, minWidth: isDesktop ? "auto" : 70, fontVariantNumeric: "tabular-nums" }}>{r.label}</span>
               <span style={{ fontFamily: BODY, fontSize: isDesktop ? 14 : 15, color: C.textSub, lineHeight: 1.55, letterSpacing: "-0.005em" }}>{ratioDescs[i]}</span>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 18, padding: "16px 18px", background: C.accentDim, borderRadius: 16, border: `1px solid ${C.accentSoft}`, display: "flex", gap: 12, alignItems: "flex-start" }}>
+        <div style={{ marginTop: 18, padding: "16px 18px", background: C.accentDim, borderRadius: 16, border:1px solid ${C.accentSoft}, display: "flex", gap: 12, alignItems: "flex-start" }}>
           <Icon name="sparkles" size={20} color={C.accent} style={{ marginTop: 2, flexShrink: 0 }} />
           <span style={{ fontFamily: BODY, fontSize: 14, color: C.textSub, lineHeight: 1.6, letterSpacing: "-0.005em" }}>{t("starterRatioTip")}</span>
         </div>
@@ -1425,9 +1411,9 @@ function CalcTab({ initialMode }) {
   return (
     <div style={{ padding: bp.mobile ? "0 24px 32px" : bp.tablet ? "0 40px 40px" : "0 48px 48px" }} className="fade-up">
       <div style={{ marginBottom: 28, width: "100%" }}>
-        <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow, width: "100%" }}>
+        <div style={{ display: "flex", background: C.bgAlt, borderRadius: 18, padding: 4, border:1px solid ${C.divider}, boxShadow: C.glassShadow, width: "100%" }}>
           {modes.map((m) => (
-            <button key={m.value} onClick={() => setMode(m.value)} type="button" role="tab" aria-selected={mode === m.value} style={{ flex: 1, padding: "12px 6px", borderRadius: 14, fontFamily: BODY, fontSize: 14, fontWeight: 600, background: mode === m.value ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: mode === m.value ? "#FFFFFF" : C.textSub, minHeight: 48, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: mode === m.value ? `0 4px 12px ${C.accent}33` : "none" }}>
+            <button key={m.value} onClick={() => setMode(m.value)} type="button" role="tab" aria-selected={mode === m.value} style={{ flex: 1, padding: "12px 6px", borderRadius: 14, fontFamily: BODY, fontSize: 14, fontWeight: 600, background: mode === m.value ?linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}): "transparent", color: mode === m.value ? "#FFFFFF" : C.textSub, minHeight: 48, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: mode === m.value ?0 4px 12px ${C.accent}33: "none" }}>
               <Icon name={m.icon} size={16} color={mode === m.value ? "#FFFFFF" : C.textSub} />
               {m.label}
             </button>
@@ -1469,7 +1455,7 @@ function RecipesTab() {
         </button>
 
         <div style={{ display: isDesktop ? "grid" : "block", gridTemplateColumns: "auto 1fr", gap: 32, marginBottom: isDesktop ? 40 : 32, alignItems: isDesktop ? "center" : "flex-start" }}>
-          <div style={{ width: isDesktop ? 100 : 80, height: isDesktop ? 100 : 80, borderRadius: isDesktop ? 28 : 22, background: `linear-gradient(135deg, ${C.accentSoft}, ${C.accentDim})`, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isDesktop ? 0 : 20, boxShadow: `0 8px 24px ${C.accent}22` }}>
+          <div style={{ width: isDesktop ? 100 : 80, height: isDesktop ? 100 : 80, borderRadius: isDesktop ? 28 : 22, background:linear-gradient(135deg, ${C.accentSoft}, ${C.accentDim}), display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, marginBottom: isDesktop ? 0 : 20, boxShadow:0 8px 24px ${C.accent}22}}>
             <Icon name={r.icon} size={isDesktop ? 56 : 42} />
           </div>
           <div>
@@ -1490,8 +1476,8 @@ function RecipesTab() {
             <div style={{ fontFamily: DISPLAY, fontSize: 28, color: C.accent, fontWeight: 600, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{num(loaves)}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button onClick={() => setLoaves(Math.max(1, loaves - 1))} aria-label={t("decrease")} type="button" style={{ width: 44, height: 44, borderRadius: "50%", border: `1px solid ${C.divider}`, background: C.bg, color: C.text, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="minus" size={18} /></button>
-            <button onClick={() => setLoaves(loaves + 1)} aria-label={t("increase")} type="button" style={{ width: 44, height: 44, borderRadius: "50%", border: `1px solid ${C.divider}`, background: C.bg, color: C.text, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="plus" size={18} /></button>
+            <button onClick={() => setLoaves(Math.max(1, loaves - 1))} aria-label={t("decrease")} type="button" style={{ width: 44, height: 44, borderRadius: "50%", border:1px solid ${C.divider}, background: C.bg, color: C.text, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="minus" size={18} /></button>
+            <button onClick={() => setLoaves(loaves + 1)} aria-label={t("increase")} type="button" style={{ width: 44, height: 44, borderRadius: "50%", border:1px solid ${C.divider}, background: C.bg, color: C.text, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="plus" size={18} /></button>
           </div>
         </GlassPanel>
 
@@ -1501,12 +1487,12 @@ function RecipesTab() {
               <div style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>{t("ingredients")}</div>
               <GlassPanel style={{ overflow: "hidden" }}>
                 {r.ingredients.map((ing, i, arr) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: i < arr.length - 1 ? `1px solid ${C.divider}` : "none", gap: 12 }}>
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: i < arr.length - 1 ?1px solid ${C.divider}: "none", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       <div style={{ width: 36, height: 36, borderRadius: 10, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, flexShrink: 0 }}><Icon name={ing.icon} size={18} /></div>
                       <span style={{ fontFamily: BODY, fontSize: 15, color: C.text, fontWeight: 500, letterSpacing: "-0.005em" }}>{isFa ? ing.nameFa : ing.name}</span>
                     </div>
-                    <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{ing.unit ? `${s(ing.amount)}${ing.unit}` : num(ing.amount * loaves)}</span>
+                    <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{ing.unit ?${s(ing.amount)}${ing.unit}: num(ing.amount * loaves)}</span>
                   </div>
                 ))}
               </GlassPanel>
@@ -1519,7 +1505,7 @@ function RecipesTab() {
                 const stepBody = isFa ? step[3] : step[1];
                 return (
                   <div key={i} style={{ display: "flex", gap: 18, marginBottom: 26 }}>
-                    <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
+                    <div style={{ width: 48, height: 48, borderRadius: "50%", background:linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow:0 4px 12px ${C.accent}55}}>{num(i + 1)}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontFamily: DISPLAY, fontSize: 20, color: C.text, fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em" }}>{stepTitle}</div>
                       <div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6, letterSpacing: "-0.005em" }}>{stepBody}</div>
@@ -1534,12 +1520,12 @@ function RecipesTab() {
             <div style={{ fontFamily: BODY, fontSize: 13, color: C.textFaint, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>{t("ingredients")}</div>
             <GlassPanel style={{ marginBottom: 32, overflow: "hidden" }}>
               {r.ingredients.map((ing, i, arr) => (
-                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: i < arr.length - 1 ? `1px solid ${C.divider}` : "none", gap: 12 }}>
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: i < arr.length - 1 ?1px solid ${C.divider}: "none", gap: 12 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: C.accentSoft, display: "flex", alignItems: "center", justifyContent: "center", color: C.accent, flexShrink: 0 }}><Icon name={ing.icon} size={18} /></div>
                     <span style={{ fontFamily: BODY, fontSize: 15, color: C.text, fontWeight: 500, letterSpacing: "-0.005em" }}>{isFa ? ing.nameFa : ing.name}</span>
                   </div>
-                  <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{ing.unit ? `${s(ing.amount)}${ing.unit}` : num(ing.amount * loaves)}</span>
+                  <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.accent, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{ing.unit ?${s(ing.amount)}${ing.unit}: num(ing.amount * loaves)}</span>
                 </div>
               ))}
             </GlassPanel>
@@ -1550,7 +1536,7 @@ function RecipesTab() {
               const stepBody = isFa ? step[3] : step[1];
               return (
                 <div key={i} style={{ display: "flex", gap: 18, marginBottom: 26 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 12px ${C.accent}55` }}>{num(i + 1)}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", background:linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), color: "#FFFFFF", fontSize: 16, fontWeight: 700, fontFamily: DISPLAY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow:0 4px 12px ${C.accent}55}}>{num(i + 1)}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: DISPLAY, fontSize: 19, color: C.text, fontWeight: 600, marginBottom: 6, letterSpacing: "-0.01em" }}>{stepTitle}</div>
                     <div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6, letterSpacing: "-0.005em" }}>{stepBody}</div>
@@ -1565,7 +1551,7 @@ function RecipesTab() {
           <Icon name="sparkles" size={18} color={C.accent} />
           <span style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("proTips")}</span>
         </div>
-        <GlassPanel style={{ padding: "22px", background: `linear-gradient(135deg, ${C.accentDim}, ${C.glass})` }}>
+        <GlassPanel style={{ padding: "22px", background:linear-gradient(135deg, ${C.accentDim}, ${C.glass})}}>
           <div style={{ display: isDesktop ? "grid" : "block", gridTemplateColumns: isDesktop ? "1fr 1fr" : "none", gap: isDesktop ? 16 : 0 }}>
             {rTips.map((tip, i) => (
               <div key={i} style={{ display: "flex", gap: 14, marginBottom: i < rTips.length - 1 && !isDesktop ? 16 : 0 }}>
@@ -1608,8 +1594,8 @@ function RecipesTab() {
 
   const FamilySection = ({ title, color, recipes, family }) => (
     <div style={{ marginBottom: isDesktop ? 48 : 36 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, paddingBottom: 14, borderBottom: `1px solid ${C.divider}` }}>
-        <div style={{ width: 48, height: 48, borderRadius: 14, background: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", color: color }}><Icon name="droplet" size={24} /></div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, paddingBottom: 14, borderBottom:1px solid ${C.divider}}}>
+        <div style={{ width: 48, height: 48, borderRadius: 14, background:${color}18, display: "flex", alignItems: "center", justifyContent: "center", color: color }}><Icon name="droplet" size={24} /></div>
         <div>
           <div style={{ fontFamily: DISPLAY, fontSize: isDesktop ? 26 : 22, color: C.text, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.1 }}>{title}</div>
           <div style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, marginTop: 2 }}>{family === "low" ? "50–60%" : family === "medium" ? "65–72%" : "78–85%"} · {num(recipes.length)} {t("recipesCount")}</div>
@@ -1670,14 +1656,14 @@ function GuideTab() {
               <div style={{ color: C.textFaint, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)" }}><Icon name="chevronRight" size={24} /></div>
             </button>
             {isOpen && (
-              <div style={{ background: C.accentDim, padding: "22px 22px 24px", borderTop: `1px solid ${C.divider}`, animation: "fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1)" }}>
+              <div style={{ background: C.accentDim, padding: "22px 22px 24px", borderTop:1px solid ${C.divider}, animation: "fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1)" }}>
                 <p style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.65, marginBottom: 20 }}>{body}</p>
                 {checks.length > 0 && (
                   <>
                     <div style={{ fontFamily: BODY, fontSize: 13, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>{t("checks")}</div>
                     {checks.map((c, i) => (
                       <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
-                        <div style={{ width: 22, height: 22, borderRadius: 7, border: `1.5px solid ${C.accent}`, flexShrink: 0, marginTop: 1 }} aria-hidden="true" />
+                        <div style={{ width: 22, height: 22, borderRadius: 7, border:1.5px solid ${C.accent}, flexShrink: 0, marginTop: 1 }} aria-hidden="true" />
                         <span style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.5 }}>{c}</span>
                       </div>
                     ))}
@@ -1689,7 +1675,7 @@ function GuideTab() {
                     {timers.map((timer) => <StepTimer key={timer.label} label={timer.label} minutes={timer.minutes} />)}
                   </div>
                 )}
-                <div style={{ marginTop: 22, padding: "16px 18px", background: C.bgAlt, borderRadius: 16, border: `1px solid ${C.divider}`, display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div style={{ marginTop: 22, padding: "16px 18px", background: C.bgAlt, borderRadius: 16, border:1px solid ${C.divider}, display: "flex", gap: 12, alignItems: "flex-start" }}>
                   <Icon name="sparkles" size={20} color={C.accent} style={{ marginTop: 2, flexShrink: 0 }} />
                   <span style={{ fontFamily: BODY, fontSize: 14, color: C.textSub, lineHeight: 1.6 }}>{tip}</span>
                 </div>
@@ -1706,7 +1692,7 @@ function GuideTab() {
       <div style={{ fontFamily: DISPLAY, fontSize: 24, color: C.text, fontWeight: 600, marginBottom: 12, letterSpacing: "-0.015em" }}>{t("bakersPercent")}</div>
       <p style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, marginBottom: 20, lineHeight: 1.6 }}>{t("bakersMathBody")}</p>
       {bakersRows.map(([n, f, ex], i) => (
-        <div key={n} style={{ borderTop: i > 0 ? `1px solid ${C.divider}` : "none", paddingTop: i > 0 ? 14 : 0, marginTop: i > 0 ? 14 : 0, display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+        <div key={n} style={{ borderTop: i > 0 ?1px solid ${C.divider}: "none", paddingTop: i > 0 ? 14 : 0, marginTop: i > 0 ? 14 : 0, display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
           <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.text, fontWeight: 600, letterSpacing: "-0.01em" }}>{n}</span>
           <span style={{ fontFamily: BODY, fontSize: 14, color: C.accent, fontVariantNumeric: "tabular-nums", fontWeight: 500 }}>{f}</span>
           <span style={{ fontFamily: BODY, fontSize: 14, color: C.textFaint, fontStyle: "italic", minWidth: 70, textAlign: "right" }}>{ex}</span>
@@ -1768,29 +1754,29 @@ function TroubleTab() {
     return (
       <GlassPanel style={{ overflow: "hidden", height: "fit-content", marginBottom: isDesktop ? 12 : 12 }}>
         <button onClick={() => setOpen(isOpen ? null : i)} type="button" aria-expanded={isOpen} style={{ display: "flex", alignItems: "center", gap: 16, width: "100%", textAlign: "left", padding: "18px 20px", background: "transparent", minHeight: 72 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.danger}20`, display: "flex", alignItems: "center", justifyContent: "center", color: C.danger, flexShrink: 0 }}><Icon name={tr.icon} size={26} /></div>
+          <div style={{ width: 48, height: 48, borderRadius: 14, background:${C.danger}20, display: "flex", alignItems: "center", justifyContent: "center", color: C.danger, flexShrink: 0 }}><Icon name={tr.icon} size={26} /></div>
           <span style={{ fontFamily: DISPLAY, fontSize: 17, color: C.text, fontWeight: 600, flex: 1, letterSpacing: "-0.01em", lineHeight: 1.3 }}>{problem}</span>
           <div style={{ color: C.textFaint, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)" }}><Icon name="chevronRight" size={22} /></div>
         </button>
         {isOpen && (
-          <div style={{ background: C.accentDim, padding: "22px 22px 24px", borderTop: `1px solid ${C.divider}`, animation: "fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1)" }}>
+          <div style={{ background: C.accentDim, padding: "22px 22px 24px", borderTop:1px solid ${C.divider}, animation: "fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
               <Icon name="alert" size={16} color={C.danger} />
               <span style={{ fontFamily: BODY, fontSize: 13, color: C.danger, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("likelyCauses")}</span>
             </div>
             {causes.map((c, j) => (
               <div key={j} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
-                <div style={{ width: 22, height: 22, borderRadius: 7, background: `${C.danger}20`, display: "flex", alignItems: "center", justifyContent: "center", color: C.danger, flexShrink: 0, marginTop: 1 }}><Icon name="x" size={12} /></div>
+                <div style={{ width: 22, height: 22, borderRadius: 7, background:${C.danger}20, display: "flex", alignItems: "center", justifyContent: "center", color: C.danger, flexShrink: 0, marginTop: 1 }}><Icon name="x" size={12} /></div>
                 <span style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.5 }}>{c}</span>
               </div>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "22px 0 14px", paddingTop: 20, borderTop: `1px solid ${C.divider}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "22px 0 14px", paddingTop: 20, borderTop:1px solid ${C.divider}}}>
               <Icon name="check" size={16} color={C.success} />
               <span style={{ fontFamily: BODY, fontSize: 13, color: C.success, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t("howToFix")}</span>
             </div>
             {fixes.map((f, j) => (
               <div key={j} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
-                <div style={{ width: 22, height: 22, borderRadius: 7, background: `${C.success}20`, display: "flex", alignItems: "center", justifyContent: "center", color: C.success, flexShrink: 0, marginTop: 1 }}><Icon name="check" size={12} /></div>
+                <div style={{ width: 22, height: 22, borderRadius: 7, background:${C.success}20, display: "flex", alignItems: "center", justifyContent: "center", color: C.success, flexShrink: 0, marginTop: 1 }}><Icon name="check" size={12} /></div>
                 <span style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.5 }}>{f}</span>
               </div>
             ))}
@@ -1812,7 +1798,7 @@ function TroubleTab() {
             <div style={{ fontFamily: DISPLAY, fontSize: 24, color: C.text, fontWeight: 600, marginBottom: 18, letterSpacing: "-0.015em" }}>{t("quickGlossary")}</div>
             <div style={{ display: "block" }}>
               {glossary.map(([term, def], i) => (
-                <div key={term} style={{ borderTop: i > 0 ? `1px solid ${C.divider}` : "none", paddingTop: i > 0 ? 18 : 0, marginTop: i > 0 ? 18 : 0, paddingBottom: 18, display: "grid", gridTemplateColumns: "minmax(130px, 0.7fr) 1fr", gap: 20, alignItems: "baseline" }}>
+                <div key={term} style={{ borderTop: i > 0 ?1px solid ${C.divider}: "none", paddingTop: i > 0 ? 18 : 0, marginTop: i > 0 ? 18 : 0, paddingBottom: 18, display: "grid", gridTemplateColumns: "minmax(130px, 0.7fr) 1fr", gap: 20, alignItems: "baseline" }}>
                   <div style={{ fontFamily: DISPLAY, fontSize: 16, color: C.accent, fontWeight: 600, letterSpacing: "-0.01em" }}>{term}</div>
                   <div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6 }}>{def}</div>
                 </div>
@@ -1827,7 +1813,7 @@ function TroubleTab() {
             <div style={{ fontFamily: DISPLAY, fontSize: 24, color: C.text, fontWeight: 600, marginBottom: 18, letterSpacing: "-0.015em" }}>{t("quickGlossary")}</div>
             <div style={{ display: "block" }}>
               {glossary.map(([term, def], i) => (
-                <div key={term} style={{ borderTop: i > 0 ? `1px solid ${C.divider}` : "none", paddingTop: i > 0 ? 18 : 0, marginTop: i > 0 ? 18 : 0, paddingBottom: 18, display: "grid", gridTemplateColumns: "minmax(130px, 0.7fr) 1fr", gap: 20, alignItems: "baseline" }}>
+                <div key={term} style={{ borderTop: i > 0 ?1px solid ${C.divider}: "none", paddingTop: i > 0 ? 18 : 0, marginTop: i > 0 ? 18 : 0, paddingBottom: 18, display: "grid", gridTemplateColumns: "minmax(130px, 0.7fr) 1fr", gap: 20, alignItems: "baseline" }}>
                   <div style={{ fontFamily: DISPLAY, fontSize: 16, color: C.accent, fontWeight: 600, letterSpacing: "-0.01em" }}>{term}</div>
                   <div style={{ fontFamily: BODY, fontSize: 15, color: C.textSub, lineHeight: 1.6 }}>{def}</div>
                 </div>
@@ -1884,11 +1870,11 @@ export default function App() {
       <div style={{ minHeight: "100vh", background: C.bg, display: "flex", justifyContent: "center", fontFamily: BODY, transition: "background 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)", position: "relative" }}>
         <BackgroundDecor />
         <div style={{ width: "100%", maxWidth: maxWidth, display: "flex", flexDirection: "column", minHeight: "100vh", position: "relative", zIndex: 1 }}>
-          <header dir="ltr" className="pwa-header" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, borderBottom: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
+          <header dir="ltr" className="pwa-header" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, borderBottom:1px solid ${C.divider}, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)" }}>
 
             <div style={{ maxWidth: maxWidth, margin: "0 auto", padding: bp.mobile ? "12px 20px" : bp.tablet ? "14px 40px" : "16px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: bp.mobile ? 12 : 16, flex: 1, minWidth: 0 }}>
-                <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})`, display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow: `0 4px 14px ${C.accent}55`, flexShrink: 0 }}>
+                <div style={{ width: bp.mobile ? 44 : 52, height: bp.mobile ? 44 : 52, borderRadius: bp.mobile ? 14 : 16, background:linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}), display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", boxShadow:0 4px 14px ${C.accent}55, flexShrink: 0 }}>
                   <Icon name="bread" size={bp.mobile ? 24 : 28} color="#FFFFFF" />
                 </div>
                 <div style={{ minWidth: 0 }}>
@@ -1898,11 +1884,11 @@ export default function App() {
               </div>
 
               {!bp.mobile && (
-                <nav style={{ display: bp.tablet ? "none" : "flex", gap: 4, background: C.bgAlt, padding: 4, borderRadius: 999, border: `1px solid ${C.divider}`, boxShadow: C.glassShadow }} aria-label="Main navigation">
+                <nav style={{ display: bp.tablet ? "none" : "flex", gap: 4, background: C.bgAlt, padding: 4, borderRadius: 999, border:1px solid ${C.divider}, boxShadow: C.glassShadow }} aria-label="Main navigation">
                   {NAV_TABS.map((tItem) => {
                     const active = tItem.id === tab || (tItem.id === "calc" && isCalcTabActive);
                     return (
-                      <button key={tItem.id} onClick={() => setTab(tItem.id)} type="button" aria-current={active ? "page" : undefined} style={{ padding: "8px 16px", borderRadius: 999, background: active ? `linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent})` : "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, minHeight: 36, boxShadow: active ? `0 2px 8px ${C.accent}33` : "none" }}>
+                      <button key={tItem.id} onClick={() => setTab(tItem.id)} type="button" aria-current={active ? "page" : undefined} style={{ padding: "8px 16px", borderRadius: 999, background: active ?linear-gradient(135deg, ${C.accent}, ${C.accentDeep || C.accent}): "transparent", color: active ? "#FFFFFF" : C.textSub, fontFamily: BODY, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, minHeight: 36, boxShadow: active ?0 2px 8px ${C.accent}33: "none" }}>
                         <Icon name={tItem.icon} size={16} color={active ? "#FFFFFF" : C.textSub} />
                         {t(tItem.labelKey)}
                       </button>
@@ -1912,11 +1898,11 @@ export default function App() {
               )}
 
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-                <button onClick={() => setLang((l) => (l === "en" ? "fa" : "en"))} aria-label={t("switchLang")} type="button" title={t("switchLang")} style={{ width: 80, height: 44, borderRadius: 999, border: `1px solid ${C.divider}`, background: C.bgAlt, color: C.text, fontFamily: BODY, fontSize: 14, fontWeight: 600, boxShadow: C.glassShadow, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                <button onClick={() => setLang((l) => (l === "en" ? "fa" : "en"))} aria-label={t("switchLang")} type="button" title={t("switchLang")} style={{ width: 80, height: 44, borderRadius: 999, border:1px solid ${C.divider}, background: C.bgAlt, color: C.text, fontFamily: BODY, fontSize: 14, fontWeight: 600, boxShadow: C.glassShadow, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                   <Icon name="globe" size={16} />
                   {lang === "en" ? "فارسی" : "EN"}
                 </button>
-                <button onClick={() => setTheme((th) => (th === "dark" ? "light" : "dark"))} aria-label={theme === "dark" ? t("lightMode") : t("darkMode")} type="button" title={theme === "dark" ? t("lightMode") : t("darkMode")} style={{ width: 44, height: 44, borderRadius: "50%", border: `1px solid ${C.divider}`, background: C.bgAlt, color: C.text, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: C.glassShadow }}>
+                <button onClick={() => setTheme((th) => (th === "dark" ? "light" : "dark"))} aria-label={theme === "dark" ? t("lightMode") : t("darkMode")} type="button" title={theme === "dark" ? t("lightMode") : t("darkMode")} style={{ width: 44, height: 44, borderRadius: "50%", border:1px solid ${C.divider}, background: C.bgAlt, color: C.text, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: C.glassShadow }}>
                   <Icon name={theme === "dark" ? "sun" : "moon"} size={20} />
                 </button>
               </div>
@@ -1931,7 +1917,7 @@ export default function App() {
           <InstallPrompt />
 
           {(bp.mobile || bp.tablet) && (
-            <nav dir="ltr" className="pwa-bottom-nav" aria-label="Main navigation" style={{ display: "flex", borderTop: `1px solid ${C.divider}`, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", position: "fixed", bottom: 0, left: 0, right: 0, paddingBottom: "max(env(safe-area-inset-bottom,0px),8px)", paddingTop: 6, zIndex: 15 }}>
+            <nav dir="ltr" className="pwa-bottom-nav" aria-label="Main navigation" style={{ display: "flex", borderTop:1px solid ${C.divider}, background: C.glass, backdropFilter: "blur(40px) saturate(180%)", WebkitBackdropFilter: "blur(40px) saturate(180%)", position: "fixed", bottom: 0, left: 0, right: 0, paddingBottom: "max(env(safe-area-inset-bottom,0px),8px)", paddingTop: 6, zIndex: 15 }}>
 
 
               <div style={{ maxWidth: maxWidth, margin: "0 auto", width: "100%", display: "flex" }}>
